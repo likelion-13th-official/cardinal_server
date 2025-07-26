@@ -1,5 +1,4 @@
-package com.likelionsg13th.cardinal.common.domain;
-
+package com.likelionsg13th.cardinal.users.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,18 +8,17 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Map {
+public class Users {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String building;
+    private String nickname;
 
-    @Column(nullable = false)
-    private double latitude;
+    @Column
+    private String profileImageUrl;
 
-    @Column(nullable = false)
-    private double longitude;
 
 }
