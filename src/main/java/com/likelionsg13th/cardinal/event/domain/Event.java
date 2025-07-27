@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -41,6 +42,8 @@ public class Event {
     @Column(nullable = false)
     private String thumbnailUrl;
 
-
-//    private List<DetailImage> images;
+    @CollectionTable(name="event_detail_images",joinColumns = @JoinColumn(name="event_id"))
+    @ElementCollection
+    @OrderColumn(name = "image_order")
+    private List<DetailImage> detailImageList = new ArrayList<>();
 }

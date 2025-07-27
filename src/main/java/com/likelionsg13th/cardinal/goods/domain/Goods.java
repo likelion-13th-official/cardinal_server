@@ -4,6 +4,7 @@ import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,6 +23,9 @@ public class Goods {
     private String description;
     @Column(nullable = false)
     private String thumbnailUrl;
-//    @Column(nullable = false)
-//    private List<DetailImage> detailImageList;
+
+    @CollectionTable(name="goods_detail_images",joinColumns = @JoinColumn(name="goods_id"))
+    @ElementCollection
+    @OrderColumn(name = "image_order")
+    private List<DetailImage> detailImageList = new ArrayList<>();
 }

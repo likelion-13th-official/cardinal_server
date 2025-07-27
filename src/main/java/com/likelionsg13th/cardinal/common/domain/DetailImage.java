@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Embeddable
 public class DetailImage {
-    @Column(name = "imageUrl")
+
     private String imageUrl;
+
+    //추후 유효성 검사 추가 로직 구현 ,
 }

@@ -29,4 +29,7 @@ public class Performance {
 
     @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private String ThumbnailUrl;
 }

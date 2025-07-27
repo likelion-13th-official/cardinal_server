@@ -47,10 +47,12 @@ public class Booth {
     @Column(nullable = false)
     private String menuImageUrl;
 
-    //수정
-//    @Column(nullable = false)
-//    private List<Menu> menuList;
-    //수정 one to one
+    @ElementCollection
+    @CollectionTable(name = "booth_menu",joinColumns =  @JoinColumn(name="booth_id"))
+    @OrderColumn(name = "menu_order")
+    private List<Menu> menuList;
+
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Map location;

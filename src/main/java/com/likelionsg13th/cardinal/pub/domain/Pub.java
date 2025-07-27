@@ -43,17 +43,6 @@ public class Pub {
     private LocalDateTime endTime;
 
 
-    @Column(nullable = false)
-    private String thumbnailUrl;
-
-    @Column(nullable = false)
-    private String menuImageUrl;
-
-    @Column(nullable = false)
-    private String mapImageUrl;
-
-    @Column(nullable = false)
-    private String instagramUrl;
 
     //수정 one to one
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -61,8 +50,10 @@ public class Pub {
     private Map location;
 
     //수정
-//    @Column(nullable = false)
-//    private List<Menu> menuList;
+    @ElementCollection
+    @CollectionTable(name = "pub_menu",joinColumns =  @JoinColumn(name="pub_id"))
+    @OrderColumn(name = "menu_order")
+    private List<Menu> menuList;
 
 
 }

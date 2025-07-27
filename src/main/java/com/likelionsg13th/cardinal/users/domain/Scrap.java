@@ -18,7 +18,7 @@ public class Scrap {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private Users user;
 
     @Column(nullable = false)
