@@ -24,7 +24,17 @@ public class Pub {
     private String department;
 
     @Column(nullable = false)
-    private String name;
+    private String thumbnailUrl;
+
+    @Column(nullable = false)
+    private String menuImageUrl;
+
+    @Column(nullable = false)
+    private String instaUrl;
+
+
+    @Column(nullable = false)
+    private String name; //주정 명
 
     @Column(nullable = false) //공지사항
     private String notice;
