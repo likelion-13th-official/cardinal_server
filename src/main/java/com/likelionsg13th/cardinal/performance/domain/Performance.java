@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -25,11 +26,13 @@ public class Performance {
     private String name;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
     private String ThumbnailUrl;
+
+    private Long viewCount;
 }

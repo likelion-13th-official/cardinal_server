@@ -2,12 +2,12 @@ package com.likelionsg13th.cardinal.booth.domain;
 
 import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.common.domain.Menu;
+import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,6 +15,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype")
 public class Booth {
 
     @Id
@@ -28,15 +30,12 @@ public class Booth {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Map location;
 
-    @Column(nullable = false)
-    private LocalTime startTime;
-
-    @Column(nullable = false)
-    private LocalTime endTime;
+    @Embedded
+    private OperatingInfo operatingInfo;
 
     @Column(nullable = false)
     private String description;
@@ -44,16 +43,12 @@ public class Booth {
     @Column(nullable = false)
     private String thumbnailUrl;
 
-    @Column(nullable = false)
-    private String menuImageUrl;
-
     @ElementCollection
-    @CollectionTable(name = "booth_menu",joinColumns =  @JoinColumn(name="booth_id"))
-    @OrderColumn(name = "menu_order")
-    private List<Menu> menuList;
+    @CollectionTable(
+            name = "menus",
+            joinColumns = @JoinColumn(name = "booth_id")
+    )
+    private List<Menu> menus = new ArrayList<>();
 
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private Map location;
+    private Long viewCount;
 }

@@ -6,6 +6,7 @@ import lombok.*;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Menu {
 
     private String name;

@@ -15,7 +15,7 @@ public class Map {
     private Long id;
 
     @Column(nullable = false)
-    private String building;
+    private String position;
 
     @Column(nullable = false)
     private double latitude;

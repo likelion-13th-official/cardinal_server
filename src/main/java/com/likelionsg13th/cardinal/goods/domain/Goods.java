@@ -19,10 +19,14 @@ public class Goods {
 
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String description;
+
     @Column(nullable = false)
     private String thumbnailUrl;
+
+    private Long viewCount;
 
     @CollectionTable(name="goods_detail_images",joinColumns = @JoinColumn(name="goods_id"))
     @ElementCollection
