@@ -8,11 +8,13 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
+  sql:
+    init:
+      mode: always
   jpa:
     database: postgresql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         transaction.jta.platform: org.hibernate.service.jta.JtaPlatform
