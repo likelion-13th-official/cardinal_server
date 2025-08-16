@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "booth_category")
+@DiscriminatorColumn(name = "booth_type")
 public abstract class Booth {
 
     @Id

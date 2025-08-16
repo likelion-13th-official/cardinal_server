@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.performance.domain;
 
+import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +31,10 @@ public class Performance {
 
     @Column(nullable = false)
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Map location;
 
     @Column(nullable = false)
     private String ThumbnailUrl;

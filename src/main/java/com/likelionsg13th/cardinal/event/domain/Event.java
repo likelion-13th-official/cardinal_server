@@ -29,7 +29,7 @@ public class Event {
     @Embedded
     private OperatingInfo operatingInfo;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Map location;
 

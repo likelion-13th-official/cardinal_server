@@ -2,11 +2,12 @@ package com.likelionsg13th.cardinal.users.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
+@SuperBuilder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Users {
 

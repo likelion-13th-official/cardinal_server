@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.goods.domain;
 
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
+import com.likelionsg13th.cardinal.common.domain.Map;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,10 @@ public class Goods {
 
     @Column(nullable = false)
     private String thumbnailUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Map location;
 
     private Long viewCount;
 
