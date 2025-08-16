@@ -1,8 +1,7 @@
 package com.likelionsg13th.cardinal.booth.domain;
 
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("PubBooth")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PubBooth {
+public class PubBooth extends Booth{
 
     private String notice; //공지사항
     private String instagramUrl;
