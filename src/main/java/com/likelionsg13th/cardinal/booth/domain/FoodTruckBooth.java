@@ -9,8 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @DiscriminatorValue("푸드트럭")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FoodTruckBooth extends Booth{
 
     private String menuImageUrl;

@@ -9,8 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @DiscriminatorValue("마당사업")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class YardBooth extends Booth{
 
 
