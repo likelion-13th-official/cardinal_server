@@ -16,19 +16,14 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class PubBooth extends Booth{
 
-    @Column(nullable = false)
     private String notice; //공지사항
 
-    @Column(nullable = true)
     private String instagramUrl;
 
-    @Column(nullable = false)
     private String menuImageUrl;
 
-    @Column(nullable = false)
     private String tableLayoutUrl; //주점 별 자리 배치도 그림
 
-    @Column(nullable = false)
     private LocalDateTime noticeUpdatedAt; //공지사항 업데이트
 
 
