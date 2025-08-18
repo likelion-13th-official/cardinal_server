@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @DiscriminatorValue("주점")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PubBooth extends Booth{
 
     private String notice; //공지사항

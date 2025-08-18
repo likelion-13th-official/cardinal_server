@@ -4,18 +4,18 @@ package com.likelionsg13th.cardinal.event.domain;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
+import com.likelionsg13th.cardinal.common.domain.OperationAwareEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Event {
+@SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Event extends OperationAwareEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +23,6 @@ public class Event {
 
     @Column(nullable = false)
     private String name;
-
-    @Embedded
-    private OperatingInfo operatingInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")

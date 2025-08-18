@@ -10,8 +10,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @DiscriminatorValue("포토부스")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PhotoBooth  extends Booth{
 
 
