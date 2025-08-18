@@ -4,11 +4,9 @@ package com.likelionsg13th.cardinal.event.domain;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,8 @@ public class Event {
     @Column(nullable = false)
     private String description;
 
+    private String applicationFormUrl; // 참가 신청 폼 경로
+
     @Column(nullable = false)
     private String thumbnailUrl;
 
@@ -44,5 +44,5 @@ public class Event {
     @OrderColumn(name = "image_order")
     private List<DetailImage> detailImageList = new ArrayList<>();
 
-    private Long viewCount;
+    private long viewCount;
 }
