@@ -10,8 +10,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @DiscriminatorValue("제휴")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PartnershipBooth extends Booth{
 
     private String logoImageUrl;

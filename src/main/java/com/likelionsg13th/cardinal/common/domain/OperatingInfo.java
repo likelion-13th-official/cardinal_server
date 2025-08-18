@@ -9,21 +9,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 @Embeddable
 @Getter
 @Setter
 public class OperatingInfo {
 
-    @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
-
-    private  LocalDateTime startTime;
-
-    private LocalDateTime endTime;
+    private  LocalTime startTime;
+    private LocalTime endTime;
 
     private boolean isOperating;
-
-    //운영여부 계산 메서드 추가
 
 }
