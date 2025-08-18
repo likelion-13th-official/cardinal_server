@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @MappedSuperclass
-@Getter @Setter @SuperBuilder
+@Getter @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class OperationAwareEntity {
 
