@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.goods.domain;
 
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
+import com.likelionsg13th.cardinal.common.domain.Map;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +33,8 @@ public class Goods {
     @ElementCollection
     @OrderColumn(name = "image_order")
     private List<DetailImage> detailImageList = new ArrayList<>();
+
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Map location;
 }
