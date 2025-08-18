@@ -13,6 +13,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class FoodTruckBooth extends Booth{
 
-
     private String menuImageUrl;
 }
