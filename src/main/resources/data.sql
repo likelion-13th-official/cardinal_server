@@ -13,6 +13,7 @@ TRUNCATE TABLE event RESTART IDENTITY CASCADE;
 TRUNCATE TABLE booth RESTART IDENTITY CASCADE;
 TRUNCATE TABLE map RESTART IDENTITY CASCADE;
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
+ TRUNCATE TABLE amenity RESTART IDENTITY CASCADE;
 
 -- ========================================
 -- 2️⃣ Users 데이터 삽입
@@ -60,12 +61,12 @@ INSERT INTO map (position, latitude, longitude) VALUES
 -- 4️⃣ Booth 데이터 삽입
 -- ========================================
 
- INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, day_of_week, start_time, end_time, is_operating, notice, instagram_url, menu_image_url, table_layout_url) VALUES
- ('PubBooth', '주점', '코딩 주점', 1, '코딩하며 즐기는 신개념 주점!', 'https://example.com/booth1.jpg', 150, '금', '2025-08-16 18:00:00', '2025-08-17 02:00:00', true, '신분증 필수 지참!', 'https://instagram.com/coding_pub', 'https://example.com/pub_menu1.jpg', 'https://example.com/pub_layout1.jpg'),
- ('PubBooth', '주점', '개발자들의 쉼터', 2, '지친 개발자들을 위한 힐링 공간', 'https://example.com/booth2.jpg', 250, '금', '2025-08-16 17:00:00', '2025-08-17 01:00:00', true, '외부 안주 반입 금지', 'https://instagram.com/dev_rest', 'https://example.com/pub_menu2.jpg', 'https://example.com/pub_layout2.jpg'),
- ('PubBooth', '주점', '알고리즘 파티', 3, '알고리즘 문제 풀고, 술도 마시고!', 'https://example.com/booth3.jpg', 180, '상시', '2025-08-17 19:00:00', '2025-08-18 03:00:00', true, '팀 대항전 이벤트 진행!', 'https://instagram.com/algo_party', 'https://example.com/pub_menu3.jpg', null),
- ('PubBooth', '주점', '버그 사냥꾼', 1, '버그 잡고 스트레스 풀자!', 'https://example.com/booth4.jpg', 320, '상시', '2025-08-17 18:00:00', '2025-08-18 02:00:00', true, '현금 결제만 가능합니다', 'https://instagram.com/bug_hunter', 'https://example.com/pub_menu4.jpg', 'https://example.com/pub_layout4.jpg'),
- ('PubBooth', '주점', '해커들의 밤', 2, '해커톤보다 재미있는 해커들의 주점', 'https://example.com/booth5.jpg', 450, '상시', '2025-08-18 20:00:00', '2025-08-19 04:00:00', false, '일요일은 쉽니다', 'https://instagram.com/hackers_night', 'https://example.com/pub_menu5.jpg', null);
+ INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, day_of_week, start_time, end_time, is_operating, notice, instagram_url, menu_image_url, table_layout_url,notice_updated_at) VALUES
+ ('PubBooth', '주점', '코딩 주점', 6, '코딩하며 즐기는 신개념 주점!', 'https://example.com/booth1.jpg', 150, '금', '2025-08-16 18:00:00', '2025-08-17 02:00:00', true, '신분증 필수 지참!', 'https://instagram.com/coding_pub', 'https://example.com/pub_menu1.jpg', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00'),
+ ('PubBooth', '주점', '개발자들의 쉼터', 6, '지친 개발자들을 위한 힐링 공간', 'https://example.com/booth2.jpg', 250, '금', '2025-08-16 17:00:00', '2025-08-17 01:00:00', true, '외부 안주 반입 금지', 'https://instagram.com/dev_rest', 'https://example.com/pub_menu2.jpg', 'https://example.com/pub_layout2.jpg','2025-08-18 22:00:00'),
+ ('PubBooth', '주점', '알고리즘 파티', 6, '알고리즘 문제 풀고, 술도 마시고!', 'https://example.com/booth3.jpg', 180, '상시', '2025-08-17 19:00:00', '2025-08-18 03:00:00', true, '팀 대항전 이벤트 진행!', 'https://instagram.com/algo_party', 'https://example.com/pub_menu3.jpg', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00'),
+ ('PubBooth', '주점', '버그 사냥꾼', 6, '버그 잡고 스트레스 풀자!', 'https://example.com/booth4.jpg', 320, '상시', '2025-08-17 18:00:00', '2025-08-18 02:00:00', true, '현금 결제만 가능합니다', 'https://instagram.com/bug_hunter', 'https://example.com/pub_menu4.jpg', 'https://example.com/pub_layout4.jpg','2025-08-18 22:00:00'),
+ ('PubBooth', '주점', '해커들의 밤', 6, '해커톤보다 재미있는 해커들의 주점', 'https://example.com/booth5.jpg', 450, '상시', '2025-08-18 20:00:00', '2025-08-19 04:00:00', false, '일요일은 쉽니다', 'https://instagram.com/hackers_night', 'https://example.com/pub_menu5.jpg', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00');
 
  -- FoodTruckBooth (5)
  INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, day_of_week, start_time, end_time, is_operating, menu_image_url) VALUES
@@ -162,16 +163,16 @@ INSERT INTO event (name, location_id, description, thumbnail_url, view_count, da
 
 
 INSERT INTO goods (name, description, thumbnail_url, view_count, location_id) VALUES
-('개발자 티셔츠', 'I speak fluent Java', 'https://example.com/goods1.jpg', 1500, 4),
-('코딩 머그컵', 'Keep Calm and Code On', 'https://example.com/goods2.jpg', 2000, 4),
-('알고리즘 노트', '알고리즘 문제 풀이에 최적화된 노트', 'https://example.com/goods3.jpg', 1800, 5),
-('버그 인형', '스트레스 해소용 버그 인형', 'https://example.com/goods4.jpg', 2500, 5),
-('해커 키보드', '해커처럼 빠른 타이핑을 위한 기계식 키보드', 'https://example.com/goods5.jpg', 3000, 4),
-('개발자 스티커팩', '노트북을 꾸밀 수 있는 다양한 개발자 스티커', 'https://example.com/goods6.jpg', 2200, 4),
-('코딩 양말', '코딩할 때 신으면 집중력이 올라가는 양말', 'https://example.com/goods7.jpg', 1700, 5),
-('알고리즘 마우스패드', '알고리즘 문제 풀 때 유용한 마우스패드', 'https://example.com/goods8.jpg', 1900, 5),
-('버그 스프레이', '버그를 한 방에 해결해주는 상상 속의 스프레이', 'https://example.com/goods9.jpg', 2800, 4),
-('해커 후드티', '해커처럼 보이고 싶을 때 입는 후드티', 'https://example.com/goods10.jpg', 3200, 4);
+('개발자 티셔츠', 'I speak fluent Java', 'https://example.com/goods1.jpg', 1500, 6),
+('코딩 머그컵', 'Keep Calm and Code On', 'https://example.com/goods2.jpg', 2000, 6),
+('알고리즘 노트', '알고리즘 문제 풀이에 최적화된 노트', 'https://example.com/goods3.jpg', 1800, 6),
+('버그 인형', '스트레스 해소용 버그 인형', 'https://example.com/goods4.jpg', 2500, 6),
+('해커 키보드', '해커처럼 빠른 타이핑을 위한 기계식 키보드', 'https://example.com/goods5.jpg', 3000, 6),
+('개발자 스티커팩', '노트북을 꾸밀 수 있는 다양한 개발자 스티커', 'https://example.com/goods6.jpg', 2200, 6),
+('코딩 양말', '코딩할 때 신으면 집중력이 올라가는 양말', 'https://example.com/goods7.jpg', 1700, 6),
+('알고리즘 마우스패드', '알고리즘 문제 풀 때 유용한 마우스패드', 'https://example.com/goods8.jpg', 1900, 6),
+('버그 스프레이', '버그를 한 방에 해결해주는 상상 속의 스프레이', 'https://example.com/goods9.jpg', 2800, 6),
+('해커 후드티', '해커처럼 보이고 싶을 때 입는 후드티', 'https://example.com/goods10.jpg', 3200, 6);
 
  -- 8. Goods Detail Images (10 records)
 INSERT INTO goods_detail_images (image_order,goods_id, image_url) VALUES
@@ -190,24 +191,24 @@ INSERT INTO goods_detail_images (image_order,goods_id, image_url) VALUES
 
 
 INSERT INTO performance (category, name, date, description, thumbnail_url, view_count, location_id) VALUES
-('동아리', '멋쟁이사자처럼 노래패', '2025-08-16 13:00:00', '멋쟁이사자처럼 멤버들이 부르는 감미로운 노래', 'https://example.com/perf1.jpg', 1200, 2),
+('동아리', '멋쟁이사자처럼 노래패', '2025-08-16 13:00:00', '멋쟁이사자처럼 멤버들이 부르는 감미로운 노래', 'https://example.com/perf1.jpg', 1200, 6),
 ('동아리', '코딩댄스팀', '2025-08-16 15:00:00', '코딩 동작을 응용한 신나는 댄스 공연', 'https://example.com/perf2.jpg', 1500, 6),
-('동아리', '알고리즘 연극반', '2025-08-17 11:00:00', '알고리즘을 주제로 한 재미있는 연극', 'https://example.com/perf3.jpg', 1300, 3),
-('동아리', '버그 버스킹', '2025-08-17 17:00:00', '버그 잡는 심정으로 부르는 애절한 발라드', 'https://example.com/perf4.jpg', 1800, 5),
+('동아리', '알고리즘 연극반', '2025-08-17 11:00:00', '알고리즘을 주제로 한 재미있는 연극', 'https://example.com/perf3.jpg', 1300, 6),
+('동아리', '버그 버스킹', '2025-08-17 17:00:00', '버그 잡는 심정으로 부르는 애절한 발라드', 'https://example.com/perf4.jpg', 1800, 6),
 ('동아리', '해커 밴드', '2025-08-18 13:00:00', '해커들의 열정이 느껴지는 락밴드 공연', 'https://example.com/perf5.jpg', 2000, 6),
-('동아리', '코딩 오케스트라', '2025-08-18 15:00:00', '코딩처럼 정교하고 아름다운 오케스트라 연주', 'https://example.com/perf6.jpg', 1600, 2),
-('영화제', '개발자의 사랑', '2025-08-16 19:00:00', '개발자의 애틋한 사랑 이야기를 담은 단편 영화', 'https://example.com/perf7.jpg', 2500, 4),
-('영화제', '알고리즘의 눈물', '2025-08-17 19:00:00', '알고리즘에 울고 웃는 개발자들의 이야기', 'https://example.com/perf8.jpg', 2200, 4),
-('영화제', '버그와의 전쟁', '2025-08-18 19:00:00', '버그를 잡기 위한 개발자들의 처절한 사투', 'https://example.com/perf9.jpg', 2800, 4),
-('영화제', '해커의 꿈', '2025-08-16 21:00:00', '세상을 바꾸고 싶은 해커의 이야기', 'https://example.com/perf10.jpg', 3000, 4),
-('영화제', '코딩의 신', '2025-08-17 21:00:00', '전설적인 코더의 일대기를 그린 영화', 'https://example.com/perf11.jpg', 3200, 4),
-('영화제', 'AI의 역습', '2025-08-18 21:00:00', '인공지능이 인류를 위협하는 SF 스릴러', 'https://example.com/perf12.jpg', 3500, 4),
+('동아리', '코딩 오케스트라', '2025-08-18 15:00:00', '코딩처럼 정교하고 아름다운 오케스트라 연주', 'https://example.com/perf6.jpg', 1600, 6),
+('영화제', '개발자의 사랑', '2025-08-16 19:00:00', '개발자의 애틋한 사랑 이야기를 담은 단편 영화', 'https://example.com/perf7.jpg', 2500, 6),
+('영화제', '알고리즘의 눈물', '2025-08-17 19:00:00', '알고리즘에 울고 웃는 개발자들의 이야기', 'https://example.com/perf8.jpg', 2200, 6),
+('영화제', '버그와의 전쟁', '2025-08-18 19:00:00', '버그를 잡기 위한 개발자들의 처절한 사투', 'https://example.com/perf9.jpg', 2800, 6),
+('영화제', '해커의 꿈', '2025-08-16 21:00:00', '세상을 바꾸고 싶은 해커의 이야기', 'https://example.com/perf10.jpg', 3000, 6),
+('영화제', '코딩의 신', '2025-08-17 21:00:00', '전설적인 코더의 일대기를 그린 영화', 'https://example.com/perf11.jpg', 3200, 6),
+('영화제', 'AI의 역습', '2025-08-18 21:00:00', '인공지능이 인류를 위협하는 SF 스릴러', 'https://example.com/perf12.jpg', 3500, 6),
 ('아티스트', '아이유', '2025-08-16 22:00:00', '국민 여동생 아이유의 특별 공연', 'https://example.com/perf13.jpg', 10000, 6),
 ('아티스트', '악동뮤지션', '2025-08-17 22:00:00', '악동뮤지션의 재치있는 무대', 'https://example.com/perf14.jpg', 9000, 6),
 ('아티스트', '10cm', '2025-08-18 22:00:00', '10cm의 감미로운 목소리', 'https://example.com/perf15.jpg', 8000, 6),
-('아티스트', '볼빨간사춘기', '2025-08-16 18:00:00', '볼빨간사춘기의 상큼한 공연', 'https://example.com/perf16.jpg', 7000, 2),
-('아티스트', '자이언티', '2025-08-17 18:00:00', '자이언티의 독특한 음색', 'https://example.com/perf17.jpg', 7500, 2),
-('아티스트', '크러쉬', '2025-08-18 18:00:00', '크러쉬의 감성적인 R&B 무대', 'https://example.com/perf18.jpg', 8500, 2);
+('아티스트', '볼빨간사춘기', '2025-08-16 18:00:00', '볼빨간사춘기의 상큼한 공연', 'https://example.com/perf16.jpg', 7000, 6),
+('아티스트', '자이언티', '2025-08-17 18:00:00', '자이언티의 독특한 음색', 'https://example.com/perf17.jpg', 7500, 6),
+('아티스트', '크러쉬', '2025-08-18 18:00:00', '크러쉬의 감성적인 R&B 무대', 'https://example.com/perf18.jpg', 8500, 6);
  -- 10. Scraps (10 records)
 
 
@@ -223,3 +224,12 @@ INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
 (6, 4, '이벤트', '2025-08-18 12:00:00'),
 (7, 16, '부스', '2025-08-18 14:00:00'),
 (8, 5, '굿즈', '2025-08-18 15:00:00');
+
+-- ========================================
+-- 11. Amenity 데이터 삽입
+-- ========================================
+INSERT INTO amenity (name, location_id) VALUES
+('분리수거', 1),
+('대피로', 2),
+('간이테이블1', 3),
+('간이테이블2', 5);

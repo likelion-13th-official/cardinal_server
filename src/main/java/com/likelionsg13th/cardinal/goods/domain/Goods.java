@@ -31,7 +31,7 @@ public class Goods {
     @JoinColumn(name = "location_id")
     private Map location;
 
-    private Long viewCount;
+    private long viewCount;
 
     @CollectionTable(name="goods_detail_images",joinColumns = @JoinColumn(name="goods_id"))
     @ElementCollection

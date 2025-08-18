@@ -39,5 +39,5 @@ public class Performance {
     @Column(nullable = false)
     private String ThumbnailUrl;
 
-    private Long viewCount;
+    private long viewCount;
 }

@@ -51,5 +51,5 @@ public abstract class Booth {
     )
     private List<Menu> menus = new ArrayList<>();
 
-    private Long viewCount;
+    private long viewCount;
 }
