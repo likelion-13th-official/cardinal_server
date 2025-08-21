@@ -1,5 +1,6 @@
-package com.likelionsg13th.cardinal.booth.domain;
+package com.likelionsg13th.cardinal.booth.domain.subtype;
 
+import com.likelionsg13th.cardinal.booth.domain.Booth;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,8 +11,6 @@ import lombok.experimental.SuperBuilder;
 @DiscriminatorValue("푸드트럭")
 @Getter
 @SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FoodTruckBooth extends Booth{
+public class FoodTruckBooth extends Booth {
 
-
-    private String menuImageUrl;
 }
