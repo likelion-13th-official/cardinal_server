@@ -14,7 +14,7 @@ spring:
   jpa:
     database: postgresql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         transaction.jta.platform: org.hibernate.service.jta.JtaPlatform
