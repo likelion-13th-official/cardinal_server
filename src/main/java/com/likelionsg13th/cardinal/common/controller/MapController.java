@@ -1,6 +1,5 @@
 package com.likelionsg13th.cardinal.common.controller;
 
-
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;

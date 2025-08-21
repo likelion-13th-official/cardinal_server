@@ -3,7 +3,6 @@ package com.likelionsg13th.cardinal.booth.domain;
 import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.common.domain.Menu;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
-import com.likelionsg13th.cardinal.common.domain.OperationAwareEntity;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,10 +14,11 @@ import java.util.List;
 @Entity
 @Getter
 @SuperBuilder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "booth_type")
-public abstract class Booth extends OperationAwareEntity {
+public abstract class Booth {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,9 @@ public abstract class Booth extends OperationAwareEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Map location;
+
+    @Embedded
+    private OperatingInfo operatingInfo;
 
     @Column(nullable = false)
     private String description;

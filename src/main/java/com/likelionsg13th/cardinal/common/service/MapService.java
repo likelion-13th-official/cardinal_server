@@ -1,18 +1,13 @@
 package com.likelionsg13th.cardinal.common.service;
 
 import com.likelionsg13th.cardinal.common.domain.Amenity;
-import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
-import com.likelionsg13th.cardinal.common.repository.MapRepository;
-import com.likelionsg13th.cardinal.goods.domain.Goods;
+
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
