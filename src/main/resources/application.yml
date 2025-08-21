@@ -12,10 +12,9 @@ spring:
     init:
       mode: never
   jpa:
-    open-in-view: false
     database: postgresql
     hibernate:
-      ddl-auto: update
+      ddl-auto:  create-drop
     properties:
       hibernate:
         transaction.jta.platform: org.hibernate.service.jta.JtaPlatform

@@ -32,6 +32,7 @@ public abstract class Booth extends OperationAwareEntity {
     @JoinColumn(name = "location_id")
     private Map location;
 
+
     @Column(nullable = false)
     private String description;
 

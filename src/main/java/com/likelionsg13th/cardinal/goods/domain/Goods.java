@@ -37,4 +37,7 @@ public class Goods {
     @ElementCollection
     @OrderColumn(name = "image_order")
     private List<DetailImage> detailImageList = new ArrayList<>();
+
+
 }
+

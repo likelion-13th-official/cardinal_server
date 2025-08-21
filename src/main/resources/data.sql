@@ -1,45 +1,21 @@
 -- ========================================
 -- 1️⃣ 테이블 초기화 (FK 순서 고려)
 -- ========================================
+
 -- 1. 테이블 초기화 (FK 참조 때문에 CASCADE 적용)
-
 TRUNCATE TABLE event_detail_images RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE menus RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE goods_detail_images RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE scrap RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE performance RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE goods RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE event RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE booth RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE map RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE amenity RESTART IDENTITY CASCADE;
-
 -- 새로 생성된 운영 요일 테이블도 초기화
-
 TRUNCATE TABLE booth_operating_days RESTART IDENTITY CASCADE;
-
-
 TRUNCATE TABLE event_operating_days RESTART IDENTITY CASCADE;
 
 
@@ -54,27 +30,27 @@ DROP CONSTRAINT IF EXISTS event_day_of_week_check;
 -- 2️⃣ Users 데이터 삽입
 -- ========================================
 
-INSERT INTO users (nickname, profile_image_url)
-VALUES ('멋쟁이토마토', 'https://example.com/profile1.jpg'),
-       ('해피코더', 'https://example.com/profile2.jpg'),
-       ('코딩마법사', 'https://example.com/profile3.jpg'),
-       ('개발왕김개발', 'https://example.com/profile4.jpg'),
-       ('알고리즘귀재', 'https://example.com/profile5.jpg'),
-       ('데이터분석가', 'https://example.com/profile6.jpg'),
-       ('자바신', 'https://example.com/profile7.jpg'),
-       ('파이썬사랑', 'https://example.com/profile8.jpg'),
-       ('리액트장인', 'https://example.com/profile9.jpg'),
-       ('뷰마스터', 'https://example.com/profile10.jpg'),
-       ('노드고수', 'https://example.com/profile11.jpg'),
-       ('스프링달인', 'https://example.com/profile12.jpg'),
-       ('장고천재', 'https://example.com/profile13.jpg'),
-       ('플러터개발자', 'https://example.com/profile14.jpg'),
-       ('스위프트마스터', 'https://example.com/profile15.jpg'),
-       ('코틀린사랑', 'https://example.com/profile16.jpg'),
-       ('게임개발자', 'https://example.com/profile17.jpg'),
-       ('머신러닝전문가', 'https://example.com/profile18.jpg'),
-       ('딥러닝연구하는 유이', 'https://example.com/profile19.jpg'),
-       ('머신러닝 공부하는 애은이', 'https://example.com/profile20.jpg');
+-- INSERT INTO users (nickname, profile_image_url) VALUES
+-- ('멋쟁이토마토', 'https://example.com/profile1.jpg'),
+-- ('해피코더', 'https://example.com/profile2.jpg'),
+-- ('코딩마법사', 'https://example.com/profile3.jpg'),
+-- ('개발왕김개발', 'https://example.com/profile4.jpg'),
+-- ('알고리즘귀재', 'https://example.com/profile5.jpg'),
+-- ('데이터분석가', 'https://example.com/profile6.jpg'),
+-- ('자바신', 'https://example.com/profile7.jpg'),
+-- ('파이썬사랑', 'https://example.com/profile8.jpg'),
+-- ('리액트장인', 'https://example.com/profile9.jpg'),
+-- ('뷰마스터', 'https://example.com/profile10.jpg'),
+-- ('노드고수', 'https://example.com/profile11.jpg'),
+-- ('스프링달인', 'https://example.com/profile12.jpg'),
+-- ('장고천재', 'https://example.com/profile13.jpg'),
+-- ('플러터개발자', 'https://example.com/profile14.jpg'),
+-- ('스위프트마스터', 'https://example.com/profile15.jpg'),
+-- ('코틀린사랑', 'https://example.com/profile16.jpg'),
+-- ('게임개발자', 'https://example.com/profile17.jpg'),
+-- ('머신러닝전문가', 'https://example.com/profile18.jpg'),
+-- ('딥러닝연구하는 유이', 'https://example.com/profile19.jpg'),
+-- ('머신러닝 공부하는 애은이', 'https://example.com/profile20.jpg');
 
 -- ========================================
 -- 3️⃣ Map 데이터 삽입
@@ -131,18 +107,20 @@ VALUES ('포토부스', 'PHOTO_BOOTH', '인생샷 연구소', 5, '개발자 컨�
        ('포토부스', 'PHOTO_BOOTH', '버그 포토존', 9, '재미있는 버그 컨셉의 포토존', 'https://example.com/booth19.jpg', 1100, '10:00:00', '22:00:00', TRUE),
        ('포토부스', 'PHOTO_BOOTH', '해커 스냅', 10, '해커처럼 멋진 스냅사진', 'https://example.com/booth20.jpg', 1800, '10:00:00', '22:00:00', TRUE);
 
+-- PartnershipBooth (10)
+-- 'start_time'과 'end_time'이 'HH:MM:SS' 형식으로 변경
+INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating, logo_image_url) VALUES
+('제휴', 'PARTNERSHIP', '멋쟁이사자처럼', 4, '멋쟁이사자처럼과 함께하는 이벤트', 'https://example.com/booth21.jpg', 2000, '10:00:00', '18:00:00', true, 'https://example.com/logo_likelion.png'),
+('제휴', 'PARTNERSHIP', 'Google', 4, 'Google이 준비한 특별한 선물', 'https://example.com/booth22.jpg', 2500, '10:00:00', '18:00:00', true, 'https://example.com/logo_google.png'),
+('제휴', 'PARTNERSHIP', 'Microsoft', 4, 'Microsoft와 함께하는 코딩 워크샵', 'https://example.com/booth23.jpg', 2200, '10:00:00', '18:00:00', true, 'https://example.com/logo_ms.png'),
+('제휴', 'PARTNERSHIP', 'Amazon Web Services', 4, 'AWS 크레딧과 다양한 굿즈 증정', 'https://example.com/booth24.jpg', 2800, '10:00:00', '18:00:00', true, 'https://example.com/logo_aws.png'),
+('제휴', 'PARTNERSHIP', '네이버', 5, '네이버 개발자들과의 만남', 'https://example.com/booth25.jpg', 3000, '10:00:00', '18:00:00', true, 'https://example.com/logo_naver.png'),
+('제휴', 'PARTNERSHIP', '카카오', 5, '카카오가 준비한 특별한 이벤트', 'https://example.com/booth26.jpg', 3200, '10:00:00', '18:00:00', true, 'https://example.com/logo_kakao.png'),
+('제휴', 'PARTNERSHIP', '배달의민족', 5, '배달의민족과 함께하는 맛있는 축제', 'https://example.com/booth27.jpg', 2900, '10:00:00', '18:00:00', true, 'https://example.com/logo_baemin.png'),
+('제휴', 'PARTNERSHIP', '토스', 5, '토스가 준비한 금융 퀴즈 이벤트', 'https://example.com/booth28.jpg', 2600, '10:00:00', '18:00:00', true, 'https://example.com/logo_toss.png'),
+('제휴', 'PARTNERSHIP', '당근마켓', 4, '당근마켓과 함께하는 중고거래 체험', 'https://example.com/booth29.jpg', 2300, '10:00:00', '18:00:00', true, 'https://example.com/logo_daangn.png'),
+('제휴', 'PARTNERSHIP', '쿠팡', 4, '쿠팡이 준비한 로켓배송 이벤트', 'https://example.com/booth30.jpg', 3500, '10:00:00', '18:00:00', true, 'https://example.com/logo_coupang.png');
 
-INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating, logo_image_url)
-VALUES ('제휴', 'PARTNERSHIP', '멋쟁이사자처럼', 4, '멋쟁이사자처럼과 함께하는 이벤트', 'https://example.com/booth21.jpg', 2000, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_likelion.png'),
-       ('제휴', 'PARTNERSHIP', 'Google', 4, 'Google이 준비한 특별한 선물', 'https://example.com/booth22.jpg', 2500, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_google.png'),
-       ('제휴', 'PARTNERSHIP', 'Microsoft', 4, 'Microsoft와 함께하는 코딩 워크샵', 'https://example.com/booth23.jpg', 2200, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_ms.png'),
-       ('제휴', 'PARTNERSHIP', 'Amazon Web Services', 4, 'AWS 크레딧과 다양한 굿즈 증정', 'https://example.com/booth24.jpg', 2800, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_aws.png'),
-       ('제휴', 'PARTNERSHIP', '네이버', 5, '네이버 개발자들과의 만남', 'https://example.com/booth25.jpg', 3000, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_naver.png'),
-       ('제휴', 'PARTNERSHIP', '카카오', 5, '카카오가 준비한 특별한 이벤트', 'https://example.com/booth26.jpg', 3200, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_kakao.png'),
-       ('제휴', 'PARTNERSHIP', '배달의민족', 5, '배달의민족과 함께하는 맛있는 축제', 'https://example.com/booth27.jpg', 2900, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_baemin.png'),
-       ('제휴', 'PARTNERSHIP', '토스', 5, '토스가 준비한 금융 퀴즈 이벤트', 'https://example.com/booth28.jpg', 2600, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_toss.png'),
-       ('제휴', 'PARTNERSHIP', '당근마켓', 4, '당근마켓과 함께하는 중고거래 체험', 'https://example.com/booth29.jpg', 2300, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_daangn.png'),
-       ('제휴', 'PARTNERSHIP', '쿠팡', 4, '쿠팡이 준비한 로켓배송 이벤트', 'https://example.com/booth30.jpg', 3500, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_coupang.png');
 
 ----------------------------------------------------------------------------------------------------
 -- 4-1. booth_operating_days 데이터 삽입
@@ -274,7 +252,7 @@ VALUES
 ALTER TABLE event
 DROP CONSTRAINT IF EXISTS event_location_id_key;
 
--- 6. Events (10 records)
+ -- 6. Events (10 records)
 -- 'start_time'과 'end_time'이 'HH:MM:SS' 형식으로 변경
 
 INSERT INTO event (name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
@@ -371,18 +349,17 @@ VALUES ('CLUB', '멋쟁이사자처럼 노래패', '2025-08-16 13:00:00', '멋�
        ('ARTIST', '크러쉬', '2025-08-18 18:00:00', '크러쉬의 감성적인 R&B 무대', 'https://example.com/perf18.jpg', 8500, 6);
 
 -- 11. Scraps (10 records)
-
-INSERT INTO scrap (user_id, content_id, content_type, created_at)
-VALUES (1, 1, 'BOOTH', '2025-08-16 19:00:00'),
-       (1, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
-       (2, 6, 'BOOTH', '2025-08-16 13:00:00'),
-       (2, 3, 'EVENT', '2025-08-16 21:00:00'),
-       (3, 1, 'GOODS', '2025-08-17 10:00:00'),
-       (4, 21, 'BOOTH', '2025-08-17 11:00:00'),
-       (5, 7, 'PERFORMANCE', '2025-08-17 19:30:00'),
-       (6, 4, 'EVENT', '2025-08-18 12:00:00'),
-       (7, 16, 'BOOTH', '2025-08-18 14:00:00'),
-       (8, 5, 'GOODS', '2025-08-18 15:00:00');
+-- INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
+-- (1, 1, 'BOOTH', '2025-08-16 19:00:00'),
+-- (1, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
+-- (2, 6, 'BOOTH', '2025-08-16 13:00:00'),
+-- (2, 3, 'EVENT', '2025-08-16 21:00:00'),
+-- (3, 1, 'GOODS', '2025-08-17 10:00:00'),
+-- (4, 21, 'BOOTH', '2025-08-17 11:00:00'),
+-- (5, 7, 'PERFORMANCE', '2025-08-17 19:30:00'),
+-- (6, 4, 'EVENT', '2025-08-18 12:00:00'),
+-- (7, 16, 'BOOTH', '2025-08-18 14:00:00'),
+-- (8, 5, 'GOODS', '2025-08-18 15:00:00');
 
 -- 12. Amenity 데이터 삽입
 

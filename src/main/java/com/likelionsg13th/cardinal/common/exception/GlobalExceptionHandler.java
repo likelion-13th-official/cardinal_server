@@ -18,6 +18,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<ApiResponse> handleInvalidParameterException(InvalidParameterException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+
     private ResponseEntity<ApiResponse> buildErrorResponse(HttpStatus status, String message) {
         ApiResponse response = new ApiResponse(false, status.value(), message);
         return new ResponseEntity<>(response, status);
