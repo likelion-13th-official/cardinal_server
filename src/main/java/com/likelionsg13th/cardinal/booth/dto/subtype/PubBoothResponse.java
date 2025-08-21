@@ -39,13 +39,13 @@ public class PubBoothResponse extends BoothDetailResponse {
                 .thumbnailUrl(b.getThumbnailUrl())
                 .operatingDays(
                         b.getOperatingDays().stream()
-                                .map(day -> day.toKorean()) // DayOfWeek enum을 한글 문자열로 변환
+                                .map(day -> day.toKorean())
                                 .collect(Collectors.toList())
                 )
                 .menus(b.getMenus())
                 .menuImageUrls(
                         b.getDetailImageList().stream()
-                                .filter(Objects::nonNull) // 리스트 안의 null 요소만 제거 (핵심!)
+                                .filter(Objects::nonNull)
                                 .map(DetailImage::getImageUrl)
                                 .collect(Collectors.toList())
                 )
