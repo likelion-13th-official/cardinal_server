@@ -21,7 +21,10 @@ import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.*;
@@ -82,26 +85,76 @@ public class MapService {
     * only for  FOOD_TRUCK , PUB
     *
     * */
-    public MapListDto viewList(String category, Long locationId){
-        List<Booth> boothList;
-        boolean bookMarked = false;
-
-        if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
-            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
-        }else if(PUB.name().equalsIgnoreCase(category.trim())) {
-            boothList = boothRepository.findAllByCategory(PUB);
-        }else {
-            throw  new InvalidParameterException("category는 PUB,FOOD_TRUCK만 사용해주세요. ");
-        }
-
-        //detailDto -> listDto
-        return MapListDto.from(boothList,category,bookMarked);
-
-
-
-    }
-
-
+//    public MapListDto viewList(String category,  Long locationId,UserPrincipal user){
+//
+//        System.out.println("-==========================");
+//        System.out.println(user.getName());
+//        System.out.println("-==========================");
+//        List<Booth> boothList;
+//        boolean bookMarked = false;
+//
+//
+//        //모든 항목 받아오기.
+//        if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
+//            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
+//
+//        }else if(PUB.name().equalsIgnoreCase(category.trim())) {
+//            boothList = boothRepository.findAllByCategory(PUB);
+//        }else {
+//            throw  new InvalidParameterException("category는 PUB,FOOD_TRUCK만 사용해주세요. ");
+//        }
+//
+//            /*
+//            * 1. 부스 id목록만 가져온다.
+//            * 2. 1번으로 스크랩한 거 한번에 모아오기
+//            * 3. 스크랩한 부스 id만 set으로 모으기
+//            * 4. 비교해서 dto변환
+//            * */
+//        if(user != null){
+//
+//           List<Long> boothId =  boothList.stream().map(Booth::getId).toList();
+//           Set<Long> ScrappedBoothId = scrapRepository.findContentIdsByUserIdAndContentIdsIn(user.getName());
+//        }
+//
+//
+//
+//    }
+//
+//    public MapListDto viewList(String category,  Long locationId,UserPrincipal user){
+//
+//        System.out.println("-==========================");
+//        System.out.println(user.getName());
+//        System.out.println("-==========================");
+//        List<Booth> boothList;
+//        boolean bookMarked = false;
+//
+//
+//        //모든 항목 받아오기.
+//        if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
+//            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
+//
+//        }else if(PUB.name().equalsIgnoreCase(category.trim())) {
+//            boothList = boothRepository.findAllByCategory(PUB);
+//        }else {
+//            throw  new InvalidParameterException("category는 PUB,FOOD_TRUCK만 사용해주세요. ");
+//        }
+//
+//            /*
+//            * 1. 부스 id목록만 가져온다.
+//            * 2. 1번으로 스크랩한 거 한번에 모아오기
+//            * 3. 스크랩한 부스 id만 set으로 모으기
+//            * 4. 비교해서 dto변환
+//            * */
+//        if(user != null){
+//
+//           List<Long> boothId =  boothList.stream().map(Booth::getId).toList();
+//           Set<Long> ScrappedBoothId = scrapRepository.findContentIdsByUserIdAndContentIdsIn(user.getName());
+//        }
+//
+//
+//
+//    }
+//
 
 
 }

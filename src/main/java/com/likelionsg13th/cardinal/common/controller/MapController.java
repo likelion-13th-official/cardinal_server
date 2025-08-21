@@ -2,17 +2,17 @@ package com.likelionsg13th.cardinal.common.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.service.MapService;
+import org.springframework.security.core.userdetails.UserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.List;
 
@@ -36,12 +36,15 @@ public class MapController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> getList(@RequestParam String category,
-                                               @RequestParam(required = false) Long buildingId){
+                                               @RequestParam(required = false) Long buildingId,
+                                               @AuthenticationPrincipal UserDetails user){
+        System.out.println("=========");
+        System.out.println(user);
+        System.out.println("=========");
+      //  MapListDto response = mapService.viewList(category,buildingId,user);
 
-        MapListDto response = mapService.viewList(category,buildingId);
 
-
-        return ResponseEntity.ok(new ApiResponse(true,200,"지도 리스트 페이지 조회 성공",response));
+        return ResponseEntity.ok(new ApiResponse(true,200,"지도 리스트 페이지 조회 성공"));
     }
 
     @GetMapping("/search")
