@@ -6,13 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BoothRepository extends JpaRepository<Booth,Long> {
     List<Booth> findAllByCategoryAndLocation_Id(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
     List<Booth> findllByNameContaining(String name);
-
 }
-
