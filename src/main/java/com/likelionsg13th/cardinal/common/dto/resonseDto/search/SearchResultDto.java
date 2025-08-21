@@ -7,13 +7,13 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Getter @Builder
-public class ContentsResultDto {
+public class SearchResultDto {
     private String contentsName;
     private int totalCount;
     private List<?> items;
 
-    public static <T> ContentsResultDto from(String categoryName, Page<T> page) {
-        return ContentsResultDto.builder()
+    public static <T> SearchResultDto from(String categoryName, Page<T> page) {
+        return SearchResultDto.builder()
                 .contentsName(categoryName)
                 .totalCount((int) page.getTotalElements())
                 .items(page.getContent())
