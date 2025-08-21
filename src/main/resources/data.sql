@@ -300,7 +300,7 @@ VALUES (1,1, 'https://example.com/event1_detail1.jpg'),
 
 -- 8. Goods (10 records)
 
-INSERT INTO goods (name, description, thumbnail_url, view_count, location_id)
+INSERT INTO goods (name, description, thumbnail_url, view_count, price)
 VALUES ('개발자 티셔츠', 'I speak fluent Java', 'https://example.com/goods1.jpg', 1500, 6),
        ('코딩 머그컵', 'Keep Calm and Code On', 'https://example.com/goods2.jpg', 2000, 6),
        ('알고리즘 노트', '알고리즘 문제 풀이에 최적화된 노트', 'https://example.com/goods3.jpg', 1800, 6),

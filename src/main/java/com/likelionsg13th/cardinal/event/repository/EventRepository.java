@@ -2,6 +2,8 @@ package com.likelionsg13th.cardinal.event.repository;
 
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +13,5 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByNameContaining(String name);
 
+    Page<Event> findByNameContaining(String query, Pageable pageable);
 }
