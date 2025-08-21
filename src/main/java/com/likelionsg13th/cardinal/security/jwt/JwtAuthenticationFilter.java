@@ -54,6 +54,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         // OAuth2 로그인 경로는 필터 적용 제외
         String path = request.getRequestURI();
-        return path.startsWith("/oauth2/") || path.startsWith("/auth/") || path.startsWith("/booths")||path.startsWith("/events")||path.startsWith("/goods");
+        return path.startsWith("/oauth2/") || path.startsWith("/auth/") || path.startsWith("/booths")||path.startsWith("/events")||path.startsWith("/goods")||path.startsWith("/search");
     }
 }
