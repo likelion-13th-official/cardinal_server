@@ -1,6 +1,7 @@
-package com.likelionsg13th.cardinal.booth.domain;
+package com.likelionsg13th.cardinal.booth.domain.subtype;
 
 
+import com.likelionsg13th.cardinal.booth.domain.Booth;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,13 +14,11 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("주점")
 @Getter
 @SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PubBooth extends Booth{
+public class PubBooth extends Booth {
 
     private String notice; //공지사항
 
     private String instagramUrl;
-
-    private String menuImageUrl;
 
     private String tableLayoutUrl; //주점 별 자리 배치도 그림
 

@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.common.domain;
+package com.likelionsg13th.cardinal.booth.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
