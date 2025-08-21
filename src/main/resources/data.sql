@@ -99,14 +99,6 @@ VALUES ('마당사업', 'YARD_PROJECT', '코딩 체험 부스', 2, '누구나 �
        ('마당사업', 'YARD_PROJECT', '버그찾기 이벤트', 2, '버그 찾고 상품 받자!', 'https://example.com/booth14.jpg', 650, '14:00:00', '17:00:00', TRUE),
        ('마당사업', 'YARD_PROJECT', '오픈소스 컨퍼런스', 4, '오픈소스에 대한 모든 것', 'https://example.com/booth15.jpg', 900, '10:00:00', '18:00:00', TRUE);
 
--- YardBooth (5)
--- 'start_time'과 'end_time'이 'HH:MM:SS' 형식으로 변경
-INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating) VALUES
-('마당사업', 'YARD_PROJECT', '코딩 체험 부스', 2, '누구나 쉽게 배우는 코딩!', 'https://example.com/booth11.jpg', 700, '10:00:00', '18:00:00', true),
-('마당사업', 'YARD_PROJECT', '개발자 플리마켓', 3, '개발자들의 애장품을 만나보세요', 'https://example.com/booth12.jpg', 450, '11:00:00', '17:00:00', true),
-('마당사업', 'YARD_PROJECT', '알고리즘 경진대회', 6, '최고의 알고리즈머는 누구?', 'https://example.com/booth13.jpg', 800, '13:00:00', '16:00:00', true),
-('마당사업', 'YARD_PROJECT', '버그찾기 이벤트', 2, '버그 찾고 상품 받자!', 'https://example.com/booth14.jpg', 650, '14:00:00', '17:00:00', true),
-('마당사업', 'YARD_PROJECT', '오픈소스 컨퍼런스', 4, '오픈소스에 대한 모든 것', 'https://example.com/booth15.jpg', 900, '10:00:00', '18:00:00', true);
 
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
 VALUES ('포토부스', 'PHOTO_BOOTH', '인생샷 연구소', 5, '개발자 컨셉의 인생샷을 찍어보세요', 'https://example.com/booth16.jpg', 1200, '10:00:00', '22:00:00', TRUE),
@@ -129,17 +121,6 @@ INSERT INTO booth (booth_type, category, name, location_id, description, thumbna
 ('제휴', 'PARTNERSHIP', '당근마켓', 4, '당근마켓과 함께하는 중고거래 체험', 'https://example.com/booth29.jpg', 2300, '10:00:00', '18:00:00', true, 'https://example.com/logo_daangn.png'),
 ('제휴', 'PARTNERSHIP', '쿠팡', 4, '쿠팡이 준비한 로켓배송 이벤트', 'https://example.com/booth30.jpg', 3500, '10:00:00', '18:00:00', true, 'https://example.com/logo_coupang.png');
 
-INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating, logo_image_url)
-VALUES ('제휴', 'PARTNERSHIP', '멋쟁이사자처럼', 4, '멋쟁이사자처럼과 함께하는 이벤트', 'https://example.com/booth21.jpg', 2000, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_likelion.png'),
-       ('제휴', 'PARTNERSHIP', 'Google', 4, 'Google이 준비한 특별한 선물', 'https://example.com/booth22.jpg', 2500, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_google.png'),
-       ('제휴', 'PARTNERSHIP', 'Microsoft', 4, 'Microsoft와 함께하는 코딩 워크샵', 'https://example.com/booth23.jpg', 2200, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_ms.png'),
-       ('제휴', 'PARTNERSHIP', 'Amazon Web Services', 4, 'AWS 크레딧과 다양한 굿즈 증정', 'https://example.com/booth24.jpg', 2800, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_aws.png'),
-       ('제휴', 'PARTNERSHIP', '네이버', 5, '네이버 개발자들과의 만남', 'https://example.com/booth25.jpg', 3000, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_naver.png'),
-       ('제휴', 'PARTNERSHIP', '카카오', 5, '카카오가 준비한 특별한 이벤트', 'https://example.com/booth26.jpg', 3200, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_kakao.png'),
-       ('제휴', 'PARTNERSHIP', '배달의민족', 5, '배달의민족과 함께하는 맛있는 축제', 'https://example.com/booth27.jpg', 2900, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_baemin.png'),
-       ('제휴', 'PARTNERSHIP', '토스', 5, '토스가 준비한 금융 퀴즈 이벤트', 'https://example.com/booth28.jpg', 2600, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_toss.png'),
-       ('제휴', 'PARTNERSHIP', '당근마켓', 4, '당근마켓과 함께하는 중고거래 체험', 'https://example.com/booth29.jpg', 2300, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_daangn.png'),
-       ('제휴', 'PARTNERSHIP', '쿠팡', 4, '쿠팡이 준비한 로켓배송 이벤트', 'https://example.com/booth30.jpg', 3500, '10:00:00', '18:00:00', TRUE, 'https://example.com/logo_coupang.png');
 
 ----------------------------------------------------------------------------------------------------
 -- 4-1. booth_operating_days 데이터 삽입

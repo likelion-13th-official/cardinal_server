@@ -1,7 +1,8 @@
 package com.likelionsg13th.cardinal.common.dto.resonseDto.map;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
-import com.likelionsg13th.cardinal.common.domain.Menu;
+
+import com.likelionsg13th.cardinal.booth.domain.Menu;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
