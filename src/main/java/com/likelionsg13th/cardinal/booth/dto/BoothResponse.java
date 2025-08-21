@@ -21,7 +21,7 @@ public class BoothResponse {
     private String thumbnailUrl;
     private boolean bookmarked;
 
-    public static BoothResponse of(Booth booth){
+    public static BoothResponse from(Booth booth){
         return BoothResponse.builder()
                 .id(booth.getId())
                 .category(booth.getCategory().toKorean())
@@ -31,7 +31,7 @@ public class BoothResponse {
                 .thumbnailUrl(booth.getThumbnailUrl())
                 .operatingDays(
                         booth.getOperatingDays().stream()
-                                .map(day -> day.toKorean()) // DayOfWeek enum을 한글 문자열로 변환
+                                .map(day -> day.toKorean())
                                 .collect(Collectors.toList())
                 )
                 .build();

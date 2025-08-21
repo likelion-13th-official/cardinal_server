@@ -53,13 +53,13 @@ public class MapService {
             Amenity amenity =  amenityRepository.findById(AmenityId).orElseThrow(() -> new InvalidParameterException("Amenity id not found"));
             name = amenity.getName();
             position = amenity.getLocation().getPosition();
-
-        }else if(GOODS.name().equalsIgnoreCase(category.trim())){
-
-            name = GOODS.toKorean();
-            position = goodsRepository.findFirstByOrderByIdAsc()
-                    .orElseThrow(() -> new InvalidParameterException("Invalid Parameter : GOODS "))
-                    .getLocation().getPosition();
+//
+//        }else if(GOODS.name().equalsIgnoreCase(category.trim())){
+//
+//            name = GOODS.toKorean();
+//            position = goodsRepository.findFirstByOrderByIdAsc()
+//                    .orElseThrow(() -> new InvalidParameterException("Invalid Parameter : GOODS "))
+//                    .getLocation().getPosition();
 
         }else if (PERFORMANCE.name().equalsIgnoreCase(category.trim())){
 
