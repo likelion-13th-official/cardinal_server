@@ -16,7 +16,8 @@ import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.repository.UsersRepository;
+import com.likelionsg13th.cardinal.users.repository.UserRepository;
+import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,9 @@ public class MapService {
     private final BoothRepository boothRepository;
     private final EventRepository eventRepository;
     private final ScrapRepository scrapRepository;
-    private final UsersRepository usersRepository;
+    private final UserRepository usersRepository;
+
+
 
     /*
     * AMENITY , GOODS, PERFORMANE : viewCount 추가.

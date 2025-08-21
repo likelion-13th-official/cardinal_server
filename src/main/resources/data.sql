@@ -25,27 +25,27 @@ ALTER TABLE event DROP CONSTRAINT IF EXISTS event_day_of_week_check;
 -- 2️⃣ Users 데이터 삽입
 -- ========================================
 
-INSERT INTO users (nickname, profile_image_url) VALUES
-('멋쟁이토마토', 'https://example.com/profile1.jpg'),
-('해피코더', 'https://example.com/profile2.jpg'),
-('코딩마법사', 'https://example.com/profile3.jpg'),
-('개발왕김개발', 'https://example.com/profile4.jpg'),
-('알고리즘귀재', 'https://example.com/profile5.jpg'),
-('데이터분석가', 'https://example.com/profile6.jpg'),
-('자바신', 'https://example.com/profile7.jpg'),
-('파이썬사랑', 'https://example.com/profile8.jpg'),
-('리액트장인', 'https://example.com/profile9.jpg'),
-('뷰마스터', 'https://example.com/profile10.jpg'),
-('노드고수', 'https://example.com/profile11.jpg'),
-('스프링달인', 'https://example.com/profile12.jpg'),
-('장고천재', 'https://example.com/profile13.jpg'),
-('플러터개발자', 'https://example.com/profile14.jpg'),
-('스위프트마스터', 'https://example.com/profile15.jpg'),
-('코틀린사랑', 'https://example.com/profile16.jpg'),
-('게임개발자', 'https://example.com/profile17.jpg'),
-('머신러닝전문가', 'https://example.com/profile18.jpg'),
-('딥러닝연구하는 유이', 'https://example.com/profile19.jpg'),
-('머신러닝 공부하는 애은이', 'https://example.com/profile20.jpg');
+-- INSERT INTO users (nickname, profile_image_url) VALUES
+-- ('멋쟁이토마토', 'https://example.com/profile1.jpg'),
+-- ('해피코더', 'https://example.com/profile2.jpg'),
+-- ('코딩마법사', 'https://example.com/profile3.jpg'),
+-- ('개발왕김개발', 'https://example.com/profile4.jpg'),
+-- ('알고리즘귀재', 'https://example.com/profile5.jpg'),
+-- ('데이터분석가', 'https://example.com/profile6.jpg'),
+-- ('자바신', 'https://example.com/profile7.jpg'),
+-- ('파이썬사랑', 'https://example.com/profile8.jpg'),
+-- ('리액트장인', 'https://example.com/profile9.jpg'),
+-- ('뷰마스터', 'https://example.com/profile10.jpg'),
+-- ('노드고수', 'https://example.com/profile11.jpg'),
+-- ('스프링달인', 'https://example.com/profile12.jpg'),
+-- ('장고천재', 'https://example.com/profile13.jpg'),
+-- ('플러터개발자', 'https://example.com/profile14.jpg'),
+-- ('스위프트마스터', 'https://example.com/profile15.jpg'),
+-- ('코틀린사랑', 'https://example.com/profile16.jpg'),
+-- ('게임개발자', 'https://example.com/profile17.jpg'),
+-- ('머신러닝전문가', 'https://example.com/profile18.jpg'),
+-- ('딥러닝연구하는 유이', 'https://example.com/profile19.jpg'),
+-- ('머신러닝 공부하는 애은이', 'https://example.com/profile20.jpg');
 
 -- ========================================
 -- 3️⃣ Map 데이터 삽입
@@ -260,17 +260,17 @@ INSERT INTO performance (category, name, date, description, thumbnail_url, view_
 ('ARTIST', '크러쉬', '2025-08-18 18:00:00', '크러쉬의 감성적인 R&B 무대', 'https://example.com/perf18.jpg', 8500, 6);
 
 -- 11. Scraps (10 records)
-INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
-(1, 1, 'BOOTH', '2025-08-16 19:00:00'),
-(1, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
-(2, 6, 'BOOTH', '2025-08-16 13:00:00'),
-(2, 3, 'EVENT', '2025-08-16 21:00:00'),
-(3, 1, 'GOODS', '2025-08-17 10:00:00'),
-(4, 21, 'BOOTH', '2025-08-17 11:00:00'),
-(5, 7, 'PERFORMANCE', '2025-08-17 19:30:00'),
-(6, 4, 'EVENT', '2025-08-18 12:00:00'),
-(7, 16, 'BOOTH', '2025-08-18 14:00:00'),
-(8, 5, 'GOODS', '2025-08-18 15:00:00');
+-- INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
+-- (1, 1, 'BOOTH', '2025-08-16 19:00:00'),
+-- (1, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
+-- (2, 6, 'BOOTH', '2025-08-16 13:00:00'),
+-- (2, 3, 'EVENT', '2025-08-16 21:00:00'),
+-- (3, 1, 'GOODS', '2025-08-17 10:00:00'),
+-- (4, 21, 'BOOTH', '2025-08-17 11:00:00'),
+-- (5, 7, 'PERFORMANCE', '2025-08-17 19:30:00'),
+-- (6, 4, 'EVENT', '2025-08-18 12:00:00'),
+-- (7, 16, 'BOOTH', '2025-08-18 14:00:00'),
+-- (8, 5, 'GOODS', '2025-08-18 15:00:00');
 
 -- 12. Amenity 데이터 삽입
 INSERT INTO amenity (name, location_id) VALUES
