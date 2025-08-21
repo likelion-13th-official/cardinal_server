@@ -3,8 +3,7 @@ package com.likelionsg13th.cardinal.common.service;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.search.ContentsResultDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResponse;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResultDto;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
@@ -30,7 +29,7 @@ public class SearchService {
     private static final int RESULT_LIMIT = 4;
 
     /* 검색 초기 화면 */
-    public SearchResponse searchAll(String query){
+    public List<SearchResultDto> searchAll(String query){
        Pageable pageable= PageRequest.of(0,RESULT_LIMIT);
 
        //카테고리별 검색 결과 4개씩
@@ -41,14 +40,16 @@ public class SearchService {
         Page<GoodsResponse>goodsPage=goodsRepository.findByNameContaining(query,pageable)
                 .map(GoodsResponse::from);
 
-        List<ContentsResultDto> results=new ArrayList<>();
-        results.add(ContentsResultDto.from("부스",boothsPage));
-        results.add(ContentsResultDto.from("이벤트",eventsPage));
-        results.add(ContentsResultDto.from("굿즈",goodsPage));
+        List<SearchResultDto> results=new ArrayList<>();
+        results.add(SearchResultDto.from("부스",boothsPage));
+        results.add(SearchResultDto.from("이벤트",eventsPage));
+        results.add(SearchResultDto.from("굿즈",goodsPage));
         
-        results.sort(Comparator.comparingInt(ContentsResultDto::getTotalCount).reversed());//내림차순
+        results.sort(Comparator.comparingInt(SearchResultDto::getTotalCount).reversed());//내림차순
 
-        return SearchResponse.from(results);
+        return results;
 
     }
+
+
 }
