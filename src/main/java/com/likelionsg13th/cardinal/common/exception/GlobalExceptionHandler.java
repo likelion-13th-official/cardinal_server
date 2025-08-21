@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidParameterException.class)
-    public ResponseEntity<ApiResponse> handleInvalidParameterException(UserNotFoundException ex) {
+    public ResponseEntity<ApiResponse> handleInvalidParameterException(InvalidParameterException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
