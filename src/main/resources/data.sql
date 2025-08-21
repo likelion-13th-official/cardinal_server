@@ -300,17 +300,17 @@ VALUES (1,1, 'https://example.com/event1_detail1.jpg'),
 
 -- 8. Goods (10 records)
 
-INSERT INTO goods (name, description, thumbnail_url, view_count, price)
-VALUES ('개발자 티셔츠', 'I speak fluent Java', 'https://example.com/goods1.jpg', 1500, 6),
-       ('코딩 머그컵', 'Keep Calm and Code On', 'https://example.com/goods2.jpg', 2000, 6),
-       ('알고리즘 노트', '알고리즘 문제 풀이에 최적화된 노트', 'https://example.com/goods3.jpg', 1800, 6),
-       ('버그 인형', '스트레스 해소용 버그 인형', 'https://example.com/goods4.jpg', 2500, 6),
-       ('해커 키보드', '해커처럼 빠른 타이핑을 위한 기계식 키보드', 'https://example.com/goods5.jpg', 3000, 6),
-       ('개발자 스티커팩', '노트북을 꾸밀 수 있는 다양한 개발자 스티커', 'https://example.com/goods6.jpg', 2200, 6),
-       ('코딩 양말', '코딩할 때 신으면 집중력이 올라가는 양말', 'https://example.com/goods7.jpg', 1700, 6),
-       ('알고리즘 마우스패드', '알고리즘 문제 풀 때 유용한 마우스패드', 'https://example.com/goods8.jpg', 1900, 6),
-       ('버그 스프레이', '버그를 한 방에 해결해주는 상상 속의 스프레이', 'https://example.com/goods9.jpg', 2800, 6),
-       ('해커 후드티', '해커처럼 보이고 싶을 때 입는 후드티', 'https://example.com/goods10.jpg', 3200, 6);
+INSERT INTO goods (name,location_id, description, thumbnail_url, price,view_count)
+VALUES ('개발자 티셔츠', 1,'I speak fluent Java', 'https://example.com/goods1.jpg', 1500, 6),
+       ('코딩 머그컵', 1,'Keep Calm and Code On', 'https://example.com/goods2.jpg', 2000, 6),
+       ('알고리즘 노트', 1,'알고리즘 문제 풀이에 최적화된 노트', 'https://example.com/goods3.jpg', 1800, 6),
+       ('버그 인형', 1,'스트레스 해소용 버그 인형', 'https://example.com/goods4.jpg', 2500, 6),
+       ('해커 키보드', 1,'해커처럼 빠른 타이핑을 위한 기계식 키보드', 'https://example.com/goods5.jpg', 3000, 6),
+       ('개발자 스티커팩', 1,'노트북을 꾸밀 수 있는 다양한 개발자 스티커', 'https://example.com/goods6.jpg', 2200, 6),
+       ('코딩 양말', 1,'코딩할 때 신으면 집중력이 올라가는 양말', 'https://example.com/goods7.jpg', 1700, 6),
+       ('알고리즘 마우스패드', 1,'알고리즘 문제 풀 때 유용한 마우스패드', 'https://example.com/goods8.jpg', 1900, 6),
+       ('버그 스프레이', 1,'버그를 한 방에 해결해주는 상상 속의 스프레이', 'https://example.com/goods9.jpg', 2800, 6),
+       ('해커 후드티', 1,'해커처럼 보이고 싶을 때 입는 후드티', 'https://example.com/goods10.jpg', 3200, 6);
 
 -- 9. Goods Detail Images (10 records)
 

@@ -2,6 +2,8 @@ package com.likelionsg13th.cardinal.common.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.booth.repository.FoodTruckBoothRepository;
+import com.likelionsg13th.cardinal.booth.repository.PubBoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
@@ -9,26 +11,20 @@ import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
 
-import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
-import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
-import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipal;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.*;
-import static java.util.Arrays.stream;
 
 @Service
 @RequiredArgsConstructor
@@ -39,14 +35,47 @@ public class MapService {
     private final PerformanceRepository performanceRepository;
     private final BoothRepository boothRepository;
     private final EventRepository eventRepository;
+
     private final ScrapRepository scrapRepository;
     private final UserRepository usersRepository;
-
+    private final FoodTruckBoothRepository foodTruckBoothRepository;
+    private final PubBoothRepository pubBoothRepository;
 
 
     /*
-    * AMENITY , GOODS, PERFORMANE : viewCount 추가.
-    * */
+       TODO : keyword null 에러 처리
+     * 검색 범위 :
+     * 굿즈 : 제품 명,
+     * 이벤트 : 이벤트 명,
+     * 부대시설 : 부대시설 명
+     * 공연 : 공연 명
+     * 부스 : 부스 명
+     * ->   주점 , 푸드트럭 : + 대표 메뉴
+     * */
+    public List<MapSearchDto> viewSearchResult(String keyword){
+
+        String searchKeyword = "%"+keyword+"%";
+        Stream<List<MapSearchDto>> streams = Stream.of(
+                goodsRepository.findAllByNameContaining(searchKeyword),
+                eventRepository.findAllByNameContaining(searchKeyword),
+                amenityRepository.findAllByNameContaining(searchKeyword),
+                performanceRepository.findAllByNameContaining(searchKeyword),
+                foodTruckBoothRepository.findAllByNameContainingAndMenusContaining(searchKeyword),
+                pubBoothRepository.findAllByNameContainingAndMenusContaining(searchKeyword),
+                boothRepository.findAllByNameContainingAndCategoryIsNotContaining(searchKeyword,List.of(PUB,FOOD_TRUCK))  //부스 내 주점,푸드트럭 별도 처리 제외
+        );
+
+
+        return streams
+                .flatMap(Collection::stream)
+                .toList();
+    }
+
+
+    /*
+    TODO : 1. viewcount 추가
+           2. 에러 처리 수정
+    */
     public MapDetailDto viewDetail(String category, Long AmenityId){
 
         String name , position;
@@ -56,13 +85,13 @@ public class MapService {
             Amenity amenity =  amenityRepository.findById(AmenityId).orElseThrow(() -> new InvalidParameterException("Amenity id not found"));
             name = amenity.getName();
             position = amenity.getLocation().getPosition();
-//
-//        }else if(GOODS.name().equalsIgnoreCase(category.trim())){
-//
-//            name = GOODS.toKorean();
-//            position = goodsRepository.findFirstByOrderByIdAsc()
-//                    .orElseThrow(() -> new InvalidParameterException("Invalid Parameter : GOODS "))
-//                    .getLocation().getPosition();
+
+        }else if(GOODS.name().equalsIgnoreCase(category.trim())){
+
+            name = GOODS.toKorean();
+            position = goodsRepository.findFirstByOrderByIdAsc()
+                    .orElseThrow(() -> new InvalidParameterException("Invalid Parameter : GOODS "))
+                    .getLocation().getPosition();
 
         }else if (PERFORMANCE.name().equalsIgnoreCase(category.trim())){
 
@@ -81,80 +110,35 @@ public class MapService {
 
     }
 
+
+
     /*
     * only for  FOOD_TRUCK , PUB
+    * TODO :1.  Scrap 구현 하기
+    *       2.  에러 처리
     *
     * */
-//    public MapListDto viewList(String category,  Long locationId,UserPrincipal user){
-//
-//        System.out.println("-==========================");
-//        System.out.println(user.getName());
-//        System.out.println("-==========================");
-//        List<Booth> boothList;
-//        boolean bookMarked = false;
-//
-//
-//        //모든 항목 받아오기.
-//        if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
-//            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
-//
-//        }else if(PUB.name().equalsIgnoreCase(category.trim())) {
-//            boothList = boothRepository.findAllByCategory(PUB);
-//        }else {
-//            throw  new InvalidParameterException("category는 PUB,FOOD_TRUCK만 사용해주세요. ");
-//        }
-//
-//            /*
-//            * 1. 부스 id목록만 가져온다.
-//            * 2. 1번으로 스크랩한 거 한번에 모아오기
-//            * 3. 스크랩한 부스 id만 set으로 모으기
-//            * 4. 비교해서 dto변환
-//            * */
-//        if(user != null){
-//
-//           List<Long> boothId =  boothList.stream().map(Booth::getId).toList();
-//           Set<Long> ScrappedBoothId = scrapRepository.findContentIdsByUserIdAndContentIdsIn(user.getName());
-//        }
-//
-//
-//
-//    }
-//
-//    public MapListDto viewList(String category,  Long locationId,UserPrincipal user){
-//
-//        System.out.println("-==========================");
-//        System.out.println(user.getName());
-//        System.out.println("-==========================");
-//        List<Booth> boothList;
-//        boolean bookMarked = false;
-//
-//
-//        //모든 항목 받아오기.
-//        if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
-//            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
-//
-//        }else if(PUB.name().equalsIgnoreCase(category.trim())) {
-//            boothList = boothRepository.findAllByCategory(PUB);
-//        }else {
-//            throw  new InvalidParameterException("category는 PUB,FOOD_TRUCK만 사용해주세요. ");
-//        }
-//
-//            /*
-//            * 1. 부스 id목록만 가져온다.
-//            * 2. 1번으로 스크랩한 거 한번에 모아오기
-//            * 3. 스크랩한 부스 id만 set으로 모으기
-//            * 4. 비교해서 dto변환
-//            * */
-//        if(user != null){
-//
-//           List<Long> boothId =  boothList.stream().map(Booth::getId).toList();
-//           Set<Long> ScrappedBoothId = scrapRepository.findContentIdsByUserIdAndContentIdsIn(user.getName());
-//        }
-//
-//
-//
-//    }
-//
+    public MapListDto viewList(String category, Long locationId){
+
+        List<Booth> boothList;
+
+        boolean bookMarked = false;
+
+        if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
+            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
+
+        }else if(PUB.name().equalsIgnoreCase(category.trim())) {
+            boothList = boothRepository.findAllByCategory(PUB);
+        }else {
+            throw  new InvalidParameterException("category는 PUB,FOOD_TRUCK만 사용해주세요. ");
+        }
+
+        return MapListDto.from(boothList,category,bookMarked);
+
+    }
+
+
+
 
 
 }
