@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface BoothRepository extends JpaRepository<Booth,Long> {
     List<Booth> findAllByCategoryAndLocation_Id(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
+    List<Booth> findallByNameContaining(String name);
 
+
+    List<Booth> findAllByNameContaining(String name);
 }
 

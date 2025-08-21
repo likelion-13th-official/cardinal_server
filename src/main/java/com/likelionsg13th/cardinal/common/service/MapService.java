@@ -1,26 +1,26 @@
 package com.likelionsg13th.cardinal.common.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
-import com.likelionsg13th.cardinal.booth.domain.PubBooth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDetailDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.enums.BoothCategory;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
 
+import com.likelionsg13th.cardinal.event.domain.Event;
+import com.likelionsg13th.cardinal.event.repository.EventRepository;
+import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
+import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.*;
@@ -29,14 +29,18 @@ import static java.util.Arrays.stream;
 @Service
 @RequiredArgsConstructor
 public class MapService {
-
+    //범위 부스, 공연, 부대시설, 이벤트, 굿즈,
     private final AmenityRepository amenityRepository;
     private final GoodsRepository goodsRepository;
     private final PerformanceRepository performanceRepository;
     private final BoothRepository boothRepository;
+    private final EventRepository eventRepository;
     private final ScrapRepository scrapRepository;
     private final UsersRepository usersRepository;
 
+    /*
+    * AMENITY , GOODS, PERFORMANE : viewCount 추가.
+    * */
     public MapDetailDto viewDetail(String category, Long AmenityId){
 
         String name , position;
@@ -77,6 +81,7 @@ public class MapService {
     * */
     public MapListDto viewList(String category, Long locationId){
         List<Booth> boothList;
+        boolean bookMarked = false;
 
         if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
             boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
@@ -87,7 +92,7 @@ public class MapService {
         }
 
         //detailDto -> listDto
-        return MapListDto.from(boothList,category);
+        return MapListDto.from(boothList,category,bookMarked);
 
 
 

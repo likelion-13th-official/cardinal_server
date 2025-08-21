@@ -14,12 +14,12 @@ public class MapListDto {
     List<MapListDetailDto> details;
 
 
-    public static MapListDto from(List<Booth> boothList, String category){
+    public static MapListDto from(List<Booth> boothList, String category,boolean bookMarked) {
 
         //booth -> detailDto
         List<MapListDetailDto> details =  boothList.stream().map(
                 booth -> {
-                    return MapListDetailDto.from(booth,false);
+                    return MapListDetailDto.from(booth,bookMarked);
                 }).toList();
 
         String position = boothList.get(0).getLocation().getPosition();

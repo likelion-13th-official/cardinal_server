@@ -4,6 +4,7 @@ import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDetailDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.service.MapService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,13 @@ public class MapController {
 
 
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 리스트 페이지 조회 성공",response));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse> getSearch(@RequestParam String keyword){
+
+
+        return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공"));
     }
 
 }
