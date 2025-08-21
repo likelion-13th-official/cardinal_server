@@ -1,14 +1,12 @@
 package com.likelionsg13th.cardinal.booth.controller;
 
+import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +27,14 @@ public class BoothController {
 
     }
 
+    /* 개별 상세 조회*/
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getBoothDetail(
+            @PathVariable long id
+    ){
+        BoothDetailResponse boothDetailResponse=boothService.getBoothDetail(id);
+        return ResponseEntity.ok(new ApiResponse(true,200,"부스 개별 조회 성공", boothDetailResponse));
+    }
 
 
 }

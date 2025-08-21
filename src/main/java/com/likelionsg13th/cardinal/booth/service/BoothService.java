@@ -1,7 +1,9 @@
 package com.likelionsg13th.cardinal.booth.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
+import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
@@ -42,4 +44,10 @@ public class BoothService {
                 .collect(Collectors.toList());
     }
 
+    //개별 상세 조회
+    public BoothDetailResponse getBoothDetail(long id) {
+        Booth booth=boothRepository.findById(id)
+                .orElseThrow(()->new BoothNotFoundException("해당 id의 부스를 찾을 수 없습니다."));
+        return BoothDetailResponse.of(booth);
+    }
 }

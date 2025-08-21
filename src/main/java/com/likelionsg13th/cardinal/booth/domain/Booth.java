@@ -46,7 +46,7 @@ public abstract class Booth extends OperationAwareEntity {
     private List<Menu> menus = new ArrayList<>();
 
 
-    @CollectionTable(name="event_detail_images",joinColumns = @JoinColumn(name="event_id"))
+    @CollectionTable(name="booth_detail_images",joinColumns = @JoinColumn(name="booth_id"))
     @ElementCollection
     @OrderColumn(name = "image_order")
     private List<DetailImage> detailImageList = new ArrayList<>();
