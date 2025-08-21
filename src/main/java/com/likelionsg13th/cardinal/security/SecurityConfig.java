@@ -32,7 +32,9 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers(
+                                "/auth/**", "/login/oauth2/**",
+                                "/booths/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
