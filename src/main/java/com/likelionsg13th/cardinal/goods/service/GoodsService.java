@@ -23,6 +23,7 @@ public class GoodsService {
 
     private static final int PAGE_SIZE = 2;
     private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int GOODS_PAGE_SIZE = 6;
     private final GoodsRepository goodsRepository;
 
     /* 검색 */
@@ -38,11 +39,9 @@ public class GoodsService {
         return PageDto.from(goodsResponsePage);
     }
 
-    public PageDto<GoodsResponse> getGoodsList(int page, Integer limit){
-
-        int pageSize = (limit == null || limit < 1) ? DEFAULT_PAGE_SIZE : limit;
-
-        Page<Goods> goodsPage = goodsRepository.findAll(PageRequest.of(page-1,pageSize));
+    public PageDto<GoodsResponse> getGoodsList(int page){
+        Pageable pageable=PageRequest.of(page-1,GOODS_PAGE_SIZE);
+        Page<Goods> goodsPage = goodsRepository.findAll(pageable);
         Page<GoodsResponse> goodsResponsePage=goodsPage.map(GoodsResponse::from);
 
         //pageDTO에 담기
