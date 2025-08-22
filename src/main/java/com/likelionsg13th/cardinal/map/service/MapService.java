@@ -38,11 +38,6 @@ public class MapService {
     private final BoothRepository boothRepository;
     private final EventRepository eventRepository;
 
-    private final ScrapRepository scrapRepository;
-    private final UserRepository usersRepository;
-    private final FoodTruckBoothRepository foodTruckBoothRepository;
-    private final PubBoothRepository pubBoothRepository;
-
 
     /*
     * foodtruck,pub,PERFORMANCE,굿즈샵 -> 빌딩 정보
@@ -79,9 +74,8 @@ public class MapService {
                 eventRepository.findAllByNameContaining(searchKeyword),
                 amenityRepository.findAllByNameContaining(searchKeyword),
                 performanceRepository.findAllByNameContaining(searchKeyword),
-                foodTruckBoothRepository.findAllByNameContainingAndMenusContaining(searchKeyword),
-                pubBoothRepository.findAllByNameContainingAndMenusContaining(searchKeyword),
-                boothRepository.findAllByNameContainingAndCategoryIsNotContaining(searchKeyword,List.of(PUB,FOOD_TRUCK))  //부스 내 주점,푸드트럭 별도 처리 제외
+                boothRepository.findAllByNameContainingAndMenusContainingAndCategoryIn(searchKeyword,List.of(PUB,FOOD_TRUCK)),
+                boothRepository.findAllByNameContainingAndCategoryIsNotContainingAndCategoryNotIn(searchKeyword,List.of(PUB,FOOD_TRUCK))  //부스 내 주점,푸드트럭 별도 처리 제외
         );
 
 

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.AMENITY;
-
+/*
+* CASE 2
+* */
 @Component
 @RequiredArgsConstructor
 public class AmenityProvider implements CategoryProvider{

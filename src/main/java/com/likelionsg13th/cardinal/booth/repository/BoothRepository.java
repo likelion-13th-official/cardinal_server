@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.booth.repository;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     List<Booth> findAllByCategoryAndLocation_Id(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
     List<Booth> findByCategory(BoothCategory category);
-    List<Booth> findAllByNameContaining(String name);
+
 
     /*메뉴 이름+부스 이름으로 검색*/
     @Query("SELECT DISTINCT b FROM Booth b LEFT JOIN b.menus m " +
@@ -35,7 +36,28 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
             "FROM Booth g WHERE g.name LIKE :keyword " +
             "AND " +
             "g.category NOT IN :excludeCategories")
-    List<MapSearchDto> findAllByNameContainingAndCategoryIsNotContaining(
+    List<MapSearchDto> findAllByNameContainingAndCategoryIsNotContainingAndCategoryNotIn(
             @Param("keyword") String keyword,
             @Param("excludeCategories") List<BoothCategory> excludeCategories);
+
+
+    @Query("SELECT DISTINCT new com.likelionsg13th.cardinal.map.dto.MapSearchDto (" +
+            "'BOOTH',"+
+            "g.name," +
+            "g.id," +
+            "g.location.position," +
+            "g.location.longitude," +
+            "g.location.latitude) " +
+            "FROM Booth g JOIN g.menus m " +
+            "WHERE g.category IN :includeCategories  " +
+            "AND " +
+            "( g.name LIKE :keyword OR m.name LIKE :keyword) ")
+    List<MapSearchDto>  findAllByNameContainingAndMenusContainingAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
+
+
+    @Query("SELECT p.location" +
+            " FROM Booth p " +
+            " WHERE p.id = 1 AND p.category = :category")
+    Map findLocationFirstByIdAndCategory(@Param("category") BoothCategory category);
+
 }

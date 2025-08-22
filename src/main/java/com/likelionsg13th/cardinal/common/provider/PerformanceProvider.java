@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
-
+/*
+ * CASE 1
+ * */
 @Component
 @RequiredArgsConstructor
 public class PerformanceProvider implements CategoryProvider
@@ -22,6 +24,9 @@ public class PerformanceProvider implements CategoryProvider
         return  PERFORMANCE.name().equalsIgnoreCase(category);
     }
 
+    /*
+     * 공연은 공통 위치 가지므로 1개 반환
+     */
     @Override
     public Object getMapMarkersByCategory() {
         MapInfoDto mapInfo = MapInfoDto.from(performanceRepository.findLocationFirstById());
