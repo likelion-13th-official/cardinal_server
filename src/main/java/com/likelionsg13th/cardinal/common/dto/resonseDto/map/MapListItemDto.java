@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
-public class MapListDetailDto {
+public class MapListItemDto {
 
      Long id;
      boolean bookMarked;
@@ -25,8 +25,8 @@ public class MapListDetailDto {
      String thumbnailUrl;
 
 
-    public static MapListDetailDto from(Booth booth, boolean bookMarked) {
-        return new MapListDetailDto(
+    public static MapListItemDto from(Booth booth, boolean bookMarked) {
+        return new MapListItemDto(
                 booth.getId(),
                 bookMarked,
                 booth.getOperatingDays().stream().map(DayOfWeek::toKorean).collect(Collectors.toList()),

@@ -1,7 +1,7 @@
 package com.likelionsg13th.cardinal.booth.repository;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +25,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     Page<Booth> findByNameOrMenuNameContaining(@Param("query") String query, Pageable pageable);
 
 
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
             "'BOOTH',"+
             "g.name," +
             "g.id," +
@@ -35,7 +35,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
             "FROM Booth g WHERE g.name LIKE :keyword " +
             "AND " +
             "g.category NOT IN :excludeCategories")
-    List<MapLabelDto> findAllByNameContainingAndCategoryIsNotContaining(
+    List<MapSearchDto> findAllByNameContainingAndCategoryIsNotContaining(
             @Param("keyword") String keyword,
             @Param("excludeCategories") List<BoothCategory> excludeCategories);
 }

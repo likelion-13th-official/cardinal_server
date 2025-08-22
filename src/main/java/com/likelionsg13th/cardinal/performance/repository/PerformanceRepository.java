@@ -1,6 +1,6 @@
 package com.likelionsg13th.cardinal.performance.repository;
 
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
     Optional<Performance> findFirstByOrderByIdAsc();
 
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
             "'PERFORMANCE',"+
             "g.name," +
             "g.id," +
@@ -23,6 +23,6 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "g.location.longitude," +
             "g.location.latitude) " +
             "FROM Performance g WHERE g.name LIKE :keyword")
-    List<MapLabelDto> findAllByNameContaining(@Param("keyword") String keyword);
+    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
 
 }

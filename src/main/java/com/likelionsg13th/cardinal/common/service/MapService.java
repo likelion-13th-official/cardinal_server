@@ -7,10 +7,11 @@ import com.likelionsg13th.cardinal.booth.repository.PubBoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
+import com.likelionsg13th.cardinal.common.provider.CategoryProvider;
+import com.likelionsg13th.cardinal.common.provider.ProviderFactory;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
-
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
@@ -18,18 +19,19 @@ import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
-
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.*;
 
 @Service
 @RequiredArgsConstructor
 public class MapService {
-    //범위 부스, 공연, 부대시설, 이벤트, 굿즈,
+
+    private final ProviderFactory providerFactory;
+
+    // 범위 부스, 공연, 부대시설, 이벤트, 굿즈,
     private final AmenityRepository amenityRepository;
     private final GoodsRepository goodsRepository;
     private final PerformanceRepository performanceRepository;
@@ -43,17 +45,20 @@ public class MapService {
 
 
     /*
-    * foodtruck -> 빌딩 정보  리스트
-    * pub굿즈샵 정보,  -> 빌딩 정보 리스트
-    *
+    * foodtruck,pub,PERFORMANCE,굿즈샵 -> 빌딩 정보
     * 마당사업, 포토부스, 제휴 , 이벤트 , 부대시설  -> 상세 위치 정보
-    *
-    *
     * */
-    public void getMapMarkersByCategory(String category){
+    public Object getMapMarkersByCategory(String category){
+
+        /*TODO : 카테고리 param 예외 처리 추가 */
+
+        CategoryProvider categoryProvider = providerFactory.getProvider(category);
+
+        return categoryProvider.getMapMarkersByCategory();
 
 
     }
+
 
 
     /*
@@ -66,10 +71,10 @@ public class MapService {
      * 부스 : 부스 명
      * ->   주점 , 푸드트럭 : + 대표 메뉴
      * */
-    public List<MapLabelDto> getSearchResult(String keyword){
+    public List<MapSearchDto> getSearchResult(String keyword){
 
         String searchKeyword = "%"+keyword+"%";
-        Stream<List<MapLabelDto>> streams = Stream.of(
+        Stream<List<MapSearchDto>> streams = Stream.of(
                 goodsRepository.findAllByNameContaining(searchKeyword),
                 eventRepository.findAllByNameContaining(searchKeyword),
                 amenityRepository.findAllByNameContaining(searchKeyword),

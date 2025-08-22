@@ -1,7 +1,7 @@
 package com.likelionsg13th.cardinal.booth.repository;
 
 import com.likelionsg13th.cardinal.booth.domain.subtype.FoodTruckBooth;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface FoodTruckBoothRepository extends JpaRepository<FoodTruckBooth, Long> {
 
-    @Query("SELECT DISTINCT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto(" +
+    @Query("SELECT DISTINCT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
             "'BOOTH',"+
             "g.name," +
             "g.id," +
@@ -18,5 +18,5 @@ public interface FoodTruckBoothRepository extends JpaRepository<FoodTruckBooth, 
             "g.location.longitude," +
             "g.location.latitude) " +
             "FROM FoodTruckBooth g JOIN g.menus m  WHERE g.name LIKE :keyword OR m.name LIKE :keyword ")
-    List<MapLabelDto>  findAllByNameContainingAndMenusContaining(@Param("keyword") String keyword);
+    List<MapSearchDto>  findAllByNameContainingAndMenusContaining(@Param("keyword") String keyword);
 }

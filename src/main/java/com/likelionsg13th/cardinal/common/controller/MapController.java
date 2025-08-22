@@ -2,7 +2,7 @@ package com.likelionsg13th.cardinal.common.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
 import com.likelionsg13th.cardinal.common.service.MapService;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,11 @@ public class MapController {
     private final MapService mapService;
 
     @GetMapping()
-    public ResponseEntity<ApiResponse> getMaps(@RequestParam String category){
+    public ResponseEntity<ApiResponse> getMarkersByCategory(@RequestParam String category){
 
-        mapService.getMapMarkersByCategory(category);
+       Object response =   mapService.getMapMarkersByCategory(category);
 
-        return ResponseEntity.ok(new ApiResponse(true,200,"지도 카테고리 별 페이지 조회 성공"));
+        return ResponseEntity.ok(new ApiResponse(true,200,"지도 카테고리 별 페이지 조회 성공",response));
     }
 
     @GetMapping("/detail")
@@ -49,7 +49,7 @@ public class MapController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> getSearch(@RequestParam String keyword){
 
-        List<MapLabelDto> resopnse =  mapService.getSearchResult(keyword);
+        List<MapSearchDto> resopnse =  mapService.getSearchResult(keyword);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공",resopnse));
     }
 

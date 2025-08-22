@@ -11,15 +11,15 @@ import java.util.List;
 public class MapListDto {
     String position;
     String category;
-    List<MapListDetailDto> details;
+    List<MapListItemDto> details;
 
 
     public static MapListDto from(List<Booth> boothList, String category,boolean bookMarked) {
 
         //booth -> detailDto
-        List<MapListDetailDto> details =  boothList.stream().map(
+        List<MapListItemDto> details =  boothList.stream().map(
                 booth -> {
-                    return MapListDetailDto.from(booth,bookMarked);
+                    return MapListItemDto.from(booth,bookMarked);
                 }).toList();
 
         String position = boothList.get(0).getLocation().getPosition();
