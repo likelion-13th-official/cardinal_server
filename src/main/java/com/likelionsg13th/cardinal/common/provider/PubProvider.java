@@ -6,7 +6,7 @@ import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
-import com.likelionsg13th.cardinal.booth.repository.PubBoothRepository;
+
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.PUB;
 
 

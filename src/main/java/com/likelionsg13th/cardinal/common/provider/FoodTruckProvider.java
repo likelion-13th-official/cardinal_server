@@ -1,6 +1,6 @@
 package com.likelionsg13th.cardinal.common.provider;
 
-import com.likelionsg13th.cardinal.booth.repository.FoodTruckBoothRepository;
+import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
@@ -18,7 +18,7 @@ import static com.likelionsg13th.cardinal.common.enums.BoothCategory.FOOD_TRUCK;
 @RequiredArgsConstructor
 public class FoodTruckProvider implements CategoryProvider{
 
-    private final FoodTruckBoothRepository foodTruckBoothRepository;
+    private final BoothRepository foodTruckBoothRepository;
     @Override
     public boolean hasCategory(String category) {
         return FOOD_TRUCK.name().equalsIgnoreCase(category);
@@ -28,7 +28,7 @@ public class FoodTruckProvider implements CategoryProvider{
      */
     @Override
     public Object getMapMarkersByCategory() {
-        List<Map> mapList= foodTruckBoothRepository.findLocationAll();
+        List<Map> mapList= foodTruckBoothRepository.findLocationAllDistinctByCategory(FOOD_TRUCK);
 
        List<MapInfoDto> mapInfoDtos =  mapList.stream()
                .map(MapInfoDto::from)

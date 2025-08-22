@@ -1,6 +1,6 @@
 package com.likelionsg13th.cardinal.common.provider;
 
-import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;
 import lombok.RequiredArgsConstructor;
@@ -8,26 +8,27 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.likelionsg13th.cardinal.common.enums.BoothCategory.YARD_PROJECT;
+import static com.likelionsg13th.cardinal.common.enums.ContentType.EVENT;
+
 /*
  * CASE 2
  * */
 @Component
 @RequiredArgsConstructor
-public class YardProjectProvider implements CategoryProvider{
+public class EventProvider implements CategoryProvider{
 
-    private final BoothRepository boothRepository;
+    private final EventRepository eventRepository;
 
 
     @Override
     public boolean hasCategory(String category){
-        return YARD_PROJECT.name().equalsIgnoreCase(category);
+        return EVENT.name().equalsIgnoreCase(category);
     }
 
     @Override
     public Object getMapMarkersByCategory() {
 
-        List<MapFilteredByCategoryItemDto> items = boothRepository.findAllByCategory(YARD_PROJECT).stream().map(
+        List<MapFilteredByCategoryItemDto> items = eventRepository.findAll().stream().map(
                 Booth ->
                         MapFilteredByCategoryItemDto.from(
                                 Booth.getName(),
@@ -36,6 +37,6 @@ public class YardProjectProvider implements CategoryProvider{
         ).toList();
 
 
-        return MapFilteredByCategoryDetailDto.of(YARD_PROJECT.name(), items);
+        return MapFilteredByCategoryDetailDto.of(EVENT.name(), items);
     }
 }

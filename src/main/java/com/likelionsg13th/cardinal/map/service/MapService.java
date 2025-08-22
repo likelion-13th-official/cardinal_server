@@ -2,8 +2,6 @@ package com.likelionsg13th.cardinal.map.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
-import com.likelionsg13th.cardinal.booth.repository.FoodTruckBoothRepository;
-import com.likelionsg13th.cardinal.booth.repository.PubBoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
 import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapListDto;
@@ -15,8 +13,6 @@ import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
-import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Collection;

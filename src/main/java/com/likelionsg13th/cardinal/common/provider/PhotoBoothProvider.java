@@ -16,7 +16,7 @@ import static com.likelionsg13th.cardinal.common.enums.BoothCategory.PHOTO_BOOTH
 @Component
 @RequiredArgsConstructor
 public class PhotoBoothProvider implements CategoryProvider{
-    private final BoothRepository photoBoothRepository;
+    private final BoothRepository boothRepository;
 
 
     @Override
@@ -27,12 +27,12 @@ public class PhotoBoothProvider implements CategoryProvider{
     @Override
     public Object getMapMarkersByCategory() {
 
-        List<MapFilteredByCategoryItemDto> items = photoBoothRepository.findAllByCategory(PHOTO_BOOTH).stream().map(
-                photoBooth ->
+        List<MapFilteredByCategoryItemDto> items = boothRepository.findAllByCategory(PHOTO_BOOTH).stream().map(
+                Booth ->
                         MapFilteredByCategoryItemDto.from(
-                                photoBooth.getName(),
-                                photoBooth.getId(),
-                                photoBooth.getLocation())
+                                Booth.getName(),
+                                Booth.getId(),
+                                Booth.getLocation())
         ).toList();
 
 

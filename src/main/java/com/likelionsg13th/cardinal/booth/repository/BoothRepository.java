@@ -60,4 +60,8 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
             " WHERE p.id = 1 AND p.category = :category")
     Map findLocationFirstByIdAndCategory(@Param("category") BoothCategory category);
 
+    @Query("SELECT DISTINCT p.location " +
+            "FROM Booth p " +
+            "WHERE p.category = :category")
+    List<Map> findLocationAllDistinctByCategory(@Param("category") BoothCategory category);
 }

@@ -1,6 +1,5 @@
 package com.likelionsg13th.cardinal.common.provider;
 
-import com.likelionsg13th.cardinal.booth.repository.FoodTruckBoothRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
