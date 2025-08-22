@@ -11,7 +11,7 @@ public class GoodsResponse {
     private Long id;
 
     private String name;
-    private long price;
+    private Long price;
     private String thumbnailUrl;
 
     private boolean bookmarked;
