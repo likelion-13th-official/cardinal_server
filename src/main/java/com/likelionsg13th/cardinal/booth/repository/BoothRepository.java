@@ -25,7 +25,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     Page<Booth> findByNameOrMenuNameContaining(@Param("query") String query, Pageable pageable);
 
 
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
             "'BOOTH',"+
             "g.name," +
             "g.id," +

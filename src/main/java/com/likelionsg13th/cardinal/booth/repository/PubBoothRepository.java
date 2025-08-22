@@ -11,7 +11,8 @@ import java.util.List;
 
 public interface PubBoothRepository extends JpaRepository<PubBooth, Long> {
 
-    @Query("SELECT DISTINCT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
+
+    @Query("SELECT DISTINCT new com.likelionsg13th.cardinal.map.dto.MapSearchDto (" +
             "'BOOTH',"+
             "g.name," +
             "g.id," +
@@ -25,6 +26,6 @@ public interface PubBoothRepository extends JpaRepository<PubBooth, Long> {
     @Query("SELECT p.location" +
             " FROM PubBooth p " +
             " WHERE p.id = 1")
-    Map findMapFirstByLocation();
+    Map findLocationFirstById();
 
 }

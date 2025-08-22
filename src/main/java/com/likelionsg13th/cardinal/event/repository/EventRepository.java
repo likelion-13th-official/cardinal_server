@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
             "'EVENT',"+
             "g.name," +
             "g.id," +

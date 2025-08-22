@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface AmenityRepository extends JpaRepository<Amenity,Long> {
 
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
             "'AMENITY',"+
             "g.name," +
             "g.id," +

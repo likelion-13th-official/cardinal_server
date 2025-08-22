@@ -3,6 +3,8 @@ package com.likelionsg13th.cardinal.common.provider;
 /*
 * 카테고리 별 provider의 상위 provider
 * */
+
+
 public interface CategoryProvider {
     boolean hasCategory(String category);
 

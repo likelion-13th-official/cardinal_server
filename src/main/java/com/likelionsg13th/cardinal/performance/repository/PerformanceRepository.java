@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.performance.repository;
 
+import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 
 import com.likelionsg13th.cardinal.performance.domain.Performance;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
     Optional<Performance> findFirstByOrderByIdAsc();
 
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
             "'PERFORMANCE',"+
             "g.name," +
             "g.id," +
@@ -24,5 +25,10 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "g.location.latitude) " +
             "FROM Performance g WHERE g.name LIKE :keyword")
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+
+    @Query("SELECT p.location" +
+            " FROM Performance p " +
+            " WHERE p.id = 1")
+    Map findLocationFirstById();
 
 }

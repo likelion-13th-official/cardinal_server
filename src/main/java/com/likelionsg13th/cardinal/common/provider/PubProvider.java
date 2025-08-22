@@ -24,7 +24,7 @@ public class PubProvider implements CategoryProvider {
     */
     @Override
     public Object getMapMarkersByCategory() {
-        MapInfoDto mapInfo = MapInfoDto.from(pubBoothRepository.findMapFirstByLocation());
+        MapInfoDto mapInfo = MapInfoDto.from(pubBoothRepository.findLocationFirstById());
 
         return MapFilteredByCategoryDto.from(List.of(mapInfo),PUB.name());
 
