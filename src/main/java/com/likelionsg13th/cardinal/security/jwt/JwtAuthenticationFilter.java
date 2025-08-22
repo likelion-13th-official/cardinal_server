@@ -8,10 +8,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,9 +26,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwt;
 
+    private static final AntPathMatcher matcher = new AntPathMatcher();
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/login/oauth2/")
+                || uri.startsWith("/oauth2/authorization/")
+                || uri.startsWith("/auth/"); // 로그인·리프레시 등 화이트리스트
+    }
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
+        System.out.println("[REQ] " + req.getMethod() + " " + req.getRequestURL() +
+                (req.getQueryString() != null ? "?" + req.getQueryString() : ""));
+
+
         String header = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
@@ -50,10 +68,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         chain.doFilter(req, res);
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // OAuth2 로그인 경로는 필터 적용 제외
-        String path = request.getRequestURI();
-        return path.startsWith("/oauth2/") || path.startsWith("/auth/");
-    }
+
 }
