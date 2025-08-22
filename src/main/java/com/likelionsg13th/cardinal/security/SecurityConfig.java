@@ -36,7 +36,8 @@ public class SecurityConfig {
                                 "/auth/**", "/login/oauth2/**",
                                 "/booths/**",
                                 "/events/**",
-                                "/goods/**").permitAll()
+                                "/goods/**",
+                                "/map/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth

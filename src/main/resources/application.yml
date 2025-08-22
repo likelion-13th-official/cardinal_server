@@ -14,7 +14,7 @@ spring:
   jpa:
     database: postgresql
     hibernate:
-      ddl-auto:  create-drop
+      ddl-auto: update
     properties:
       hibernate:
         transaction.jta.platform: org.hibernate.service.jta.JtaPlatform
@@ -27,7 +27,7 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${REST_API_KEY}
+            client-id: 32ec0d25b834c5a288359a0a5943fd00
             client-secret: ${CLIENT_SECRET}   # 사용X
             client-name: Kakao
             redirect-uri: ${KAKAO_URI}         #

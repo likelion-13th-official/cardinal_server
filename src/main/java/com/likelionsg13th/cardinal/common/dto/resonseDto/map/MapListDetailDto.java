@@ -17,7 +17,7 @@ public class MapListDetailDto {
 
      Long id;
      boolean bookMarked;
-     List<DayOfWeek> operatingDays;
+     List<String> operatingDays;
      LocalTime startTime;
      LocalTime endTime;
      String title;
@@ -29,7 +29,7 @@ public class MapListDetailDto {
         return new MapListDetailDto(
                 booth.getId(),
                 bookMarked,
-                booth.getOperatingDays(),
+                booth.getOperatingDays().stream().map(DayOfWeek::toKorean).collect(Collectors.toList()),
                 booth.getOperatingInfo().getStartTime(),
                 booth.getOperatingInfo().getEndTime(),
                 booth.getName(),

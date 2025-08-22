@@ -38,6 +38,11 @@ public class Goods {
     @OrderColumn(name = "image_order")
     private List<DetailImage> detailImageList = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Map location;
+
+
 
 }
 
