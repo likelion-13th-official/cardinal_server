@@ -1,6 +1,5 @@
 package com.likelionsg13th.cardinal.goods.dto;
 
-import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import jakarta.persistence.*;
 import lombok.Builder;
