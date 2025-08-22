@@ -22,11 +22,19 @@ public class MapController {
 
     private final MapService mapService;
 
+    @GetMapping()
+    public ResponseEntity<ApiResponse> getMaps(@RequestParam String category){
+
+        mapService.getMapMarkersByCategory(category);
+
+        return ResponseEntity.ok(new ApiResponse(true,200,"지도 카테고리 별 페이지 조회 성공"));
+    }
+
     @GetMapping("/detail")
     public ResponseEntity<ApiResponse> getDetail(@RequestParam String category,
                                                  @RequestParam(required = false) Long id){
 
-        MapDetailDto response = mapService.viewDetail(category,id);
+        MapDetailDto response = mapService.getDetail(category,id);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 상세 페이지 조회 성공",response));
     }
 
@@ -34,14 +42,14 @@ public class MapController {
     public ResponseEntity<ApiResponse> getList(@RequestParam String category,
                                                @RequestParam(required = false) Long buildingId){
 
-        MapListDto response = mapService.viewList(category,buildingId);
+        MapListDto response = mapService.getList(category,buildingId);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 리스트 페이지 조회 성공",response));
     }
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> getSearch(@RequestParam String keyword){
 
-        List<MapSearchDto> resopnse =  mapService.viewSearchResult(keyword);
+        List<MapSearchDto> resopnse =  mapService.getSearchResult(keyword);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공",resopnse));
     }
 

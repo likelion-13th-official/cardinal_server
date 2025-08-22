@@ -42,6 +42,12 @@ public class MapService {
     private final PubBoothRepository pubBoothRepository;
 
 
+    public void getMapMarkersByCategory(String category){
+
+
+    }
+
+
     /*
        TODO : keyword null 에러 처리
      * 검색 범위 :
@@ -52,7 +58,7 @@ public class MapService {
      * 부스 : 부스 명
      * ->   주점 , 푸드트럭 : + 대표 메뉴
      * */
-    public List<MapSearchDto> viewSearchResult(String keyword){
+    public List<MapSearchDto> getSearchResult(String keyword){
 
         String searchKeyword = "%"+keyword+"%";
         Stream<List<MapSearchDto>> streams = Stream.of(
@@ -76,7 +82,7 @@ public class MapService {
     TODO : 1. viewcount 추가
            2. 에러 처리 수정
     */
-    public MapDetailDto viewDetail(String category, Long AmenityId){
+    public MapDetailDto getDetail(String category, Long AmenityId){
 
         String name , position;
 
@@ -118,7 +124,7 @@ public class MapService {
     *       2.  에러 처리
     *
     * */
-    public MapListDto viewList(String category, Long locationId){
+    public MapListDto getList(String category, Long locationId){
 
         List<Booth> boothList;
 
