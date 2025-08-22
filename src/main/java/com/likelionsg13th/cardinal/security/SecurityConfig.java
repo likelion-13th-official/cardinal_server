@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 "/events/**",
                                 "/goods/**",
                                 "/map/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
                         .userInfoEndpoint(u -> u.userService(kakaoOAuth2UserService))
