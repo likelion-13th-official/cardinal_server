@@ -33,10 +33,9 @@ public class GoodsController {
     /*전체 조회*/
     @GetMapping
     public ResponseEntity<ApiResponse> getGoodsList(
-            @RequestParam("page") Integer page,
-            @RequestParam(value = "limit", required = false) Integer limit
+            @RequestParam("page") Integer page
     ){
-        PageDto<GoodsResponse> response = goodsService.getGoodsList(page, limit);
+        PageDto<GoodsResponse> response = goodsService.getGoodsList(page);
         return ResponseEntity.ok(new ApiResponse(true, 200, "굿즈 전체 조회 성공", response));
     }
 
