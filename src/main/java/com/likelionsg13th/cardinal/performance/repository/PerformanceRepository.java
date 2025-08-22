@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.performance.repository;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
+import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,5 +24,7 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "g.location.latitude) " +
             "FROM Performance g WHERE g.name LIKE :keyword")
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+
+    List<Performance> findByCategory(PerformanceCategory category);
 
 }
