@@ -1,20 +1,17 @@
 package com.likelionsg13th.cardinal.common.dto.resonseDto.map;
 
-import com.likelionsg13th.cardinal.booth.domain.Booth;
-import com.likelionsg13th.cardinal.common.domain.Amenity;
-import com.likelionsg13th.cardinal.common.enums.ContentType;
-import com.likelionsg13th.cardinal.event.domain.Event;
-import com.likelionsg13th.cardinal.goods.domain.Goods;
-import com.likelionsg13th.cardinal.performance.domain.Performance;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
+/*
+* 검색 결과 , /map?category 일부 카테고리 사용
+*
+* */
 
 @Getter@AllArgsConstructor
 @Builder
-public class MapSearchDto {
+public class MapLabelDto {
     String labelType;
     String label;
     Long labelId;

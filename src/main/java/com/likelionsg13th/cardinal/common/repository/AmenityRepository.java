@@ -1,8 +1,7 @@
 package com.likelionsg13th.cardinal.common.repository;
 
 import com.likelionsg13th.cardinal.common.domain.Amenity;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
-import com.likelionsg13th.cardinal.performance.domain.Performance;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +12,7 @@ import java.util.List;
 @Repository
 public interface AmenityRepository extends JpaRepository<Amenity,Long> {
 
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto(" +
             "'AMENITY',"+
             "g.name," +
             "g.id," +
@@ -21,5 +20,5 @@ public interface AmenityRepository extends JpaRepository<Amenity,Long> {
             "g.location.longitude," +
             "g.location.latitude) " +
             "FROM Amenity g WHERE g.name LIKE :keyword")
-    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+    List<MapLabelDto> findAllByNameContaining(@Param("keyword") String keyword);
 }

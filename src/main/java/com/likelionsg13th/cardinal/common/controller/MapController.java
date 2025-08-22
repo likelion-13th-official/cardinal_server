@@ -2,8 +2,8 @@ package com.likelionsg13th.cardinal.common.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
 import com.likelionsg13th.cardinal.common.service.MapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +49,7 @@ public class MapController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> getSearch(@RequestParam String keyword){
 
-        List<MapSearchDto> resopnse =  mapService.getSearchResult(keyword);
+        List<MapLabelDto> resopnse =  mapService.getSearchResult(keyword);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공",resopnse));
     }
 

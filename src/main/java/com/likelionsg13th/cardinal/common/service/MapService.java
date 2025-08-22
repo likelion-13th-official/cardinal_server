@@ -7,7 +7,7 @@ import com.likelionsg13th.cardinal.booth.repository.PubBoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapLabelDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
 
@@ -42,6 +42,14 @@ public class MapService {
     private final PubBoothRepository pubBoothRepository;
 
 
+    /*
+    * foodtruck -> 빌딩 정보  리스트
+    * pub굿즈샵 정보,  -> 빌딩 정보 리스트
+    *
+    * 마당사업, 포토부스, 제휴 , 이벤트 , 부대시설  -> 상세 위치 정보
+    *
+    *
+    * */
     public void getMapMarkersByCategory(String category){
 
 
@@ -58,10 +66,10 @@ public class MapService {
      * 부스 : 부스 명
      * ->   주점 , 푸드트럭 : + 대표 메뉴
      * */
-    public List<MapSearchDto> getSearchResult(String keyword){
+    public List<MapLabelDto> getSearchResult(String keyword){
 
         String searchKeyword = "%"+keyword+"%";
-        Stream<List<MapSearchDto>> streams = Stream.of(
+        Stream<List<MapLabelDto>> streams = Stream.of(
                 goodsRepository.findAllByNameContaining(searchKeyword),
                 eventRepository.findAllByNameContaining(searchKeyword),
                 amenityRepository.findAllByNameContaining(searchKeyword),
