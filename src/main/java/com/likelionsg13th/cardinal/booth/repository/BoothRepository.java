@@ -15,7 +15,9 @@ import java.util.List;
 
 @Repository
 public interface BoothRepository extends JpaRepository<Booth,Long> {
-    List<Booth> findAllByCategoryAndLocation_Id(BoothCategory category, Long locationId);
+
+
+    List<Booth> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
     List<Booth> findByCategory(BoothCategory category);
 
@@ -26,6 +28,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     Page<Booth> findByNameOrMenuNameContaining(@Param("query") String query, Pageable pageable);
 
 
+    /*이벤트맵 검색 : 라벨 = 매장 이름  */
     @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
             "'BOOTH',"+
             "g.name," +
@@ -40,7 +43,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
             @Param("keyword") String keyword,
             @Param("excludeCategories") List<BoothCategory> excludeCategories);
 
-
+    /*이벤트맵 검색 : 라벨 = 위치명 또는 카테고리명   */
     @Query("SELECT DISTINCT new com.likelionsg13th.cardinal.map.dto.MapSearchDto (" +
             "'BOOTH',"+
             "g.name," +
@@ -54,12 +57,13 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
             "( g.name LIKE :keyword OR m.name LIKE :keyword) ")
     List<MapSearchDto>  findAllByNameContainingAndMenusContainingAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
 
-
+    /* 이벤트맵 카테고리 필터 : 공통 위치 1개 반환 */
     @Query("SELECT p.location" +
             " FROM Booth p " +
             " WHERE p.id = 1 AND p.category = :category")
     Map findLocationFirstByIdAndCategory(@Param("category") BoothCategory category);
 
+    /* 이벤트맵 카테고리 필터 : 매장 별 위치 반환 */
     @Query("SELECT DISTINCT p.location " +
             "FROM Booth p " +
             "WHERE p.category = :category")

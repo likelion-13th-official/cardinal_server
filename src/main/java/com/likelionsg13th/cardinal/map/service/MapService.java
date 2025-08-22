@@ -134,7 +134,7 @@ public class MapService {
         boolean bookMarked = false;
 
         if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
-            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
+            boothList = boothRepository.findAllByCategoryAndLocationId(FOOD_TRUCK, locationId);
 
         }else if(PUB.name().equalsIgnoreCase(category.trim())) {
             boothList = boothRepository.findAllByCategory(PUB);
