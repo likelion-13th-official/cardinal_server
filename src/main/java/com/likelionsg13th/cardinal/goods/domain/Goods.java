@@ -1,7 +1,7 @@
 package com.likelionsg13th.cardinal.goods.domain;
 
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
-import com.likelionsg13th.cardinal.common.domain.Map;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import jakarta.persistence.*;
 import lombok.*;
 

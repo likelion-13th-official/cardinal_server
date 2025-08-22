@@ -1,13 +1,13 @@
-package com.likelionsg13th.cardinal.common.service;
+package com.likelionsg13th.cardinal.map.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.booth.repository.FoodTruckBoothRepository;
 import com.likelionsg13th.cardinal.booth.repository.PubBoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
+import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
+import com.likelionsg13th.cardinal.map.dto.MapListDto;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.provider.CategoryProvider;
 import com.likelionsg13th.cardinal.common.provider.ProviderFactory;

@@ -1,8 +1,7 @@
 package com.likelionsg13th.cardinal.common.provider;
 
-import com.likelionsg13th.cardinal.common.domain.Map;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapFilteredByCategoryDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapInfoDto;
+import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
+import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import java.util.List;

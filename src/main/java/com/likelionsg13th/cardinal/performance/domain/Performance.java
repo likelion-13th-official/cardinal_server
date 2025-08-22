@@ -1,11 +1,10 @@
 package com.likelionsg13th.cardinal.performance.domain;
 
-import com.likelionsg13th.cardinal.common.domain.Map;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity

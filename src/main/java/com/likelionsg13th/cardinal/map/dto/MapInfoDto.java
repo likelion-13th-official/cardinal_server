@@ -1,7 +1,7 @@
-package com.likelionsg13th.cardinal.common.dto.resonseDto.map;
+package com.likelionsg13th.cardinal.map.dto;
 
 
-import com.likelionsg13th.cardinal.common.domain.Map;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

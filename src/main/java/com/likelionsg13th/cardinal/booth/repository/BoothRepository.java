@@ -1,7 +1,7 @@
 package com.likelionsg13th.cardinal.booth.repository;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

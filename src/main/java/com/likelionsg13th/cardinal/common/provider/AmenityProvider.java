@@ -1,9 +1,8 @@
 package com.likelionsg13th.cardinal.common.provider;
 
 
-import com.likelionsg13th.cardinal.common.domain.Amenity;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapFilteredByCategoryDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapFilteredByCategoryItemDto;
+import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
+import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

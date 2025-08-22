@@ -1,6 +1,6 @@
-package com.likelionsg13th.cardinal.common.repository;
+package com.likelionsg13th.cardinal.map.repository;
 
-import com.likelionsg13th.cardinal.common.domain.Map;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

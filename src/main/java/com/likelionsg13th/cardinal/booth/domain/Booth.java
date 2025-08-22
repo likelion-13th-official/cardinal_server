@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.booth.domain;
 
 import com.likelionsg13th.cardinal.common.domain.*;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

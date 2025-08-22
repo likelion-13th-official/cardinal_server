@@ -1,6 +1,6 @@
 package com.likelionsg13th.cardinal.event.repository;
 
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
