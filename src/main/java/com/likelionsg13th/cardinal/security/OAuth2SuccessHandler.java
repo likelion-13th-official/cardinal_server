@@ -6,11 +6,15 @@ import com.likelionsg13th.cardinal.security.jwt.dto.TokenResponse;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -36,16 +40,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         System.out.println("발급된 RefreshToken = " + refresh);
 
         //직렬화 응답
-/*        res.setStatus(HttpServletResponse.SC_OK);
+        res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/json;charset=UTF-8");
         res.getWriter().write("""
         {"accessToken":"%s","refreshToken":"%s","tokenType":"Bearer"}
-        """.formatted(access, refresh));*/
+        """.formatted(access, refresh));
 
-        //json 응답
-        TokenResponse tokenRes = new TokenResponse(access, refresh);
-        res.setStatus(HttpServletResponse.SC_OK);
-        res.setContentType("application/json;charset=UTF-8");
-        new ObjectMapper().writeValue(res.getWriter(), tokenRes);
     }
 }
