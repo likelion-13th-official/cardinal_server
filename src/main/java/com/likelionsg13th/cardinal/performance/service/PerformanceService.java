@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.performance.service;
 
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.dto.PerformanceResponse;
