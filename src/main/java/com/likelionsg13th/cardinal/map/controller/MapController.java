@@ -1,10 +1,10 @@
-package com.likelionsg13th.cardinal.common.controller;
+package com.likelionsg13th.cardinal.map.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.service.MapService;
+import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
+import com.likelionsg13th.cardinal.map.dto.MapListDto;
+import com.likelionsg13th.cardinal.map.service.MapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

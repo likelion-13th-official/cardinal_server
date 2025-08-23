@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.goods.repository;
 
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
+import com.likelionsg13th.cardinal.map.domain.Map;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Optional<Goods> findFirstByOrderByIdAsc();
 
-    @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
+    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
             "'GOODS',"+
             "g.name," +
             "g.id," +
@@ -27,4 +28,9 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
 
     Page<Goods> findByNameContaining(String query, Pageable pageable);
+
+    @Query("SELECT p.location" +
+            " FROM Performance p " +
+            " WHERE p.id = 1")
+    Map findLocationFirstById();
 }
