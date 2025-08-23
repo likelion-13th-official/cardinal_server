@@ -28,14 +28,13 @@ spring:
         registration:
           kakao:
             client-id: ${REST_API_KEY}
-            client-secret: ${CLIENT_SECRET}   # 사용X
-            client-name: Kakao
-            redirect-uri: ${KAKAO_URI}         #
+            client-authentication-method: none   # ← Secret 미사용일 때
             authorization-grant-type: authorization_code
-            client-authentication-method: client_secret_post
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
               - profile_nickname
               - profile_image
+            provider: kakao
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -50,3 +49,5 @@ jwt:
 logging:
   level:
     org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG

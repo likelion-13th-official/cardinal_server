@@ -1,26 +1,15 @@
 package com.likelionsg13th.cardinal.security;
 
+import com.likelionsg13th.cardinal.security.jwt.JwtAuthenticationFilter;
 import com.likelionsg13th.cardinal.security.jwt.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-
-
-import com.likelionsg13th.cardinal.security.jwt.JwtAuthenticationFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -35,23 +24,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**", "/login/oauth2/**", "/oauth/**").permitAll() // 로그인 및 관심사 등록 API는 모든 유저 접근 가능
-                        .requestMatchers("/**").authenticated() // 그 외 모든 요청은 인증 필요
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers( "/", "/health",
+                                "/login",               // 커스텀 로그인 페이지 자체는 허용
+                                "/oauth2/**",           // OAuth2 흐름 허용
+                                "/css/**", "/js/**", "/images/**", "/webjars/**",
+                                "/favicon.ico", "/default-ui.css").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .userInfoEndpoint(u -> u.userService(kakaoOAuth2UserService))
+                        .authorizationEndpoint(ae -> ae.baseUri("/oauth2/authorization"))
+                        .redirectionEndpoint(re -> re.baseUri("/login/oauth2/code/*"))
+                        .userInfoEndpoint(ue -> ue.userService(kakaoOAuth2UserService))
                         .successHandler(successHandler)
                 )
+                .exceptionHandling(e -> e.authenticationEntryPoint(
+                        new org.springframework.security.web.authentication.HttpStatusEntryPoint(
+                                org.springframework.http.HttpStatus.UNAUTHORIZED)))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 }

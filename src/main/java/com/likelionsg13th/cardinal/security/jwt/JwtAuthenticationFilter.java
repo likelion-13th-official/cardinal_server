@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -40,20 +41,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(
                         new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
                 );
-            } catch (JwtException e) {
-                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                res.setContentType("application/json;charset=UTF-8");
-                res.getWriter().write("{\"error\":\"Invalid or expired token\"}");
-                return; // 필터 체인 종료
-            }
+            } catch (Exception ignored) { }
         }
         chain.doFilter(req, res);
-    }
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // OAuth2 로그인 경로는 필터 적용 제외
-        String path = request.getRequestURI();
-        return path.startsWith("/oauth2/") || path.startsWith("/auth/");
     }
 }
