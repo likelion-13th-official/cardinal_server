@@ -3,6 +3,7 @@ package com.likelionsg13th.cardinal.performance.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
 import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
 import com.likelionsg13th.cardinal.performance.dto.PerformanceResponse;
@@ -27,7 +28,7 @@ public class PerformanceController {
     @GetMapping
     public ResponseEntity<ApiResponse> getPerformanceList(
             @RequestParam("category") PerformanceCategory category,
-            @RequestParam(value="day", required = false) String day
+            @RequestParam(value="day", required = false) DayOfWeek day
     ){
         List<PerformanceResponse> response = performanceService.getPerfromanceList(category, day);
         return ResponseEntity.ok(new ApiResponse(true, 200, "공연 목록 조회 성공", response));
