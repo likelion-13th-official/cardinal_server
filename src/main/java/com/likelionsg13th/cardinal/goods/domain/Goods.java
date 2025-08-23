@@ -27,14 +27,22 @@ public class Goods {
     @Column(nullable = false)
     private String thumbnailUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private Map location;
+    @Column(nullable = false)
+    private Long price;
 
-    private long viewCount;
+    @Column(nullable = false)
+    private Long viewCount=0L;
 
     @CollectionTable(name="goods_detail_images",joinColumns = @JoinColumn(name="goods_id"))
     @ElementCollection
     @OrderColumn(name = "image_order")
     private List<DetailImage> detailImageList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Map location;
+
+
+
 }
+

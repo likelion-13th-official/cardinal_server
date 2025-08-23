@@ -1,32 +1,25 @@
-package com.likelionsg13th.cardinal.goods.repository;
+package com.likelionsg13th.cardinal.common.repository;
 
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
+import com.likelionsg13th.cardinal.common.domain.Amenity;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
-import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface GoodsRepository extends JpaRepository<Goods, Long> {
-    Optional<Goods> findFirstByOrderByIdAsc();
+public interface AmenityRepository extends JpaRepository<Amenity,Long> {
 
     @Query("SELECT new com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto(" +
-            "'GOODS',"+
+            "'AMENITY',"+
             "g.name," +
             "g.id," +
             "g.location.position," +
             "g.location.longitude," +
             "g.location.latitude) " +
-            "FROM Goods g WHERE g.name LIKE :keyword")
+            "FROM Amenity g WHERE g.name LIKE :keyword")
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
-
-    Page<Goods> findByNameContaining(String query, Pageable pageable);
 }
