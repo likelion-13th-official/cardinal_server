@@ -22,17 +22,12 @@ public class PerformanceService {
     private final PerformanceRepository performanceRepository;
 
     //전체 조회
-    public List<PerformanceResponse> getPerfromanceList(PerformanceCategory category, String day) {
+    public List<PerformanceResponse> getPerfromanceList(PerformanceCategory category, DayOfWeek day) {
         List<Performance> performanceList =performanceRepository.findByCategory(category);
 
-/*        if (day== null || day.isBlank()){
-            List<PerformanceResponse> performanceResponseList = performanceList.stream()
-                    .map(performance -> PerformanceResponse.from(performance))
-                    .toList();
-        }*/
-
-
         List<PerformanceResponse> performanceResponseList = performanceList.stream()
+                .filter(p -> day==null ||
+                        (p.getOperatingDays() !=null && p.getOperatingDays().contains(day)))
                 .map(performance -> PerformanceResponse.from(performance))
                 .toList();
 
