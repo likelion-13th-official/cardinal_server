@@ -1,10 +1,10 @@
-package com.likelionsg13th.cardinal.common.controller;
+package com.likelionsg13th.cardinal.map.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
-import com.likelionsg13th.cardinal.common.service.MapService;
+import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
+import com.likelionsg13th.cardinal.map.dto.MapListDto;
+import com.likelionsg13th.cardinal.map.service.MapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +23,11 @@ public class MapController {
     private final MapService mapService;
 
     @GetMapping()
-    public ResponseEntity<ApiResponse> getMaps(@RequestParam String category){
+    public ResponseEntity<ApiResponse> getMarkersByCategory(@RequestParam String category){
 
-        mapService.getMapMarkersByCategory(category);
+       Object response =   mapService.getMapMarkersByCategory(category);
 
-        return ResponseEntity.ok(new ApiResponse(true,200,"지도 카테고리 별 페이지 조회 성공"));
+        return ResponseEntity.ok(new ApiResponse(true,200,"지도 카테고리 별 페이지 조회 성공",response));
     }
 
     @GetMapping("/detail")

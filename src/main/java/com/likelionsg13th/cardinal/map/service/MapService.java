@@ -1,51 +1,55 @@
-package com.likelionsg13th.cardinal.common.service;
+package com.likelionsg13th.cardinal.map.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
-import com.likelionsg13th.cardinal.booth.repository.FoodTruckBoothRepository;
-import com.likelionsg13th.cardinal.booth.repository.PubBoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapDetailDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapListDto;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.map.MapSearchDto;
+import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
+import com.likelionsg13th.cardinal.map.dto.MapListDto;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
+import com.likelionsg13th.cardinal.common.provider.CategoryProvider;
+import com.likelionsg13th.cardinal.common.provider.ProviderFactory;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
-
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
-import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
-
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.*;
 
 @Service
 @RequiredArgsConstructor
 public class MapService {
-    //범위 부스, 공연, 부대시설, 이벤트, 굿즈,
+
+    private final ProviderFactory providerFactory;
+
+    // 범위 부스, 공연, 부대시설, 이벤트, 굿즈,
     private final AmenityRepository amenityRepository;
     private final GoodsRepository goodsRepository;
     private final PerformanceRepository performanceRepository;
     private final BoothRepository boothRepository;
     private final EventRepository eventRepository;
 
-    private final ScrapRepository scrapRepository;
-    private final UserRepository usersRepository;
-    private final FoodTruckBoothRepository foodTruckBoothRepository;
-    private final PubBoothRepository pubBoothRepository;
 
+    /*
+    * foodtruck,pub,PERFORMANCE,굿즈샵 -> 빌딩 정보
+    * 마당사업, 포토부스, 제휴 , 이벤트 , 부대시설  -> 상세 위치 정보
+    * */
+    public Object getMapMarkersByCategory(String category){
 
-    public void getMapMarkersByCategory(String category){
+        /*TODO : 카테고리 param 예외 처리 추가 */
+
+        CategoryProvider categoryProvider = providerFactory.getProvider(category);
+
+        return categoryProvider.getMapMarkersByCategory();
 
 
     }
+
 
 
     /*
@@ -66,9 +70,8 @@ public class MapService {
                 eventRepository.findAllByNameContaining(searchKeyword),
                 amenityRepository.findAllByNameContaining(searchKeyword),
                 performanceRepository.findAllByNameContaining(searchKeyword),
-                foodTruckBoothRepository.findAllByNameContainingAndMenusContaining(searchKeyword),
-                pubBoothRepository.findAllByNameContainingAndMenusContaining(searchKeyword),
-                boothRepository.findAllByNameContainingAndCategoryIsNotContaining(searchKeyword,List.of(PUB,FOOD_TRUCK))  //부스 내 주점,푸드트럭 별도 처리 제외
+                boothRepository.findAllByNameContainingAndMenusContainingAndCategoryIn(searchKeyword,List.of(PUB,FOOD_TRUCK)),
+                boothRepository.findAllByNameContainingAndCategoryIsNotContainingAndCategoryNotIn(searchKeyword,List.of(PUB,FOOD_TRUCK))  //부스 내 주점,푸드트럭 별도 처리 제외
         );
 
 
@@ -131,7 +134,7 @@ public class MapService {
         boolean bookMarked = false;
 
         if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
-            boothList = boothRepository.findAllByCategoryAndLocation_Id(FOOD_TRUCK, locationId);
+            boothList = boothRepository.findAllByCategoryAndLocationId(FOOD_TRUCK, locationId);
 
         }else if(PUB.name().equalsIgnoreCase(category.trim())) {
             boothList = boothRepository.findAllByCategory(PUB);
