@@ -8,10 +8,9 @@ import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
-import com.likelionsg13th.cardinal.event.domain.Event;
-import com.likelionsg13th.cardinal.event.dto.EventResponse;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,9 +36,13 @@ public class BoothService {
         if ("ALL".equalsIgnoreCase(categoryStr)) {
             booths = boothRepository.findAll();
         } else {
-            // enum으로 변환 후 조회
-            BoothCategory category = BoothCategory.valueOf(categoryStr.toUpperCase());
-            booths = boothRepository.findByCategory(category);
+            try {
+                // enum으로 변환 후 조회
+                BoothCategory category = BoothCategory.valueOf(categoryStr.toUpperCase());
+                booths = boothRepository.findByCategory(category);
+            } catch (IllegalArgumentException e) {
+                throw new InvalidCategoryException(ErrorCode.INVALID_CATEGORY);
+            }
         }
 
         return booths.stream()
@@ -55,7 +58,7 @@ public class BoothService {
     //개별 상세 조회
     public BoothDetailResponse getBoothDetail(long id) {
         Booth booth=boothRepository.findById(id)
-                .orElseThrow(()->new BoothNotFoundException("해당 id의 부스를 찾을 수 없습니다."));
+                .orElseThrow(()->new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
         return BoothDetailResponse.of(booth);
     }
 
