@@ -21,6 +21,8 @@ public class ScrapController {
     public ResponseEntity<ApiResponse> viewScraps(@AuthenticationPrincipal UserDetails principal,
                                                   @RequestParam(required = false) String day,
                                                   @RequestParam(required = false) String category) {
+
+
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 조회 성공"));
     }
      @PostMapping()
