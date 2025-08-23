@@ -10,7 +10,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   sql:
     init:
-      mode: always
+      mode: never
   jpa:
     database: postgresql
     hibernate:
@@ -27,7 +27,7 @@ spring:
       client:
         registration:
           kakao:
-            client-id: 32ec0d25b834c5a288359a0a5943fd00
+            client-id: ${REST_API_KEY}
             client-secret: ${CLIENT_SECRET}   # 사용X
             client-name: Kakao
             redirect-uri: ${KAKAO_URI}         #
