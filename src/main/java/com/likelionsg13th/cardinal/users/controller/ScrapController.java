@@ -18,9 +18,13 @@ public class ScrapController {
     private final UserService userService;
 
     @GetMapping()
-    public ResponseEntity<ApiResponse> viewScraps(@AuthenticationPrincipal UserDetails principal,
+    public ResponseEntity<ApiResponse> viewScraps(@AuthenticationPrincipal UserDetails principal, //user
                                                   @RequestParam(required = false) String day,
                                                   @RequestParam(required = false) String category) {
+        System.out.println("===============================================================");
+        userService.getMeBySubject(principal.getUsername());
+
+
 
 
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 조회 성공"));
