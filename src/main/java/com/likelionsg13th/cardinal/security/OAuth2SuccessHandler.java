@@ -5,6 +5,7 @@ import com.likelionsg13th.cardinal.security.jwt.JwtTokenProvider;
 import com.likelionsg13th.cardinal.security.jwt.dto.TokenResponse;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -14,66 +15,98 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwt;
+    private static final ObjectMapper OM = new ObjectMapper();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth) throws IOException {
-        OAuth2User principal = (OAuth2User) auth.getPrincipal();
+  /*      OAuth2User principal = (OAuth2User) auth.getPrincipal();
         System.out.println("✅ OAuth2SuccessHandler 진입: " + auth.getName());
 
 
         // provider 구분 : kakao / google
-        String registrationId = (auth instanceof OAuth2AuthenticationToken o)
+*//*        String registrationId = (auth instanceof OAuth2AuthenticationToken o)
                 ? o.getAuthorizedClientRegistrationId()
                 : "unknown";
 
-        String provider = registrationId.toLowerCase();
+        String provider = registrationId.toLowerCase();*//*
 
-        ParsedProfile p = switch (provider) {
-            case "kakao" -> parseKakao(principal.getAttributes());
-            case "google" -> parseGoogle(principal.getAttributes());
-            default -> throw new IllegalArgumentException("Unsupported provider: " + provider);
-        };
+        String provider = (auth instanceof OAuth2AuthenticationToken o)
+                ? o.getAuthorizedClientRegistrationId()
+                : (String) principal.getAttributes().get("provider");
+        provider = provider == null ? "unknown" : provider.toLowerCase().trim();
 
-
-        // provider별로 id/nickname/profileImage 파싱
         ParsedProfile profile = switch (provider) {
             case "kakao" -> parseKakao(principal.getAttributes());
             case "google" -> parseGoogle(principal.getAttributes());
             default -> throw new IllegalArgumentException("Unsupported provider: " + provider);
         };
 
+
+        // 2) providerId: 정규화 속성 우선, 없으면 auth.getName() (nameAttributeKey)
+        String providerId = asStr(principal.getAttributes().get("providerId"));
+        if (providerId == null) providerId = auth.getName(); // Kakao는 "providerId"를 name 키로 설정해둠
+        // 마지막 폴백(혹시 정규화 없이 들어온 경우)
+        if (providerId == null) {
+            if ("google".equals(provider)) providerId = asStr(principal.getAttributes().get("sub"));
+            if ("kakao".equals(provider))  providerId = asStr(principal.getAttributes().get("id"));
+        }
+
         String subject = profile.provider + ":" + profile.providerId;
         System.out.println("✅ provider = " +  profile.provider);
+        System.out.println("✅ providerID = " +  profile.providerId);*/
 
+
+        OAuth2User principal = (OAuth2User) auth.getPrincipal();
+        log.debug("✅ OAuth2SuccessHandler 진입: {}", auth.getName());
+
+        // 1) provider: registrationId 우선, 없으면 정규화 attr(provider)
+        String provider = (auth instanceof OAuth2AuthenticationToken o)
+                ? o.getAuthorizedClientRegistrationId()
+                : asStr(principal.getAttributes().get("provider"));
+        provider = provider == null ? "unknown" : provider.toLowerCase().trim();
+
+        // 2) providerId: 정규화 attr(providerId) 우선 → auth.getName() → 마지막 폴백(원본 키)
+        String providerId = asStr(principal.getAttributes().get("providerId"));
+        if (providerId == null) providerId = auth.getName(); // nameAttributeKey=providerId 로 설정해둠
+        if (providerId == null) { // 정말 예외적인 폴백
+            if ("google".equals(provider)) providerId = asStr(principal.getAttributes().get("sub"));
+            if ("kakao".equals(provider))  providerId = asStr(principal.getAttributes().get("id"));
+        }
+
+        // 3) 표시용 프로필(정규화된 값)
+        String nickname = asStr(principal.getAttributes().get("nickname"));
+        String imageUrl = asStr(principal.getAttributes().get("profileImageUrl"));
+
+        log.debug("✅ provider={}, providerId={}", provider, providerId);
+
+        String subject = provider + ":" + providerId;
         String access  = jwt.createAccessToken(subject);
         String refresh = jwt.createRefreshToken(subject);
 
         System.out.println("-발급된 AccessToken = " + access);
         System.out.println("-발급된 RefreshToken = " + refresh);
 
-        // JSON 응답
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("tokenType", "Bearer");
+        body.put("accessToken", access);
+        body.put("refreshToken", refresh);
+        body.put("profile", Map.of(
+                "provider", provider,
+                "providerId", providerId
+        ));
+
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/json;charset=UTF-8");
-        res.getWriter().write("""
-        {
-          "tokenType":"Bearer",
-          "accessToken":"%s",
-          "refreshToken":"%s",
-          "profile":{
-            "provider":"%s",
-          }
-        }
-        """.formatted(
-                access, refresh,
-                escape(p.provider)
-        ));
+        res.getWriter().write(OM.writeValueAsString(body));
 
     }
 
@@ -109,4 +142,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private static String escape(String s) {
         return s == null ? "" : s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
+
+    private static String asStr(Object o) { return o == null ? null : String.valueOf(o); }
+    private static String esc(String s) { return s == null ? "" : s.replace("\\","\\\\").replace("\"","\\\""); }
 }

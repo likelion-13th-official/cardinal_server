@@ -28,8 +28,9 @@ public class SocialOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     public OAuth2User loadUser(OAuth2UserRequest req) throws OAuth2AuthenticationException {
 
 
-        log.debug("✅ SocialOAuth2UserService 진입");
-        log.debug("Access Token(short) = {}", abbreviate(req.getAccessToken().getTokenValue(), 24));
+        System.out.println("✅ SocialOAuth2UserService 진입");
+        System.out.println("Access Token = " + req.getAccessToken().getTokenValue());
+
         OAuth2User oAuth2User = delegate.loadUser(req);
 
         // provider: kakao / google
@@ -98,7 +99,6 @@ public class SocialOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (profile.profileImg != null && !profile.profileImg.equals(user.getProfileImageUrl())) { user.setProfileImageUrl(profile.profileImg); dirty = true; }
         if (user.getId() == null || dirty) {
             userRepository.save(user);
-            log.debug("📝 user upsert: provider={}, providerId={}, dirty={}", profile.provider, profile.providerId, dirty);
         }
 
         // 성공 핸들러가 쓰기 좋게 "정규화된" 속성으로 교체
@@ -135,12 +135,6 @@ public class SocialOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
 
         return new Profile("kakao", id, nickname,profileImg);
-    }
-
-    private static String abbreviate(String v, int n) {
-        if (v == null) return "null";
-        if (v.length() <= n) return v;
-        return v.substring(0, n) + "...";
     }
 
     private record Profile(String provider, String providerId, String nickname, String profileImg) {}
