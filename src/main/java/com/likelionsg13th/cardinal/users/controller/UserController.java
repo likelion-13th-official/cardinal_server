@@ -25,6 +25,8 @@ public class UserController {
             // 보통 Security filter에서 401로 처리되지만 방어적으로 체크
             throw new IllegalStateException("인증 정보가 없습니다.");
         }
+
+        // subject 예: "kakao:4389628977" 또는 "google:109876543210987654321"
         UserDto user= userService.getMeBySubject(principal.getUsername()); // "kakao:{id}"
 
         return ResponseEntity.ok(new ApiResponse(true, 200, "user 조회 성공", user));

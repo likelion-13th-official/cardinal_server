@@ -35,6 +35,12 @@ spring:
               - profile_nickname
               - profile_image
             provider: kakao
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid, profile, email
+            provider : Google
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
