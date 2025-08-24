@@ -2,6 +2,8 @@ package com.likelionsg13th.cardinal.users.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
+import com.likelionsg13th.cardinal.users.service.ScrapService;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ScrapController {
 
-
-    private final UserService userService;
+    private final ScrapService scrapService;
 
     @GetMapping()
     public ResponseEntity<ApiResponse> viewScraps(@AuthenticationPrincipal UserDetails principal, //user
                                                   @RequestParam(required = false) String day,
                                                   @RequestParam(required = false) String category) {
-        System.out.println("===============================================================");
-        userService.getMeBySubject(principal.getUsername());
+
+
 
 
 
@@ -38,9 +39,10 @@ public class ScrapController {
                                              ) {
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 전체 삭제 성공"));
     }
-     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> DeleteScrapsById(@AuthenticationPrincipal UserDetails principal) {
-        return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 삭제 성공"));
+     @DeleteMapping("/{scrapId}")
+    public ResponseEntity<ApiResponse> DeleteScrapsById(@AuthenticationPrincipal UserDetails principal,@RequestParam Long scrapId) {
+
+        return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 삭제 성공",scrapService.deleteScrapByUserId(principal, scrapId)));
     }
 
 
