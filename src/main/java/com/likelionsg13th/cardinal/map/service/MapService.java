@@ -3,9 +3,10 @@ package com.likelionsg13th.cardinal.map.service;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.domain.Amenity;
-import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
-import com.likelionsg13th.cardinal.map.dto.MapListDto;
-import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
+import com.likelionsg13th.cardinal.common.exception.ParameterIsNullOrEmpty;
+import com.likelionsg13th.cardinal.map.dto.*;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.provider.CategoryProvider;
 import com.likelionsg13th.cardinal.common.provider.ProviderFactory;
@@ -13,6 +14,10 @@ import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
+import com.likelionsg13th.cardinal.users.domain.Scrap;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
+import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Collection;
@@ -26,6 +31,8 @@ import static com.likelionsg13th.cardinal.common.enums.BoothCategory.*;
 public class MapService {
 
     private final ProviderFactory providerFactory;
+    private final UserRepository userRepository;
+    private final ScrapRepository scrapRepository;
 
     // 범위 부스, 공연, 부대시설, 이벤트, 굿즈,
     private final AmenityRepository amenityRepository;
@@ -41,7 +48,7 @@ public class MapService {
     * */
     public Object getMapMarkersByCategory(String category){
 
-        /*TODO : 카테고리 param 예외 처리 추가 */
+        if(category == null ||category.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
 
         CategoryProvider categoryProvider = providerFactory.getProvider(category);
 
@@ -63,6 +70,7 @@ public class MapService {
      * ->   주점 , 푸드트럭 : + 대표 메뉴
      * */
     public List<MapSearchDto> getSearchResult(String keyword){
+        if(keyword == null ||keyword.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
 
         String searchKeyword = "%"+keyword+"%";
         Stream<List<MapSearchDto>> streams = Stream.of(
@@ -86,12 +94,13 @@ public class MapService {
            2. 에러 처리 수정
     */
     public MapDetailDto getDetail(String category, Long AmenityId){
+        if(category == null ||category.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
 
         String name , position;
 
         if(AmenityId != null && AMENITY.name().equalsIgnoreCase(category.trim())){
 
-            Amenity amenity =  amenityRepository.findById(AmenityId).orElseThrow(() -> new InvalidParameterException("Amenity id not found"));
+            Amenity amenity =  amenityRepository.findById(AmenityId).get();
             name = amenity.getName();
             position = amenity.getLocation().getPosition();
 
@@ -99,18 +108,18 @@ public class MapService {
 
             name = GOODS.toKorean();
             position = goodsRepository.findFirstByOrderByIdAsc()
-                    .orElseThrow(() -> new InvalidParameterException("Invalid Parameter : GOODS "))
+                    .get()
                     .getLocation().getPosition();
 
         }else if (PERFORMANCE.name().equalsIgnoreCase(category.trim())){
 
             name = PERFORMANCE.toKorean();
             position = performanceRepository.findFirstByOrderByIdAsc()
-                    .orElseThrow(() -> new InvalidParameterException("Invalid Parameter : PERFORMANCE "))
+                    .get()
                     .getLocation().getPosition();
 
         }else
-            throw new InvalidParameterException("Invalid Parameter");
+            throw new InvalidParameterException(ErrorCode.INVALID_CATEGORY);
 
         return MapDetailDto .builder()
                 .name(name)
@@ -127,22 +136,40 @@ public class MapService {
     *       2.  에러 처리
     *
     * */
-    public MapListDto getList(String category, Long locationId){
+    public MapListDto getList(String category, Long locationId, UserDto user ){
+        if(category == null || category.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
 
+        String position;
         List<Booth> boothList;
+        List<MapListItemDto> mapListItemDtoList;
 
-        boolean bookMarked = false;
 
         if(locationId != null && FOOD_TRUCK.name().equalsIgnoreCase(category.trim())) {
             boothList = boothRepository.findAllByCategoryAndLocationId(FOOD_TRUCK, locationId);
-
+            position  = boothList.get(0).getLocation().getPosition();
         }else if(PUB.name().equalsIgnoreCase(category.trim())) {
             boothList = boothRepository.findAllByCategory(PUB);
+            position  = boothList.get(0).getLocation().getPosition();
         }else {
-            throw  new InvalidParameterException("category는 PUB,FOOD_TRUCK만 사용해주세요. ");
+            throw  new InvalidCategoryException(ErrorCode.INVALID_CATEGORY);
         }
 
-        return MapListDto.from(boothList,category,bookMarked);
+        if(user != null){
+            System.out.println("USER IN ");
+            mapListItemDtoList =  boothList.stream().map(
+                    booth -> {
+                       boolean bookMarked =  scrapRepository.existsByUser_IdAndContentIdAndContentType(user.getId(),booth.getId(),BOOTH);
+                       System.out.println("bookMarked "+bookMarked);
+                       return   MapListItemDto.from(booth,bookMarked);
+                    }
+            ).toList();
+
+            return MapListDto.of(mapListItemDtoList,category,position);
+
+        }else {
+            return MapListDto.of(boothList,category,position,false);
+        }
+
 
     }
 

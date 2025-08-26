@@ -18,6 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+import static com.likelionsg13th.cardinal.common.exception.GlobalExceptionHandler.log;
+
 
 @Component
 @RequiredArgsConstructor
@@ -41,7 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(
                         new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
                 );
-            } catch (Exception ignored) { }
+            } catch (Exception e) {
+                log.warn("JWT token processing failed: {}", e.getMessage());
+            }
         }
         chain.doFilter(req, res);
     }
