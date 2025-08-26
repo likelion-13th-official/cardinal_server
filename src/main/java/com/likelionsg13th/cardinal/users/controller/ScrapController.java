@@ -23,11 +23,6 @@ public class ScrapController {
                                                   @RequestParam(required = false) String day,
                                                   @RequestParam(required = false) String category) {
 
-
-
-
-
-
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 조회 성공"));
     }
      @PostMapping()
@@ -40,7 +35,7 @@ public class ScrapController {
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 전체 삭제 성공"));
     }
      @DeleteMapping("/{scrapId}")
-    public ResponseEntity<ApiResponse> DeleteScrapsById(@AuthenticationPrincipal UserDetails principal,@RequestParam Long scrapId) {
+    public ResponseEntity<ApiResponse> DeleteScrapsById(@AuthenticationPrincipal UserDetails principal,@PathVariable Long scrapId) {
 
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 삭제 성공",scrapService.deleteScrapByUserId(principal, scrapId)));
     }

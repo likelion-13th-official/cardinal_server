@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScrapRepository extends JpaRepository<Scrap,Long> {
-
-    boolean deleteByUserId(Long id);
+    boolean existsByIdAndUserId(Long scrapId, Long userId);
+    void deleteById(Long scrapId);
+    boolean deleteByUserId(Long id); //전체 삭제
 }
