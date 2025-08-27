@@ -5,8 +5,12 @@ import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.map.dto.MapListDto;
 import com.likelionsg13th.cardinal.map.service.MapService;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +25,7 @@ import java.util.List;
 public class MapController {
 
     private final MapService mapService;
+    private final UserService  userService;
 
     @GetMapping()
     public ResponseEntity<ApiResponse> getMarkersByCategory(@RequestParam String category){
@@ -40,9 +45,16 @@ public class MapController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> getList(@RequestParam String category,
-                                               @RequestParam(required = false) Long buildingId){
+                                               @RequestParam(required = false) Long locationId,
+                                               @AuthenticationPrincipal UserDetails user ){
 
-        MapListDto response = mapService.getList(category,buildingId);
+        UserDto userDto = null;
+        if (user != null) {
+            userDto = userService.getMeBySubject(user.getUsername());
+            System.out.println("USER  ID: " + userDto.getId());
+        }
+
+        MapListDto response = mapService.getList(category,locationId,userDto);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 리스트 페이지 조회 성공",response));
     }
 
