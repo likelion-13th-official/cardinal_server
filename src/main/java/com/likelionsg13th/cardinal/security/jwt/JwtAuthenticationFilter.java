@@ -44,14 +44,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .password("")                  // 비번/권한 미사용
                         .authorities(List.of())
                         .build();
-                SecurityContextHolder.getContext().setAuthentication(
+/*                SecurityContextHolder.getContext().setAuthentication(
                         new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
-                );
-            } catch (Exception ignored) { }
-        }
-        chain.doFilter(req, res);
-    }
+                );*/
+                var auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
 
+                chain.doFilter(req, res);
+            } catch (ExpiredJwtException e) {
+                // 만료: 401 + WWW-Authenticate 헤더 + JSON 바디
+                writeUnauthorized(res, "TOKEN_EXPIRED", "Access token has expired");
+            } catch (JwtException | IllegalArgumentException e) {
+                // 위변조/포맷 오류 등: 401
+                writeUnauthorized(res, "INVALID_TOKEN", "Invalid or malformed token");
+            }
+        }
+    }
     private void writeUnauthorized(HttpServletResponse res, String code, String message) throws IOException {
         res.setStatus(HttpStatus.UNAUTHORIZED.value());
         // RFC 6750 권장: WWW-Authenticate에 error, error_description
@@ -61,5 +69,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         {"success":false,"code":"%s","message":"%s"}
         """.formatted(code, message));
     }
-
 }
+
