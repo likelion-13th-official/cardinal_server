@@ -11,4 +11,5 @@ public interface CategoryProvider {
     //Domain 별 DTO 다름 .Object로 공통 처리
     Object getMapMarkersByCategory();
 
+
 }
