@@ -22,7 +22,7 @@ public class EventProvider implements CategoryProvider{
 
     @Override
     public boolean hasCategory(String category){
-        return EVENT.name().equalsIgnoreCase(category);
+        return EVENT.name().equalsIgnoreCase(category.trim());
     }
 
     @Override

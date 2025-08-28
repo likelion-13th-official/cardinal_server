@@ -95,6 +95,7 @@ public class MapService {
     /*
     TODO : 1. viewcount 추가
            2. 에러 처리 수정
+           3. 리팩토링 (분기문)
     */
     public MapDetailDto getDetail(String category, Long AmenityId){
         if(category == null ||category.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
