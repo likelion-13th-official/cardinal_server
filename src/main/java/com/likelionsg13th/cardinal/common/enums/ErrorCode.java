@@ -25,7 +25,9 @@ public enum ErrorCode {
     LOCATION_NOT_PROVIDED_FOR_FOOD_TRUCK(HttpStatus.BAD_REQUEST, "F001", "푸드트럭 카테고리 조회 시 locationId 파라미터가 필수입니다."),
 
     //scrap
-    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND,"S001","해당 Id의 스크랩을 찾을 수 없습니다.");
+    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND,"S001","해당 Id의 스크랩을 찾을 수 없습니다."),
+    SCRAP_ALREADY_EXISTS(HttpStatus.CONFLICT,"S002","이미 스크랩한 항목입니다."),
+    SCRAP_NOT_SUPPORTED_FOR_CATEGORY(HttpStatus.BAD_REQUEST,"S003","해당 카테고리를 스크랩 할 수 없습니다.");
 
     //유저
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"U001", "해당 사용자를 찾을 수 없습니다"),

@@ -20,10 +20,13 @@ public class ProviderFactory {
     //all  provider DI
     private final List<CategoryProvider> categoryProviders;
 
+
+
     //find a provider
-    public CategoryProvider getProvider(String category) {
+    public CategoryProvider getProvider(String Category) {
+
         return categoryProviders.stream()
-                .filter(provider -> provider.hasCategory(category))
+                .filter(provider -> provider.hasCategory(Category.trim()))
                 .findFirst()
                 .orElseThrow(() -> new InvalidParameterException(ErrorCode.INVALID_CATEGORY));
     }
