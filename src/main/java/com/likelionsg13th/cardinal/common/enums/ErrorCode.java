@@ -16,11 +16,11 @@ public enum ErrorCode {
     //부스
     BOOTH_NOT_FOUND(HttpStatus.NOT_FOUND,"B001","해당 id의 부스를 찾을 수 없습니다"),
     //공연
-
+    PERFORMANCE_NOT_FOUND(HttpStatus.NOT_FOUND,"P001","해당 id의 공연을 찾을 수 없습니다."),
     //이벤트
-
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND,"E001","해당 id의 이벤트를 찾을 수 없습니다."),
     //굿즈
-
+    GOODS_NOT_FOUND(HttpStatus.NOT_FOUND,"G001","해당 id의 굿즈를 찾을 수 없습니다."),
     //푸드트런
     LOCATION_NOT_PROVIDED_FOR_FOOD_TRUCK(HttpStatus.BAD_REQUEST, "F001", "푸드트럭 카테고리 조회 시 locationId 파라미터가 필수입니다."),
 

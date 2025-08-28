@@ -1,13 +1,19 @@
 package com.likelionsg13th.cardinal.common.provider;
 
+import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
+import com.likelionsg13th.cardinal.common.enums.ContentType;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.PerformanceNotFound;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.List;
 
+import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
 /*
  * CASE 1
@@ -31,5 +37,12 @@ public class PerformanceProvider implements CategoryProvider
         MapInfoDto mapInfo = MapInfoDto.from(performanceRepository.findLocationFirstById());
 
         return MapFilteredByCategoryDto.from(List.of(mapInfo),PERFORMANCE.name());
+    }
+
+    @Override
+    public ContentType ValidateContentExistsForScrap(Long categoryId) {
+        if(!performanceRepository.existsById(categoryId))
+            throw new PerformanceNotFound(ErrorCode.PERFORMANCE_NOT_FOUND);
+        return PERFORMANCE;
     }
 }
