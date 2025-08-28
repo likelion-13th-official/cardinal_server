@@ -50,8 +50,8 @@ spring:
             user-name-attribute: id
 jwt:
   secret: "${JWT_SECRET}"
-  access-token-validity-seconds: 900
-  refresh-token-validity-seconds: 1209600
+  access-token-validity-seconds: ${ACCESS_SEC}
+  refresh-token-validity-seconds: ${REFRESH_SEC}
 
 logging:
   level:
