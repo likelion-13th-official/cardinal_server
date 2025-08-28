@@ -30,6 +30,10 @@ public class ScrapService {
 
     private final UserService userService;
 
+    public void getAllScrapsByDayOrIsOperation(String day,boolean isOperating){
+
+    }
+
     /*스크랩 : 굿즈 , 이벤트 , 부스 , 공연, */
     @Transactional
     public void addScrap(UserDto user, ScrapRequestDto scrapRequestDto) {

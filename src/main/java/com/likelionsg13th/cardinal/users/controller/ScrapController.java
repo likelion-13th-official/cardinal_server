@@ -23,8 +23,8 @@ public class ScrapController {
     @GetMapping()
     public ResponseEntity<ApiResponse> viewScraps(@AuthenticationPrincipal @Valid UserDetails principal, //user
                                                   @RequestParam(required = false)  String day,
-                                                  @RequestParam(required = false) String category) {
-
+                                                  @RequestParam(required = false) boolean isOperating) {
+        scrapService.getAllScrapsByDayOrIsOperation(day,isOperating);
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 조회 성공"));
     }
      @PostMapping()
