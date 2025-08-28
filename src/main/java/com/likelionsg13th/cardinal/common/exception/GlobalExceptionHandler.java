@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.common.exception;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
+//import com.likelionsg13th.cardinal.common.dto.resonseDto.ErrorResponse;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
