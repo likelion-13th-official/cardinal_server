@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","contentId","contentType"})
+)
 public class Scrap {
 
     @Id

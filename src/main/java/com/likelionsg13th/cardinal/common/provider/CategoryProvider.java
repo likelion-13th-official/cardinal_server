@@ -5,6 +5,7 @@ package com.likelionsg13th.cardinal.common.provider;
 * */
 
 
+import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.ScrapNotSupportedForCategory;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
@@ -19,7 +20,7 @@ public interface CategoryProvider {
     * POST /scraps
     * BOOTH,GOODS,EVENT,PERFORMANCE에만 사용
     * */
-    default void addScrapByCategory(Long categoryId, Long userId) {
+    default ContentType ValidateContentExistsForScrap(Long categoryId) {
         throw new ScrapNotSupportedForCategory(ErrorCode.SCRAP_NOT_SUPPORTED_FOR_CATEGORY);
     }
 }

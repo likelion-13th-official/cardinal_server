@@ -1,5 +1,8 @@
 package com.likelionsg13th.cardinal.common.provider;
 
+import com.likelionsg13th.cardinal.common.enums.ContentType;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;
@@ -38,5 +41,12 @@ public class EventProvider implements CategoryProvider{
 
 
         return MapFilteredByCategoryDetailDto.of(EVENT.name(), items);
+    }
+
+    @Override
+    public ContentType ValidateContentExistsForScrap(Long categoryId) {
+        if(!eventRepository.existsById(categoryId))
+            throw new EventNotFound(ErrorCode.EVENT_NOT_FOUND);
+        return EVENT;
     }
 }

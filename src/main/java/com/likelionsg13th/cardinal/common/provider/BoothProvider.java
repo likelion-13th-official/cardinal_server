@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.common.provider;
 
 import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.ScrapAlreadyExists;
 import com.likelionsg13th.cardinal.common.exception.UserNotFoundException;
@@ -34,21 +35,10 @@ public class BoothProvider implements CategoryProvider {
     }
 
     @Override
-    public void addScrapByCategory(Long categoryId, Long userId) {
+    public ContentType ValidateContentExistsForScrap(Long categoryId) {
         if(!boothRepository.existsById(categoryId))
             throw new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND);
-
-        Users userEntity = userRepository.findById(userId).orElseThrow(
-              ()-> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
-        );
-
-        if(scrapRepository.existsByUser_IdAndContentIdAndContentType(userId,categoryId,BOOTH))
-            throw new ScrapAlreadyExists(ErrorCode.SCRAP_ALREADY_EXISTS);
-
-        Scrap scrap = Scrap.toEntity(BOOTH,categoryId,userEntity);
-
-        //scrap 저장
-        scrapRepository.save(scrap);
+        return BOOTH;
     }
 
 
