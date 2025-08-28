@@ -15,16 +15,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleUserNotFoundException(UserNotFoundException ex) {
-        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    @ExceptionHandler(InvalidParameterException.class)
-    public ResponseEntity<ApiResponse> handleInvalidParameterException(InvalidParameterException ex) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
 
     private ResponseEntity<ApiResponse> buildErrorResponse(HttpStatus status, String message) {
         ApiResponse response = new ApiResponse(false, status.value(), message);
