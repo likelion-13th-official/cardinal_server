@@ -13,5 +13,5 @@ public interface ScrapRepository extends JpaRepository<Scrap,Long> {
     boolean existsByUser_IdAndContentIdAndContentType(Long userId, Long contentId, ContentType contentType);
     boolean existsByIdAndUserId(Long scrapId, Long userId);
     void deleteById(Long scrapId);
-    boolean deleteByUserId(Long id); //전체 삭제
+    void deleteAllByUserId(Long userId);
 }
