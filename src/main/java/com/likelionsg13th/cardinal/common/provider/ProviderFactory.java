@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.common.provider;
 
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
 import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -20,11 +21,14 @@ public class ProviderFactory {
     //all  provider DI
     private final List<CategoryProvider> categoryProviders;
 
+
+
     //find a provider
-    public CategoryProvider getProvider(String category) {
+    public CategoryProvider getProvider(String Category) {
+
         return categoryProviders.stream()
-                .filter(provider -> provider.hasCategory(category))
+                .filter(provider -> provider.hasCategory(Category.trim()))
                 .findFirst()
-                .orElseThrow(() -> new InvalidParameterException(ErrorCode.INVALID_CATEGORY));
+                .orElseThrow(() -> new InvalidCategoryException(ErrorCode.INVALID_CATEGORY));
     }
 }

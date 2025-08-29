@@ -1,11 +1,15 @@
 package com.likelionsg13th.cardinal.common.provider;
 
+import com.likelionsg13th.cardinal.common.enums.ContentType;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.EventNotFound;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;
+
 import static com.likelionsg13th.cardinal.common.enums.ContentType.GOODS;
 
 /*
@@ -29,5 +33,12 @@ public class GoodsProvider implements CategoryProvider {
         MapInfoDto mapInfo = MapInfoDto.from(goodsRepository.findLocationFirstById());
 
         return MapFilteredByCategoryDto.from(List.of(mapInfo),GOODS.name());
+    }
+
+    @Override
+    public ContentType ValidateContentExistsForScrap(Long categoryId) {
+        if(!goodsRepository.existsById(categoryId))
+            throw new EventNotFound(ErrorCode.GOODS_NOT_FOUND);
+        return GOODS;
     }
 }

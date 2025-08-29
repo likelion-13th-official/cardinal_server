@@ -53,8 +53,6 @@ public class MapService {
     * */
     public Object getMapMarkersByCategory(String category){
 
-        if(category == null ||category.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
-
         CategoryProvider categoryProvider = providerFactory.getProvider(category);
 
         return categoryProvider.getMapMarkersByCategory();
@@ -73,7 +71,7 @@ public class MapService {
      * ->   주점 , 푸드트럭 : + 대표 메뉴
      * */
     public List<MapSearchDto> getSearchResult(String keyword){
-        if(keyword == null ||keyword.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
+
 
         String searchKeyword = "%"+keyword+"%";
         Stream<List<MapSearchDto>> streams = Stream.of(
@@ -95,9 +93,9 @@ public class MapService {
     /*
     TODO : 1. viewcount 추가
            2. 에러 처리 수정
+           3. 리팩토링 (분기문)
     */
     public MapDetailDto getDetail(String category, Long AmenityId){
-        if(category == null ||category.isEmpty()) throw new ParameterIsNullOrEmpty(ErrorCode.PARAMETER_IS_NULL_OR_EMPTY);
 
         String name , position;
 

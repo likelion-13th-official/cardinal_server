@@ -1,7 +1,10 @@
 package com.likelionsg13th.cardinal.common.exception;
 
-public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException(String message) {
-        super(message);
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import org.apache.coyote.BadRequestException;
+
+public class UserNotFoundException extends BusinessException {
+    public UserNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

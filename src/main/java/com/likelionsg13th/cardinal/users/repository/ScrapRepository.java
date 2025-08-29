@@ -11,4 +11,7 @@ import java.util.List;
 public interface ScrapRepository extends JpaRepository<Scrap,Long> {
     List<Scrap> findAllByUser_IdAndContentIdInAndContentType(Long userId, List<Long> contentId, ContentType contentType);
     boolean existsByUser_IdAndContentIdAndContentType(Long userId, Long contentId, ContentType contentType);
+    boolean existsByIdAndUserId(Long scrapId, Long userId);
+    void deleteById(Long scrapId);
+    void deleteAllByUserId(Long userId);
 }
