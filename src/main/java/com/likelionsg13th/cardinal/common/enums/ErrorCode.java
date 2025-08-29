@@ -19,9 +19,12 @@ public enum ErrorCode {
     //굿즈
 
     //푸드트런
-    LOCATION_NOT_PROVIDED_FOR_FOOD_TRUCK(HttpStatus.BAD_REQUEST, "F001", "푸드트럭 카테고리 조회 시 locationId 파라미터가 필수입니다.");
+    LOCATION_NOT_PROVIDED_FOR_FOOD_TRUCK(HttpStatus.BAD_REQUEST, "F001", "푸드트럭 카테고리 조회 시 locationId 파라미터가 필수입니다."),
 
 
+    //유저
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"U001", "해당 사용자를 찾을 수 없습니다"),
+    STAMP_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "U002", "이미 적립한 스탬프입니다");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

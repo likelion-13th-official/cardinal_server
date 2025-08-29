@@ -3,10 +3,13 @@ package com.likelionsg13th.cardinal.common.exception;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 //import com.likelionsg13th.cardinal.common.dto.resonseDto.ErrorResponse;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,21 +18,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleUserNotFoundException(UserNotFoundException ex) {
-        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    @ExceptionHandler(InvalidParameterException.class)
-    public ResponseEntity<ApiResponse> handleInvalidParameterException(InvalidParameterException ex) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-
-    private ResponseEntity<ApiResponse> buildErrorResponse(HttpStatus status, String message) {
-        ApiResponse response = new ApiResponse(false, status.value(), message);
-        return new ResponseEntity<>(response, status);
-    }
 
 
 
@@ -51,6 +39,15 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse(false,HttpStatus.BAD_REQUEST.value(), message);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    //Request Body에서 enum에 없는 값을 보냈을 때
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        String errorMessage = "존재하지 않는 타입/카테고리 입니다." + ex.getMessage();
+        ApiResponse response = new ApiResponse(false, 400, errorMessage, null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
 
 }
