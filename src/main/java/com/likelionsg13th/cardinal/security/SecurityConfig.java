@@ -60,7 +60,7 @@ public class SecurityConfig {
                                 "/events/**",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/favicon.ico", "/default-ui.css").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(ae -> ae.baseUri("/oauth2/authorization"))
