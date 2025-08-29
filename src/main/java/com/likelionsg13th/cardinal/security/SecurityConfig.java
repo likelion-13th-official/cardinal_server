@@ -53,9 +53,14 @@ public class SecurityConfig {
                                 "/login",               // 커스텀 로그인 페이지 자체는 허용
                                 "/oauth2/**",           // OAuth2 흐름 허용
                                 "/map/**",
+                                "/search/**",
+                                "/booths/**",
+                                "/goods/**",
+                                "/performances/**",
+                                "/events/**",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/favicon.ico", "/default-ui.css").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(ae -> ae.baseUri("/oauth2/authorization"))

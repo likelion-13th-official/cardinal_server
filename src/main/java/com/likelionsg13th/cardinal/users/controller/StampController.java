@@ -25,7 +25,6 @@ public class StampController {
     private final UserService userService;
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse> createStamp(
             @RequestBody StampCreateRequest request,
             @AuthenticationPrincipal UserDetails userDetails
@@ -39,7 +38,6 @@ public class StampController {
 
     //조회
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse> getStamps(
             @AuthenticationPrincipal UserDetails userDetails
     ){
