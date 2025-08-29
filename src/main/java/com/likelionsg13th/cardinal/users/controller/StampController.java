@@ -3,12 +3,14 @@ package com.likelionsg13th.cardinal.users.controller;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.request.StampCreateRequest;
+import com.likelionsg13th.cardinal.users.dto.response.SimpleStampResponse;
 import com.likelionsg13th.cardinal.users.dto.response.StampResponse;
 import com.likelionsg13th.cardinal.users.service.StampService;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ public class StampController {
     private final UserService userService;
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse> createStamp(
             @RequestBody StampCreateRequest request,
             @AuthenticationPrincipal UserDetails userDetails
@@ -34,6 +37,16 @@ public class StampController {
                 .body(new ApiResponse(true,201,"스탬프 생성 성공", response));
     }
 
+    //조회
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse> getStamps(
+            @AuthenticationPrincipal UserDetails userDetails
+    ){
+        UserDto userDto=userService.getMeBySubject(userDetails.getUsername());
+        List<SimpleStampResponse> response=stampService.getStamps(userDto);
+        return ResponseEntity.ok(new ApiResponse(true,200,"스탬프 목록 조회 성공", response));
+    }
 
 
 }

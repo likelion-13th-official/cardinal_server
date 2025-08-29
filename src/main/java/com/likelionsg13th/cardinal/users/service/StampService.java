@@ -4,6 +4,7 @@ import com.likelionsg13th.cardinal.common.enums.ActivityType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.users.domain.Stamp;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.dto.response.SimpleStampResponse;
 import com.likelionsg13th.cardinal.users.exception.StampDuplicateException;
 import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
 import com.likelionsg13th.cardinal.users.domain.Users;
@@ -14,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +43,15 @@ public class StampService {
         return StampResponse.of(savedStamp);
     }
 
+    /*스탬프 조회*/
+    public List<SimpleStampResponse> getStamps(UserDto userDto) {
+        Users user=userRepository.findById(userDto.getId())
+                .orElseThrow(()->new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
+        List<Stamp> stamps=new ArrayList<>();
+        stamps=stampRepository.findAllByUser(user);
+        return stamps.stream()
+                .map(SimpleStampResponse::from)
+                .collect(Collectors.toList());
+    }
 }
