@@ -7,6 +7,7 @@ import com.likelionsg13th.cardinal.map.dto.MapListDto;
 import com.likelionsg13th.cardinal.map.service.MapService;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,7 +29,7 @@ public class MapController {
     private final UserService  userService;
 
     @GetMapping()
-    public ResponseEntity<ApiResponse> getMarkersByCategory(@RequestParam String category){
+    public ResponseEntity<ApiResponse> getMarkersByCategory(@RequestParam @NotBlank String category){
 
        Object response =   mapService.getMapMarkersByCategory(category);
 
@@ -36,7 +37,7 @@ public class MapController {
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<ApiResponse> getDetail(@RequestParam String category,
+    public ResponseEntity<ApiResponse> getDetail(@RequestParam @NotBlank String category,
                                                  @RequestParam(required = false) Long id){
 
         MapDetailDto response = mapService.getDetail(category,id);
@@ -44,14 +45,13 @@ public class MapController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse> getList(@RequestParam String category,
+    public ResponseEntity<ApiResponse> getList(@RequestParam @NotBlank String category,
                                                @RequestParam(required = false) Long locationId,
                                                @AuthenticationPrincipal UserDetails user ){
 
         UserDto userDto = null;
         if (user != null) {
             userDto = userService.getMeBySubject(user.getUsername());
-            System.out.println("USER  ID: " + userDto.getId());
         }
 
         MapListDto response = mapService.getList(category,locationId,userDto);
@@ -59,7 +59,7 @@ public class MapController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse> getSearch(@RequestParam String keyword){
+    public ResponseEntity<ApiResponse> getSearch(@RequestParam @NotBlank String keyword){
 
         List<MapSearchDto> resopnse =  mapService.getSearchResult(keyword);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공",resopnse));

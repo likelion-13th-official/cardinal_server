@@ -7,6 +7,7 @@ import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.service.ScrapService;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,7 +44,7 @@ public class ScrapController {
 
     @DeleteMapping("/{scrapId}")
     public ResponseEntity<ApiResponse> DeleteScrapsById(@AuthenticationPrincipal @Valid UserDetails principal
-                                                        ,@PathVariable @Valid Long scrapId) {
+                                                        ,@PathVariable @Valid @NotBlank Long scrapId) {
         UserDto user = userService.getMeBySubject(principal.getUsername());
         scrapService.deleteScrapByScrapId(user, scrapId);
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 삭제 성공",null));
