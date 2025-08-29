@@ -36,6 +36,7 @@ public class SecurityConfig {
     private final SocialOAuth2UserService socialOAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
     private final GoogleOidcUserService googleOidcUserService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
@@ -62,7 +63,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(ue -> ue.userService(socialOAuth2UserService).oidcUserService(googleOidcUserService)) // Google (OIDC))
                         .successHandler(successHandler)
                         .failureHandler((req, res, ex) -> {
-                            // 가장 중요한 한 줄: 정확한 실패 원인 로그
+
                             ex.printStackTrace(); // 또는 logger.error("OAuth2 login failed", ex);
 
                             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -79,9 +80,8 @@ public class SecurityConfig {
         """.formatted(escape(code), escape(desc)));
                         })
                 )
-                .exceptionHandling(e -> e.authenticationEntryPoint(
-                        new org.springframework.security.web.authentication.HttpStatusEntryPoint(
-                                org.springframework.http.HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(ex->ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
