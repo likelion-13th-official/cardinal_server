@@ -1,9 +1,17 @@
 package com.likelionsg13th.cardinal.users.dto.resonseDto;
 
+import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.goods.domain.Goods;
+import com.likelionsg13th.cardinal.performance.domain.Performance;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+
+import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
+import static com.likelionsg13th.cardinal.common.enums.DayOfWeek.ALWAYS;
 
 
 /*
@@ -19,8 +27,10 @@ import java.util.List;
 * category : booth
 * subCategory : 포토부스,주점,어쩌고 등등
 * */
-@Getter @RequiredArgsConstructor
+@Getter @AllArgsConstructor
+@Builder
 public class ScrapCommonDto {
+    Long id;
     String category; // BOOTH,PERFORMANCE,GOODS,EVENT,
     String subCategory; //BOOTH{FOOD_TRUCK,PUB,YARD_PROJECT,PHOTO_BOOTH,PARTNERSHIP} , PERFORMANCE{CLUB,FILM,ARTIST} , NULL
     String thumbnailUrl;
@@ -29,4 +39,43 @@ public class ScrapCommonDto {
     List<String> days; //GOODS 일 때 빈 리스트 반환
     ScrapDetail detail; //GOODS -> price , booth,event,film ->  timeDto
 
+    public static ScrapCommonDto of(Booth booth, ScrapDetail detail){
+        return ScrapCommonDto.builder()
+                .id(booth.getId())
+                .category(BOOTH.toString())
+                .subCategory(booth.getCategory().toString())
+                .name(booth.getName())
+                .thumbnailUrl(booth.getThumbnailUrl())
+                .position(booth.getLocation().getPosition())
+                .days(booth.getOperatingDays().stream()
+                        .map(Enum::toString)
+                        .toList())
+                .detail(detail)
+                .build();
+    }
+
+    public static ScrapCommonDto of(Goods booth, ScrapDetail detail){
+        return ScrapCommonDto.builder()
+                .id(booth.getId())
+                .category(GOODS.toString())
+                .name(booth.getName())
+                .thumbnailUrl(booth.getThumbnailUrl())
+                .position(booth.getLocation().getPosition())
+                .detail(detail)
+                .build();
+    }
+
+    public static ScrapCommonDto of(Performance booth){
+        return ScrapCommonDto.builder()
+                .id(booth.getId())
+                .category(PERFORMANCE.toString())
+                .subCategory(booth.getCategory().toString())
+                .name(booth.getName())
+                .thumbnailUrl(booth.getThumbnailUrl())
+                .position(booth.getLocation().getPosition())
+                .days(booth.getOperatingDays().stream()
+                        .map(Enum::toString)
+                        .toList())
+                .build();
+    }
 }

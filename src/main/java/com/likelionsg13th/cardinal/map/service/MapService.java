@@ -20,6 +20,7 @@ import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
+import com.likelionsg13th.cardinal.users.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Collection;
@@ -37,7 +38,7 @@ import static com.likelionsg13th.cardinal.common.utils.EnumUtil.boothCategoryVal
 public class MapService {
 
     private final ProviderFactory providerFactory;
-    private final ScrapRepository scrapRepository;
+    private final ScrapService scrapService;
 
     // 범위 부스, 공연, 부대시설, 이벤트, 굿즈,
     private final AmenityRepository amenityRepository;
@@ -147,7 +148,7 @@ public class MapService {
         if(boothList.isEmpty()){return MapListDto.of(null,boothCategory.name(),null,false);}
 
         /*유저가 스크랩 한 부스 ID Set*/
-        Set<Long> bookMarkedBoothIds = getBookMarkedBoothIds(boothList,user);
+        Set<Long> bookMarkedBoothIds = scrapService.getBookMarkedBoothIds(boothList,user);
 
         /*스크랩 여부 확인하여 dto 생성*/
         List<MapListItemDto> itemList = boothList.stream().map(
@@ -164,19 +165,7 @@ public class MapService {
 
     }
 
-    /*
-     * 유저와 부스 리스트를 비교하여 스크랩 한 부스를 찾습니다.
-     * @param boothList 스크랩 여부 확인할 부스 리스트
-     * @param user 로그인한 사용자 정보 null 인 경우 빈 set 반환
-     */
-    private Set<Long> getBookMarkedBoothIds(List<Booth> boothList, UserDto user){
-        if(user == null ) return Collections.emptySet();
-        List<Long> boothIds = boothList.stream().map(Booth::getId).toList();
-        return scrapRepository.findAllByUser_IdAndContentIdInAndContentType(user.getId(),boothIds,BOOTH)
-                .stream()
-                .map(Scrap::getContentId)
-                .collect(Collectors.toSet());
-    }
+
 
     /*
      * @param boothList 스크랩 여부 확인할 부스 리스트
