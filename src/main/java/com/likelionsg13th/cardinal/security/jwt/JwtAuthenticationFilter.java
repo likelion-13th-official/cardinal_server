@@ -69,8 +69,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         // OAuth2 로그인 경로는 필터 적용 제외
         String path = request.getRequestURI();
-        return path.startsWith("/oauth2/") || path.startsWith("/auth/") || path.startsWith("/booths")||path.startsWith("/events")||path.startsWith("/goods")||path.startsWith("/search");
-
+        return path.startsWith("/oauth2/") || path.startsWith("/auth/") || path.startsWith("/booths") || path.startsWith("/events") || path.startsWith("/goods") || path.startsWith("/search");
+    }
     private void writeUnauthorized(HttpServletResponse res, String code, String message) throws IOException {
         res.setStatus(HttpStatus.UNAUTHORIZED.value());
         // RFC 6750 권장: WWW-Authenticate에 error, error_description

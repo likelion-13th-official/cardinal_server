@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.users.dto.requestDto;
+package com.likelionsg13th.cardinal.users.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

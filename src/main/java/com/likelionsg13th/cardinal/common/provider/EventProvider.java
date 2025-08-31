@@ -2,7 +2,7 @@ package com.likelionsg13th.cardinal.common.provider;
 
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.common.exception.EventNotFound;
+import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;

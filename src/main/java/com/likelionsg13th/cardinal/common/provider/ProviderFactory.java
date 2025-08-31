@@ -2,7 +2,6 @@ package com.likelionsg13th.cardinal.common.provider;
 
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
-import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.stereotype.Component;
