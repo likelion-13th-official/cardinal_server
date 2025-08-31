@@ -2,15 +2,12 @@ package com.likelionsg13th.cardinal.event.domain;
 
 
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
-import com.likelionsg13th.cardinal.common.domain.Map;
-import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.common.domain.OperationAwareEntity;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

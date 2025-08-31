@@ -300,17 +300,17 @@ VALUES (1,1, 'https://example.com/event1_detail1.jpg'),
 
 -- 8. Goods (10 records)
 
-INSERT INTO goods (name, description, thumbnail_url, view_count, price)
-VALUES ('개발자 티셔츠', 'I speak fluent Java', 'https://example.com/goods1.jpg', 1500, 6),
-       ('코딩 머그컵', 'Keep Calm and Code On', 'https://example.com/goods2.jpg', 2000, 6),
-       ('알고리즘 노트', '알고리즘 문제 풀이에 최적화된 노트', 'https://example.com/goods3.jpg', 1800, 6),
-       ('버그 인형', '스트레스 해소용 버그 인형', 'https://example.com/goods4.jpg', 2500, 6),
-       ('해커 키보드', '해커처럼 빠른 타이핑을 위한 기계식 키보드', 'https://example.com/goods5.jpg', 3000, 6),
-       ('개발자 스티커팩', '노트북을 꾸밀 수 있는 다양한 개발자 스티커', 'https://example.com/goods6.jpg', 2200, 6),
-       ('코딩 양말', '코딩할 때 신으면 집중력이 올라가는 양말', 'https://example.com/goods7.jpg', 1700, 6),
-       ('알고리즘 마우스패드', '알고리즘 문제 풀 때 유용한 마우스패드', 'https://example.com/goods8.jpg', 1900, 6),
-       ('버그 스프레이', '버그를 한 방에 해결해주는 상상 속의 스프레이', 'https://example.com/goods9.jpg', 2800, 6),
-       ('해커 후드티', '해커처럼 보이고 싶을 때 입는 후드티', 'https://example.com/goods10.jpg', 3200, 6);
+INSERT INTO goods (name,location_id, description, thumbnail_url, price,view_count)
+VALUES ('개발자 티셔츠', 1,'I speak fluent Java', 'https://example.com/goods1.jpg', 1500, 6),
+       ('코딩 머그컵', 1,'Keep Calm and Code On', 'https://example.com/goods2.jpg', 2000, 6),
+       ('알고리즘 노트', 1,'알고리즘 문제 풀이에 최적화된 노트', 'https://example.com/goods3.jpg', 1800, 6),
+       ('버그 인형', 1,'스트레스 해소용 버그 인형', 'https://example.com/goods4.jpg', 2500, 6),
+       ('해커 키보드', 1,'해커처럼 빠른 타이핑을 위한 기계식 키보드', 'https://example.com/goods5.jpg', 3000, 6),
+       ('개발자 스티커팩', 1,'노트북을 꾸밀 수 있는 다양한 개발자 스티커', 'https://example.com/goods6.jpg', 2200, 6),
+       ('코딩 양말', 1,'코딩할 때 신으면 집중력이 올라가는 양말', 'https://example.com/goods7.jpg', 1700, 6),
+       ('알고리즘 마우스패드', 1,'알고리즘 문제 풀 때 유용한 마우스패드', 'https://example.com/goods8.jpg', 1900, 6),
+       ('버그 스프레이', 1,'버그를 한 방에 해결해주는 상상 속의 스프레이', 'https://example.com/goods9.jpg', 2800, 6),
+       ('해커 후드티', 1,'해커처럼 보이고 싶을 때 입는 후드티', 'https://example.com/goods10.jpg', 3200, 6);
 
 -- 9. Goods Detail Images (10 records)
 
@@ -328,38 +328,66 @@ VALUES (1,1, 'https://example.com/goods1_detail1.jpg'),
 
 -- 10. Performances (20 records)
 
-INSERT INTO performance (category, name, date, description, thumbnail_url, view_count, location_id)
-VALUES ('CLUB', '멋쟁이사자처럼 노래패', '2025-08-16 13:00:00', '멋쟁이사자처럼 멤버들이 부르는 감미로운 노래', 'https://example.com/perf1.jpg', 1200, 6),
-       ('CLUB', '코딩댄스팀', '2025-08-16 15:00:00', '코딩 동작을 응용한 신나는 댄스 공연', 'https://example.com/perf2.jpg', 1500, 6),
-       ('CLUB', '알고리즘 연극반', '2025-08-17 11:00:00', '알고리즘을 주제로 한 재미있는 연극', 'https://example.com/perf3.jpg', 1300, 6),
-       ('CLUB', '버그 버스킹', '2025-08-17 17:00:00', '버그 잡는 심정으로 부르는 애절한 발라드', 'https://example.com/perf4.jpg', 1800, 6),
-       ('CLUB', '해커 밴드', '2025-08-18 13:00:00', '해커들의 열정이 느껴지는 락밴드 공연', 'https://example.com/perf5.jpg', 2000, 6),
-       ('CLUB', '코딩 오케스트라', '2025-08-18 15:00:00', '코딩처럼 정교하고 아름다운 오케스트라 연주', 'https://example.com/perf6.jpg', 1600, 6),
-       ('FILM', '개발자의 사랑', '2025-08-16 19:00:00', '개발자의 애틋한 사랑 이야기를 담은 단편 영화', 'https://example.com/perf7.jpg', 2500, 6),
-       ('FILM', '알고리즘의 눈물', '2025-08-17 19:00:00', '알고리즘에 울고 웃는 개발자들의 이야기', 'https://example.com/perf8.jpg', 2200, 6),
-       ('FILM', '버그와의 전쟁', '2025-08-18 19:00:00', '버그를 잡기 위한 개발자들의 처절한 사투', 'https://example.com/perf9.jpg', 2800, 6),
-       ('FILM', '해커의 꿈', '2025-08-16 21:00:00', '세상을 바꾸고 싶은 해커의 이야기', 'https://example.com/perf10.jpg', 3000, 6),
-       ('FILM', '코딩의 신', '2025-08-17 21:00:00', '전설적인 코더의 일대기를 그린 영화', 'https://example.com/perf11.jpg', 3200, 6),
-       ('FILM', 'AI의 역습', '2025-08-18 21:00:00', '인공지능이 인류를 위협하는 SF 스릴러', 'https://example.com/perf12.jpg', 3500, 6),
-       ('ARTIST', '아이유', '2025-08-16 22:00:00', '국민 여동생 아이유의 특별 공연', 'https://example.com/perf13.jpg', 10000, 6),
-       ('ARTIST', '악동뮤지션', '2025-08-17 22:00:00', '악동뮤지션의 재치있는 무대', 'https://example.com/perf14.jpg', 9000, 6),
-       ('ARTIST', '10cm', '2025-08-18 22:00:00', '10cm의 감미로운 목소리', 'https://example.com/perf15.jpg', 8000, 6),
-       ('ARTIST', '볼빨간사춘기', '2025-08-16 18:00:00', '볼빨간사춘기의 상큼한 공연', 'https://example.com/perf16.jpg', 7000, 6),
-       ('ARTIST', '자이언티', '2025-08-17 18:00:00', '자이언티의 독특한 음색', 'https://example.com/perf17.jpg', 7500, 6),
-       ('ARTIST', '크러쉬', '2025-08-18 18:00:00', '크러쉬의 감성적인 R&B 무대', 'https://example.com/perf18.jpg', 8500, 6);
+INSERT INTO performance (category, name, description, thumbnail_url, view_count, location_id, start_time, end_time, is_operating)
+VALUES ('CLUB', '멋쟁이사자처럼 노래패',  '멋쟁이사자처럼 멤버들이 부르는 감미로운 노래', 'https://example.com/perf1.jpg', 1200, 6, '18:00:00', '02:00:00', TRUE),
+       ('CLUB', '코딩댄스팀',  '코딩 동작을 응용한 신나는 댄스 공연', 'https://example.com/perf2.jpg', 1500, 6,'18:00:00', '02:00:00', TRUE),
+       ('CLUB', '알고리즘 연극반',  '알고리즘을 주제로 한 재미있는 연극', 'https://example.com/perf3.jpg', 1300, 6,'18:00:00', '02:00:00', TRUE),
+       ('CLUB', '버그 버스킹',  '버그 잡는 심정으로 부르는 애절한 발라드', 'https://example.com/perf4.jpg', 1800, 6,'18:00:00', '02:00:00', TRUE),
+       ('CLUB', '해커 밴드',  '해커들의 열정이 느껴지는 락밴드 공연', 'https://example.com/perf5.jpg', 2000, 6,'18:00:00', '02:00:00', TRUE),
+       ('CLUB', '코딩 오케스트라', '코딩처럼 정교하고 아름다운 오케스트라 연주', 'https://example.com/perf6.jpg', 1600, 6,'18:00:00', '02:00:00', TRUE),
+       ('FILM', '개발자의 사랑',  '개발자의 애틋한 사랑 이야기를 담은 단편 영화', 'https://example.com/perf7.jpg', 2500, 6,'14:00:00', '16:00:00', TRUE),
+       ('FILM', '알고리즘의 눈물',  '알고리즘에 울고 웃는 개발자들의 이야기', 'https://example.com/perf8.jpg', 2200, 6,'14:00:00', '16:00:00', TRUE),
+       ('FILM', '버그와의 전쟁',  '버그를 잡기 위한 개발자들의 처절한 사투', 'https://example.com/perf9.jpg', 2800, 6,'14:00:00', '16:00:00', TRUE),
+       ('FILM', '해커의 꿈',  '세상을 바꾸고 싶은 해커의 이야기', 'https://example.com/perf10.jpg', 3000, 6,'14:00:00', '16:00:00', TRUE),
+       ('FILM', '코딩의 신',  '전설적인 코더의 일대기를 그린 영화', 'https://example.com/perf11.jpg', 3200, 6,'14:00:00', '16:00:00', TRUE),
+       ('FILM', 'AI의 역습', '인공지능이 인류를 위협하는 SF 스릴러', 'https://example.com/perf12.jpg', 3500, 6,'14:00:00', '16:00:00', TRUE),
+       ('ARTIST', '아이유',  '국민 여동생 아이유의 특별 공연', 'https://example.com/perf13.jpg', 10000, 6,'14:00:00', '16:00:00', TRUE),
+       ('ARTIST', '악동뮤지션',  '악동뮤지션의 재치있는 무대', 'https://example.com/perf14.jpg', 9000, 6,'14:00:00', '16:00:00', TRUE),
+       ('ARTIST', '10cm', '10cm의 감미로운 목소리', 'https://example.com/perf15.jpg', 8000, 6,'14:00:00', '16:00:00', TRUE),
+       ('ARTIST', '볼빨간사춘기',  '볼빨간사춘기의 상큼한 공연', 'https://example.com/perf16.jpg', 7000, 6,'14:00:00', '16:00:00', TRUE),
+       ('ARTIST', '자이언티',  '자이언티의 독특한 음색', 'https://example.com/perf17.jpg', 7500, 6,'14:00:00', '16:00:00', TRUE),
+       ('ARTIST', '크러쉬',  '크러쉬의 감성적인 R&B 무대', 'https://example.com/perf18.jpg', 8500, 6,'14:00:00', '16:00:00', TRUE);
+
+
+INSERT INTO performance_operating_days (performance_id, operating_days)
+VALUES (1, 'FRI'),
+       -- DJ 파티
+       (2, 'TUE'),
+       -- 보물찾기 이벤트
+       (3, 'ALWAYS'),
+       -- 코스프레 대회
+       (4, 'ALWAYS'),
+       -- 네트워킹 파티
+       (5, 'ALWAYS'),
+       -- 경품 추첨
+       (6, 'ALWAYS'),
+       -- 폐막식
+       (7, 'FRI'),
+       -- 인디밴드 공연
+       (8, 'ALWAYS'),
+       (9, 'ALWAYS'),
+       (10, 'ALWAYS'),
+       (11, 'ALWAYS'),
+       (12, 'ALWAYS'),
+       (13, 'ALWAYS'),
+       (14, 'ALWAYS'),
+       (15, 'ALWAYS'),
+       (16, 'TUE'),
+       (17, 'TUE'),
+       (18, 'TUE');
 
 -- 11. Scraps (10 records)
--- INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
--- (1, 1, 'BOOTH', '2025-08-16 19:00:00'),
--- (1, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
--- (2, 6, 'BOOTH', '2025-08-16 13:00:00'),
--- (2, 3, 'EVENT', '2025-08-16 21:00:00'),
--- (3, 1, 'GOODS', '2025-08-17 10:00:00'),
--- (4, 21, 'BOOTH', '2025-08-17 11:00:00'),
--- (5, 7, 'PERFORMANCE', '2025-08-17 19:30:00'),
--- (6, 4, 'EVENT', '2025-08-18 12:00:00'),
--- (7, 16, 'BOOTH', '2025-08-18 14:00:00'),
--- (8, 5, 'GOODS', '2025-08-18 15:00:00');
+INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
+(2, 1, 'BOOTH', '2025-08-16 19:00:00'),
+(2, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
+(2, 6, 'BOOTH', '2025-08-16 13:00:00'),
+(2, 3, 'EVENT', '2025-08-16 21:00:00'),
+(2, 1, 'GOODS', '2025-08-17 10:00:00'),
+(2, 21, 'BOOTH', '2025-08-17 11:00:00'),
+(2, 7, 'PERFORMANCE', '2025-08-17 19:30:00'),
+(2, 4, 'EVENT', '2025-08-18 12:00:00'),
+(2, 16, 'BOOTH', '2025-08-18 14:00:00'),
+(2, 5, 'GOODS', '2025-08-18 15:00:00');
 
 -- 12. Amenity 데이터 삽입
 

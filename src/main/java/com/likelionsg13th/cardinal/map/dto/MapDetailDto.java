@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.common.dto.resonseDto.map;
+package com.likelionsg13th.cardinal.map.dto;
 
 import lombok.Builder;
 import lombok.Getter;

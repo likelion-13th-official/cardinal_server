@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.common.dto.resonseDto.map;
+package com.likelionsg13th.cardinal.map.dto;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 
@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
-public class MapListDetailDto {
+public class MapListItemDto {
 
      Long id;
      boolean bookMarked;
-     List<DayOfWeek> operatingDays;
+     List<String> operatingDays;
      LocalTime startTime;
      LocalTime endTime;
      String title;
@@ -25,11 +25,11 @@ public class MapListDetailDto {
      String thumbnailUrl;
 
 
-    public static MapListDetailDto from(Booth booth, boolean bookMarked) {
-        return new MapListDetailDto(
+    public static MapListItemDto from(Booth booth, boolean bookMarked) {
+        return new MapListItemDto(
                 booth.getId(),
                 bookMarked,
-                booth.getOperatingDays(),
+                booth.getOperatingDays().stream().map(DayOfWeek::toKorean).collect(Collectors.toList()),
                 booth.getOperatingInfo().getStartTime(),
                 booth.getOperatingInfo().getEndTime(),
                 booth.getName(),

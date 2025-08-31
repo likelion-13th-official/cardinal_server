@@ -21,5 +21,5 @@ public class OperatingInfo {
     private LocalTime endTime;
 
     private boolean isOperating;
-
+        //TODO :   isOperating 계산 로직 필요
 }

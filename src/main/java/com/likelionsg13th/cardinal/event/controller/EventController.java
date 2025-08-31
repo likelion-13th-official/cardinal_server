@@ -2,15 +2,15 @@ package com.likelionsg13th.cardinal.event.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
+import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
+import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +29,20 @@ public class EventController {
         PageDto<EventResponse> response=eventService.searchEvents(query,page);
         return ResponseEntity.ok(new ApiResponse(true,200,"이벤트 검색 목록 조회 성공",response));
 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getEvent(@PathVariable Long id){
+        EventDetailResponse response = eventService.getEvent(id);
+        return ResponseEntity.ok(new ApiResponse(true, 200, "이벤트 개별 조회 성공", response));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse> getEvents(
+            @RequestParam(value="day", required = false)DayOfWeek day
+            ){
+        List<EventSimpleResponse> response = eventService.getEventList(day);
+        return ResponseEntity.ok(new ApiResponse(true, 200, "이벤트 전체조회 성공", response));
     }
 
 }

@@ -1,8 +1,6 @@
 package com.likelionsg13th.cardinal.goods.dto;
 
-import com.likelionsg13th.cardinal.common.domain.Map;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +10,7 @@ public class GoodsResponse {
     private Long id;
 
     private String name;
-    private long price;
+    private Long price;
     private String thumbnailUrl;
 
     private boolean bookmarked;
