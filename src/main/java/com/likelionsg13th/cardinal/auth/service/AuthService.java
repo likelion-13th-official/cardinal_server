@@ -44,6 +44,17 @@ public class AuthService {
 
     /** 로그아웃(현재 세션): 해당 refresh 삭제 → 즉시 무효화 */
     public void logoutByRefresh(String refreshToken) {
+/*
+        //일반적으로 logout은 refresh 토큰이 있든 없든 무조건 삭제 및 ok 반환하는  idempotent 사용
+        // refresh 토큰없는 경우, 400에러 반환하는 strict 로그아웃은 잘 쓰지 않음.
+        var opt = refreshRepo.findByToken(refreshToken);
+        if(opt.isEmpty()) {
+            if(strict){
+                throw new IllegalArgumentException("Refresh token not found");
+            }else{
+                return;
+            }
+        }*/
         refreshRepo.deleteByToken(refreshToken);
     }
 
