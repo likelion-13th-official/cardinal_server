@@ -1,28 +1,17 @@
 package com.likelionsg13th.cardinal.security;
 
-import com.likelionsg13th.cardinal.security.jwt.JwtAuthenticationFilter;
-import com.likelionsg13th.cardinal.security.jwt.JwtTokenProvider;
-import com.likelionsg13th.cardinal.users.domain.Users;
-import com.likelionsg13th.cardinal.users.repository.UserRepository;
+import com.likelionsg13th.cardinal.auth.jwt.JwtAuthenticationFilter;
+import com.likelionsg13th.cardinal.auth.jwt.JwtTokenProvider;
+import com.likelionsg13th.cardinal.auth.oauth2.GoogleOidcUserService;
+import com.likelionsg13th.cardinal.auth.oauth2.OAuth2SuccessHandler;
+import com.likelionsg13th.cardinal.auth.service.SocialOAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 
 @Configuration
