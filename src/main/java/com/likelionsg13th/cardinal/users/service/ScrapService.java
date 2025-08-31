@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
+import static com.likelionsg13th.cardinal.common.enums.ContentType.GOODS;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +58,12 @@ public class ScrapService {
         List<ScrapCommonDto>  scrapCommonDtoList =  scrapList.stream()
                 .map(
                         scrap -> {
-                            return providerFactory.getScrappable(scrap.getContentType().toString())
+                            if(scrap.getContentType().equals(GOODS)){ //GOODS는 filter 없는 버전사용.
+                                return  providerFactory.getScrappable(scrap.getContentType().toString())
+                                        .getScrapCommonDto(scrap.getContentId());
+                            }
+                            return
+                                    providerFactory.getScrappable(scrap.getContentType().toString())
                                     .getScrapCommonDto(scrap.getContentId(), day, isOperating);
 
                         }

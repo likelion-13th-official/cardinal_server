@@ -80,7 +80,7 @@ public class ScrapCommonDto {
                 .build();
     }
 
-    public static ScrapCommonDto of(Performance booth){
+    public static ScrapCommonDto of(Performance booth,ScrapDetail detail){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
                 .category(PERFORMANCE.toString())
@@ -91,6 +91,7 @@ public class ScrapCommonDto {
                 .days(booth.getOperatingDays().stream()
                         .map(Enum::toString)
                         .toList())
+                .detail(detail)
                 .build();
     }
 }

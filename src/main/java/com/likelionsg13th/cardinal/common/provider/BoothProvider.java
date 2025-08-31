@@ -50,16 +50,11 @@ public class BoothProvider implements CategoryProvider,Scrappable{
        Optional<Booth> boothOptional = boothRepository.findById(contentId);
        if(boothOptional.isEmpty()) return Optional.empty();
        Booth booth  = boothOptional.get();
-       boolean matches = true;
-       /*day 필터링 시 : 상시도 아니고, 필터 요일에 해당하지 않으면 -> 조건 부적합  */
 
-       if(day != null
-               && (!booth.getOperatingDays().contains(DayOfWeek.valueOf(day.toUpperCase()))
-                && !booth.getOperatingDays().contains(ALWAYS) ) ) matches = false;
-
-       if(isOperating!=null && booth.getOperatingInfo().isOperating() != isOperating ) matches = false;
-
-       return matches ? Optional.of(ScrapCommonDto.of(booth, ScrapTimeDetailDto.from(booth))) : Optional.empty();
+       return isFilteredByDay(day,booth.getOperatingDays())
+               && isFilteredByIsOperating(isOperating,booth.getOperatingInfo().isOperating())
+               ? Optional.of(ScrapCommonDto.of(booth, ScrapTimeDetailDto.from(booth)))
+               : Optional.empty();
     }
 
 

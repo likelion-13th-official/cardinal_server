@@ -38,22 +38,15 @@ public class EventProvider implements CategoryProvider,Scrappable{
     @Override
     public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating){
 
-        Optional<Event> boothOptional = eventRepository.findById(contentId);
-        if(boothOptional.isEmpty()) return Optional.empty();
+        Optional<Event> eventOptional = eventRepository.findById(contentId);
+        if(eventOptional.isEmpty()) return Optional.empty();
 
-        Event event  = boothOptional.get();
-        boolean maches = true;
-        /*day 필터링 시 : 상시도 아니고, 필터 요일에 해당하지 않으면 -> 조건 부적합  */
-        if(day != null
-                && (!event.getOperatingDays().contains(DayOfWeek.valueOf(day.toUpperCase()))
-                && !event.getOperatingDays().contains(ALWAYS) ) ) {
-            System.out.println("스크랩 조회 부적합 event "+contentId);
-            maches = false;
-        }
-        if(isOperating!=null && event.getOperatingInfo().isOperating() != isOperating ) maches = false;
+        Event event  = eventOptional.get();
 
-
-        return maches ? Optional.of(ScrapCommonDto.of(event, ScrapTimeDetailDto.from(event))) : Optional.empty();
+        return isFilteredByDay(day,event.getOperatingDays())
+                && isFilteredByIsOperating(isOperating,event.getOperatingInfo().isOperating())
+                ? Optional.of(ScrapCommonDto.of(event, ScrapTimeDetailDto.from(event)))
+                : Optional.empty();
     }
 
     @Override
