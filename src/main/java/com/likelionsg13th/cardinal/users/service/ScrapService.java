@@ -4,6 +4,7 @@ import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ListResponseDto;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.ScrapAlreadyExists;
 import com.likelionsg13th.cardinal.common.exception.ScrapNotFoundException;
@@ -14,18 +15,13 @@ import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.requestDto.ScrapRequestDto;
 import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapCommonDto;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapDetail;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapTimeDetailDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
@@ -37,8 +33,6 @@ public class ScrapService {
     private final ScrapRepository scrapRepository;
     private final UserRepository userRepository;
 
-    private final UserService userService;
-    private final BoothRepository boothRepository;
     /*
     *   운영 여부: 운영 중 / 운영 종료
         요일: 월 / 화 / 수 / 목 / 금 : 상시 일경우 모든 경우에 반환
@@ -57,29 +51,22 @@ public class ScrapService {
 
     public ListResponseDto<ScrapCommonDto> getAllScrapsByDayOrIsOperation(UserDto user, String day, Boolean isOperating){
         Users  userEntity = checkUser(user);
-        //case 1. day가 있는 경우 :day+ 상시
-        //case 2. isOperation 있는경우 :
-        //case 3. 둘 다 있는 경우
+
         List<Scrap> scrapList = scrapRepository.findAllByUser_Id(userEntity.getId());
 
-        List<Long> scrappedBoothIds = new ArrayList<>();
-        scrapList.forEach(scrap -> {
-            if(scrap.getContentType() == BOOTH) scrappedBoothIds.add(scrap.getContentId());
-        });
+        List<ScrapCommonDto>  scrapCommonDtoList =  scrapList.stream()
+                .map(
+                        scrap -> {
+                            return providerFactory.getScrappable(scrap.getContentType().toString())
+                                    .getScrapCommonDto(scrap.getContentId(), day, isOperating);
 
-        List<Booth> scrappedBoothList = boothRepository.findAllByIdIn(scrappedBoothIds);
-
-        List<ScrapCommonDto> scrapCommonDtoList = scrappedBoothList.stream()
-                .map(booth -> {
-                    ScrapDetail detail = ScrapTimeDetailDto.from(booth);
-                    return ScrapCommonDto.of(booth, detail);
-                }).toList();
-
+                        }
+                )
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
 
         return ListResponseDto.from(scrapCommonDtoList);
-
-
-        //case 4. 둘 다 없는 경우
     }
 
 

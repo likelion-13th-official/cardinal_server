@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.users.dto.resonseDto;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,20 @@ public class ScrapCommonDto {
                 .id(booth.getId())
                 .category(BOOTH.toString())
                 .subCategory(booth.getCategory().toString())
+                .name(booth.getName())
+                .thumbnailUrl(booth.getThumbnailUrl())
+                .position(booth.getLocation().getPosition())
+                .days(booth.getOperatingDays().stream()
+                        .map(Enum::toString)
+                        .toList())
+                .detail(detail)
+                .build();
+    }
+
+    public static ScrapCommonDto of(Event booth, ScrapDetail detail){
+        return ScrapCommonDto.builder()
+                .id(booth.getId())
+                .category(EVENT.toString())
                 .name(booth.getName())
                 .thumbnailUrl(booth.getThumbnailUrl())
                 .position(booth.getLocation().getPosition())
