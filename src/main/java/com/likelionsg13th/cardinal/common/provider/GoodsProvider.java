@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.GOODS;
-import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
 
 /*
  * CASE 1

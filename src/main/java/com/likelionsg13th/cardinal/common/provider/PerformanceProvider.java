@@ -11,14 +11,12 @@ import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
 import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.FILM;
 
