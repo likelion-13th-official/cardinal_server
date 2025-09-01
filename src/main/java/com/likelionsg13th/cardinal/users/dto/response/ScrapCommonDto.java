@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.users.dto.resonseDto;
+package com.likelionsg13th.cardinal.users.dto.response;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.event.domain.Event;
@@ -7,12 +7,10 @@ import com.likelionsg13th.cardinal.performance.domain.Performance;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
-import static com.likelionsg13th.cardinal.common.enums.DayOfWeek.ALWAYS;
 
 
 /*

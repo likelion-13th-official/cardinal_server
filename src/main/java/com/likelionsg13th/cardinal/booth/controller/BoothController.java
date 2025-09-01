@@ -5,8 +5,13 @@ import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,14 +21,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoothController {
     private final BoothService boothService;
+    private final UserService userService;
     /*전체 목록 조회*/
     @GetMapping
     public ResponseEntity<ApiResponse> getBoothList(
             @RequestParam("category") String category,
             @RequestParam(value = "isOperating", required = false) Boolean isOperating,
-            @RequestParam(value = "day", required = false) String day){
+            @RequestParam(value = "day", required = false) String day,
+            @AuthenticationPrincipal  UserDetails user){
 
-        List<BoothResponse> boothList=boothService.getBoothList(category,isOperating,day);
+        UserDto userDto = null;
+        if (user != null)
+            userDto = userService.getMeBySubject(user.getUsername());
+
+        List<BoothResponse> boothList=boothService.getBoothList(userDto,category,isOperating,day);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 목록 조회 성공", boothList));
 
     }
@@ -41,9 +52,14 @@ public class BoothController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> searchBooths(
             @RequestParam("query") String query,
-            @RequestParam("page") int page
+            @RequestParam("page") int page,
+            @AuthenticationPrincipal  UserDetails user
     ){
-        PageDto<BoothResponse> response=boothService.searchBooths(query,page);
+        UserDto userDto = null;
+        if (user != null)
+            userDto = userService.getMeBySubject(user.getUsername());
+
+        PageDto<BoothResponse> response=boothService.searchBooths(userDto,query,page);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 검색 목록 조회 성공", response));
     }
 

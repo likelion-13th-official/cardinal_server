@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.users.dto.resonseDto;
+package com.likelionsg13th.cardinal.users.dto.response;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.event.domain.Event;
@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.time.LocalTime;
 
 @Getter @AllArgsConstructor @Builder

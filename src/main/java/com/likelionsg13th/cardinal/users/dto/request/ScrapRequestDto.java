@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.users.dto.requestDto;
+package com.likelionsg13th.cardinal.users.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,3 +15,4 @@ public class ScrapRequestDto {
     @NotNull(message = "categoryId는 필수 입력값입니다.")
     Long categoryId;
 }
+

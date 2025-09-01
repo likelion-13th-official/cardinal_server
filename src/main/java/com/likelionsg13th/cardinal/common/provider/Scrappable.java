@@ -1,8 +1,7 @@
 package com.likelionsg13th.cardinal.common.provider;
 
-import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +36,8 @@ public interface Scrappable  {
          return filterIsOperating == null || isOperating == filterIsOperating;
     }
 
-
+    default boolean isScrappedByUser(Long userId ,Long contentId){
+         return false;
+    }
 
 }

@@ -21,7 +21,7 @@ public class BoothResponse {
     private String thumbnailUrl;
     private boolean bookmarked;
 
-    public static BoothResponse from(Booth booth){
+    public static BoothResponse from(Booth booth,boolean isScrapped){
         return BoothResponse.builder()
                 .id(booth.getId())
                 .category(booth.getCategory().toKorean())
@@ -29,6 +29,7 @@ public class BoothResponse {
                 .location(booth.getLocation().getPosition())
                 .operatingInfo(booth.getOperatingInfo())
                 .thumbnailUrl(booth.getThumbnailUrl())
+                .bookmarked(isScrapped)
                 .operatingDays(
                         booth.getOperatingDays().stream()
                                 .map(day -> day.toKorean())
