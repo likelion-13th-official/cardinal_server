@@ -21,7 +21,7 @@ public class PerformanceResponse {
     private OperatingInfo operatingInfo;
     private List<String> operatingDays;
 
-    private boolean bookmarked;
+    private boolean isScrapped;
 
     public static PerformanceResponse from(Performance performance) {
         return PerformanceResponse.builder()

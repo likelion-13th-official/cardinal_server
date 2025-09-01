@@ -24,7 +24,7 @@ public class EventDetailResponse {
     private OperatingInfo operatingInfo;
     private List<String> operatingDays;
 
-    private boolean bookmarked;
+    private boolean isScrapped;
 
     public static EventDetailResponse from(Event event){
         List<String> imageList = Optional.ofNullable(event.getDetailImageList())
@@ -40,6 +40,7 @@ public class EventDetailResponse {
                 .name(event.getName())
                 .description(event.getDescription())
                 .thumbnailUrl(event.getThumbnailUrl())
+                .isScrapped(false)
                 .detailImageList(imageList)
                 .location(event.getLocation().getPosition())
                 .operatingInfo(event.getOperatingInfo())
