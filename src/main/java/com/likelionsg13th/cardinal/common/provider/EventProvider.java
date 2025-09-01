@@ -1,16 +1,14 @@
 package com.likelionsg13th.cardinal.common.provider;
 
-import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapCommonDto;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapTimeDetailDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.EVENT;
-import static com.likelionsg13th.cardinal.common.enums.DayOfWeek.ALWAYS;
 
 /*
  * CASE 2

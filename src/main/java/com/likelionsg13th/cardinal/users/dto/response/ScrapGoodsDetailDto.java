@@ -1,12 +1,9 @@
-package com.likelionsg13th.cardinal.users.dto.resonseDto;
+package com.likelionsg13th.cardinal.users.dto.response;
 
 import com.likelionsg13th.cardinal.goods.domain.Goods;
-import com.likelionsg13th.cardinal.users.domain.Scrap;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.io.Serializable;
 
 @Getter @AllArgsConstructor @Builder
 public final class ScrapGoodsDetailDto implements ScrapDetail {

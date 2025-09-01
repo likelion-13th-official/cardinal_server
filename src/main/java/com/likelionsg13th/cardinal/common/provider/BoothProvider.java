@@ -4,20 +4,15 @@ import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapCommonDto;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapTimeDetailDto;
-import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.repository.UserRepository;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
-import static com.likelionsg13th.cardinal.common.enums.DayOfWeek.ALWAYS;
 
 @Component
 @RequiredArgsConstructor

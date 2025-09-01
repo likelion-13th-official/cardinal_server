@@ -10,7 +10,7 @@ import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.requestDto.ScrapRequestDto;
-import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.exception.ScrapAlreadyExists;
 import com.likelionsg13th.cardinal.users.exception.ScrapNotFoundException;
 import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
