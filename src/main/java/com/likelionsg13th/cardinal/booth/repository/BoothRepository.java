@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.booth.repository;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
@@ -23,6 +24,14 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
 
     List<Booth> findAllByIdIn(List<Long> ids);
 
+
+    @Query("SELECT new com.likelionsg13th.cardinal.booth.dto.BoothResponse(" +
+            "   b, " +
+            "   CASE WHEN s.id IS NOT NULL THEN true ELSE false END" +
+            ") " +
+            "FROM Booth b LEFT JOIN Scrap s ON s.contentType = 'BOOTH' AND s.contentId = b.id AND s.user.id = :userId " +
+            "WHERE b.name LIKE %:query% OR EXISTS (SELECT 1 FROM b.menus m WHERE m.name LIKE %:query%)")
+    Page<BoothResponse> findWithScrapStatus(@Param("query") String query, @Param("userId") Long userId, Pageable pageable);
 
     /*메뉴 이름+부스 이름으로 검색*/
     @Query("SELECT DISTINCT b FROM Booth b LEFT JOIN b.menus m " +
