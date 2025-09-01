@@ -1,10 +1,13 @@
 package com.likelionsg13th.cardinal.users.service;
 
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,4 +44,22 @@ public class UserService {
 
         return parts;
     }
+
+    /** 공통 헬퍼 1: subject -> userId (예외 발생 시 null) */
+    public Long resolveUserIdBySubjectOrNull(String subject) {
+        if (subject == null || subject.isBlank()) return null;
+        try {
+            return getMeBySubject(subject).getId();
+        } catch (Exception e) {
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
+    /** 공통 헬퍼 2: @AuthenticationPrincipal UserDetails -> userId (예외 발생 시 null) */
+    public Long resolveUserIdOrNull(UserDetails principal) {
+        if (principal == null) return null;
+        return resolveUserIdBySubjectOrNull(principal.getUsername());
+    }
+
+
 }
