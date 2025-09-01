@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
 import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.FILM;
 
@@ -71,9 +73,10 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
         return PERFORMANCE;
     }
 
-    @Override
-    public boolean isScrappedByUser(Long userId ,Long contentId){
-        return scrapRepository.existsByUser_IdAndContentIdAndContentType(userId,contentId,PERFORMANCE);
+
+    public Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
+        return Scrappable.super.getScrappedContentIds(contentIds,userId,PERFORMANCE,scrapRepository);
+
     }
 
 }

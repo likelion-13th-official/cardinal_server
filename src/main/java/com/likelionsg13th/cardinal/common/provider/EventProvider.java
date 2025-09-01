@@ -17,7 +17,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.EVENT;
 
 
@@ -73,8 +75,9 @@ public class EventProvider implements CategoryProvider,Scrappable{
     }
 
 
-    @Override
-    public boolean isScrappedByUser(Long userId ,Long contentId){
-        return scrapRepository.existsByUser_IdAndContentIdAndContentType(userId,contentId,EVENT);
+
+    public Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
+        return Scrappable.super.getScrappedContentIds(contentIds,userId,EVENT,scrapRepository);
+
     }
 }

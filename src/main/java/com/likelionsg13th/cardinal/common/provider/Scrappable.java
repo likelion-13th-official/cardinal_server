@@ -1,11 +1,21 @@
 package com.likelionsg13th.cardinal.common.provider;
 
+import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
+import com.likelionsg13th.cardinal.users.domain.Scrap;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.DayOfWeek.ALWAYS;
 
 /* BOOTH,EVENT,GOODS,PERFORMANCE*/
@@ -36,8 +46,20 @@ public interface Scrappable  {
          return filterIsOperating == null || isOperating == filterIsOperating;
     }
 
-    default boolean isScrappedByUser(Long userId ,Long contentId){
-         return false;
-    }
 
+
+
+    /*
+     * 유저와 부스 리스트를 비교하여 스크랩 한 부스를 찾습니다.
+     * @param boothList 스크랩 여부 확인할 부스 리스트
+     * @param user 로그인한 사용자 정보 null 인 경우 빈 set 반환
+     */
+    default Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId, ContentType contentType, ScrapRepository scrapRepository){
+         if(userId == null ) return Collections.emptySet();
+
+         return scrapRepository.findAllByUser_IdAndContentIdInAndContentType(userId,contentIds,contentType)
+                 .stream()
+                 .map(Scrap::getContentId)
+                 .collect(Collectors.toSet());
+     }
 }

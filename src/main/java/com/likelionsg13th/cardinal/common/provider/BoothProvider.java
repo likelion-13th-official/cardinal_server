@@ -5,13 +5,18 @@ import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 
@@ -53,11 +58,10 @@ public class BoothProvider implements CategoryProvider,Scrappable{
                : Optional.empty();
     }
 
-    @Override
-    public boolean isScrappedByUser(Long userId ,Long contentId){
-        return scrapRepository.existsByUser_IdAndContentIdAndContentType(userId,contentId,BOOTH);
+
+    public  Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
+        return Scrappable.super.getScrappedContentIds(contentIds,userId,BOOTH,scrapRepository);
+
     }
-
-
 
 }

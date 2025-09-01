@@ -10,6 +10,7 @@ import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
+import com.likelionsg13th.cardinal.common.provider.BoothProvider;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.ScrapService;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
@@ -29,9 +31,8 @@ import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 @RequiredArgsConstructor
 public class BoothService {
     private final BoothRepository boothRepository;
-    private final ScrapService scrapService;
     private static final int PAGE_SIZE = 2;
-
+    private final BoothProvider boothProvider;
     //전체 목록 조회
     public List<BoothResponse> getBoothList(UserDto userDto, String categoryStr, Boolean isOperating, String dayStr) {
 
@@ -52,6 +53,8 @@ public class BoothService {
             }
         }
 
+        Set<Long> scrappedBoothIds = boothProvider.getScrappedContentIds(booths.stream().map(Booth::getId).toList()
+                                                                        ,userDto!=null?userDto.getId():null);
 
         return booths.stream()
                 // 운영 여부 필터링
@@ -60,7 +63,7 @@ public class BoothService {
                 .filter(booth -> day == null || booth.getOperatingDays().contains(day))
                 // DTO 변환
                 .map(booth -> {
-                    boolean isScrapped = userDto != null && scrapService.isScrappedByUser(userDto.getId(), BOOTH, booth.getId());
+                    boolean isScrapped = scrappedBoothIds.contains(booth.getId());
                     return BoothResponse.from(booth, isScrapped);
                 })
                 .collect(Collectors.toList());
@@ -81,9 +84,13 @@ public class BoothService {
         Pageable pageable= PageRequest.of(page-1,PAGE_SIZE);
         Page<Booth> boothsPage=boothRepository.findByNameOrMenuNameContaining(query,pageable);
 
+
+        Set<Long> scrappedBoothIds = boothProvider.getScrappedContentIds(boothsPage.stream().map(Booth::getId).toList()
+                                                                        ,userDto!=null?userDto.getId():null);
+
         Page<BoothResponse> boothResponsePage=boothsPage.map(
                 booth -> {
-                    boolean isScrapped = userDto != null && scrapService.isScrappedByUser(userDto.getId(), BOOTH, booth.getId());
+                    boolean isScrapped = scrappedBoothIds.contains(booth.getId());
                     return BoothResponse.from(booth, isScrapped);
                 }
         );

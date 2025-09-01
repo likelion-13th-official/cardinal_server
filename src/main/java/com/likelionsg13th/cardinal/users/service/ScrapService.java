@@ -37,10 +37,6 @@ public class ScrapService {
     private final UserRepository userRepository;
 
 
-    public boolean isScrappedByUser(Long userId ,ContentType contentType, Long contentId) {
-       return providerFactory.getScrappable(contentType.name())
-                .isScrappedByUser(userId,contentId);
-    }
 
     /*
     *   운영 여부: 운영 중 / 운영 종료
