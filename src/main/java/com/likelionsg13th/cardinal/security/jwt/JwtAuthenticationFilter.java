@@ -50,15 +50,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 var auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
-                chain.doFilter(req, res);
+
             } catch (ExpiredJwtException e) {
                 // 만료: 401 + WWW-Authenticate 헤더 + JSON 바디
                 writeUnauthorized(res, "TOKEN_EXPIRED", "Access token has expired");
+                return;
             } catch (JwtException | IllegalArgumentException e) {
                 // 위변조/포맷 오류 등: 401
                 writeUnauthorized(res, "INVALID_TOKEN", "Invalid or malformed token");
+                return;
             }
         }
+        chain.doFilter(req, res);
     }
 
 
@@ -66,7 +69,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         // OAuth2 로그인 경로는 필터 적용 제외
         String path = request.getRequestURI();
-        return path.startsWith("/oauth2/") || path.startsWith("/auth/") || path.startsWith("/booths")||path.startsWith("/events")||path.startsWith("/goods")||path.startsWith("/search");
+        return path.startsWith("/oauth2/") || path.startsWith("/auth/") || path.startsWith("/booths") || path.startsWith("/events") || path.startsWith("/goods") || path.startsWith("/search");
+    }
 
     private void writeUnauthorized(HttpServletResponse res, String code, String message) throws IOException {
         res.setStatus(HttpStatus.UNAUTHORIZED.value());

@@ -4,22 +4,26 @@ import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ListResponseDto;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.common.exception.ScrapAlreadyExists;
-import com.likelionsg13th.cardinal.common.exception.ScrapNotFoundException;
-import com.likelionsg13th.cardinal.common.exception.UserNotFoundException;
+
 import com.likelionsg13th.cardinal.common.provider.ProviderFactory;
 import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.requestDto.ScrapRequestDto;
 import com.likelionsg13th.cardinal.users.dto.resonseDto.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.exception.ScrapAlreadyExists;
+import com.likelionsg13th.cardinal.users.exception.ScrapNotFoundException;
+import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
