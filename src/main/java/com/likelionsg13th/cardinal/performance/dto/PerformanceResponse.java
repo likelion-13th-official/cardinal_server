@@ -23,13 +23,14 @@ public class PerformanceResponse {
 
     private boolean isScrapped;
 
-    public static PerformanceResponse from(Performance performance) {
+    public static PerformanceResponse from(Performance performance, boolean scrapped) {
         return PerformanceResponse.builder()
                 .id(performance.getId())
                 .name(performance.getName())
                 .category(performance.getCategory() == null ? null: performance.getCategory().toKorean())
                 .description(performance.getDescription())
                 //TO-DO 북마크
+                .isScrapped(scrapped)
                 .thumbnail(performance.getThumbnailUrl())
                 .operatingDays(
                         performance.getOperatingDays().stream()
