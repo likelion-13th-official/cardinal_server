@@ -23,16 +23,16 @@ public class BoothDetailResponse {
     private String description;
 
     private String thumbnailUrl;
-    private boolean bookmarked;
+    private boolean isScrapped;
 
 
-    public static BoothDetailResponse of(Booth booth) {
+    public static BoothDetailResponse of(Booth booth, boolean isScrapped) {
         return switch (booth.getCategory()) {
-            case PUB -> PubBoothResponse.of(booth);
-            case FOOD_TRUCK -> FoodTruckBoothResponse.of(booth);
-            case YARD_PROJECT -> YardBoothResponse.of(booth);
-            case PHOTO_BOOTH -> PhotoBoothResponse.of(booth);
-            case PARTNERSHIP -> PartnershipBoothResponse.of(booth);
+            case PUB -> PubBoothResponse.of(booth,isScrapped);
+            case FOOD_TRUCK -> FoodTruckBoothResponse.of(booth,isScrapped);
+            case YARD_PROJECT -> YardBoothResponse.of(booth,isScrapped);
+            case PHOTO_BOOTH -> PhotoBoothResponse.of(booth,isScrapped);
+            case PARTNERSHIP -> PartnershipBoothResponse.of(booth,isScrapped);
             default -> throw new IllegalArgumentException("Invalid booth category");
         };
     }

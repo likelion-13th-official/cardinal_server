@@ -13,6 +13,7 @@ import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
 import com.likelionsg13th.cardinal.common.provider.BoothProvider;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,8 +34,9 @@ public class BoothService {
     private final BoothRepository boothRepository;
     private static final int PAGE_SIZE = 2;
     private final BoothProvider boothProvider;
+    private final ScrapRepository scrapRepository;
     //전체 목록 조회
-    public List<BoothResponse> getBoothList(UserDto userDto, String categoryStr, Boolean isOperating, String dayStr) {
+    public List<BoothResponse> getBoothList(UserDto user, String categoryStr, Boolean isOperating, String dayStr) {
 
         //요일 변환
         DayOfWeek day = (dayStr != null) ? DayOfWeek.valueOf(dayStr.toUpperCase()) : null;
@@ -54,7 +56,7 @@ public class BoothService {
         }
 
         Set<Long> scrappedBoothIds = boothProvider.getScrappedContentIds(booths.stream().map(Booth::getId).toList()
-                                                                        ,userDto!=null?userDto.getId():null);
+                                                                        ,user!=null?user.getId():null);
 
         return booths.stream()
                 // 운영 여부 필터링
@@ -70,10 +72,16 @@ public class BoothService {
     }
 
     //개별 상세 조회
-    public BoothDetailResponse getBoothDetail(long id) {
+    @Transactional(readOnly = true)
+    public BoothDetailResponse getBoothDetail(UserDto user,long id) {
         Booth booth=boothRepository.findById(id)
                 .orElseThrow(()->new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
-        return BoothDetailResponse.of(booth);
+
+        boolean isScrapped=false;
+        if(user!=null){
+            isScrapped=scrapRepository.existsByUser_IdAndContentIdAndContentType(user.getId(),id,BOOTH);
+        }
+        return BoothDetailResponse.of(booth,isScrapped);
     }
 
 

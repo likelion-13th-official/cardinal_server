@@ -19,7 +19,7 @@ public class PhotoBoothResponse extends BoothDetailResponse {
 
     private List<String> detailImageUrls;
 
-    public static PhotoBoothResponse of(Booth booth){
+    public static PhotoBoothResponse of(Booth booth,boolean isScrapped){
         PhotoBooth b=(PhotoBooth) booth;
         return PhotoBoothResponse.builder()
                 .id(b.getId())
@@ -40,7 +40,7 @@ public class PhotoBoothResponse extends BoothDetailResponse {
                                 .map(DetailImage::getImageUrl)
                                 .collect(Collectors.toList())
                 )
-
+                .isScrapped(isScrapped)
                 .build();
 
     }

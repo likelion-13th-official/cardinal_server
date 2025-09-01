@@ -20,7 +20,7 @@ public class FoodTruckBoothResponse extends BoothDetailResponse {
     private List<Menu> menus;
     private List<String> menuImageUrls;
 
-    public static FoodTruckBoothResponse of(Booth booth){
+    public static FoodTruckBoothResponse of(Booth booth,boolean isScrapped){
         FoodTruckBooth b=(FoodTruckBooth) booth;
         return FoodTruckBoothResponse.builder()
                 .id(b.getId())
@@ -51,7 +51,7 @@ public class FoodTruckBoothResponse extends BoothDetailResponse {
 //                                .map(DetailImage::getImageUrl)
 //                                .collect(Collectors.toList())
 //                )
-
+                .isScrapped(isScrapped)
                 .build();
 
     }

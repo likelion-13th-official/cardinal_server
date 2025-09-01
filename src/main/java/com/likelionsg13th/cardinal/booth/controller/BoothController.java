@@ -42,9 +42,14 @@ public class BoothController {
     /* 개별 상세 조회*/
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getBoothDetail(
-            @PathVariable long id
+            @PathVariable long id,
+            @AuthenticationPrincipal UserDetails user
     ){
-        BoothDetailResponse boothDetailResponse=boothService.getBoothDetail(id);
+        UserDto userDto = null;
+        if (user != null)
+            userDto = userService.getMeBySubject(user.getUsername());
+
+        BoothDetailResponse boothDetailResponse=boothService.getBoothDetail(userDto,id);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 개별 조회 성공", boothDetailResponse));
     }
 

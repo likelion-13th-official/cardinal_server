@@ -27,7 +27,7 @@ public class PubBoothResponse extends BoothDetailResponse {
     private String instagramUrl;
     private String tableLayoutUrl;
 
-    public static PubBoothResponse of(Booth booth){
+    public static PubBoothResponse of(Booth booth,boolean isScrapped){
         PubBooth b=(PubBooth) booth;
         return PubBoothResponse.builder()
                 .id(b.getId())
@@ -54,6 +54,7 @@ public class PubBoothResponse extends BoothDetailResponse {
                 .noticeUpdatedAt(b.getNoticeUpdatedAt())
                 .instagramUrl(b.getInstagramUrl())
                 .tableLayoutUrl(b.getTableLayoutUrl())
+                .isScrapped(isScrapped)
                 .build();
 
     }
