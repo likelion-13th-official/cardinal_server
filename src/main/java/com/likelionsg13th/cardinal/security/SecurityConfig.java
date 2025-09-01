@@ -35,11 +35,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/**", 
+                                "/auth/**",
                                 "/booths/**",
                                 "/events/**",
                                 "/goods/**",
-                                "/peformances/** ",
+                                "/performances/** ", "/performances",
                                 "/search/**", "/health",
                                 "/login",               // 커스텀 로그인 페이지 자체는 허용
                                 "/oauth2/**",           // OAuth2 흐름 허용

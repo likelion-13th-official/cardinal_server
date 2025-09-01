@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.event.service;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
+import com.likelionsg13th.cardinal.common.provider.EventProvider;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
@@ -23,6 +24,7 @@ import java.util.List;
 public class EventService {
     private static final int PAGE_SIZE = 2;
     private final EventRepository eventRepository;
+    private final EventProvider eventProvider;
 
     /* 검색*/
     @Transactional(readOnly = true)

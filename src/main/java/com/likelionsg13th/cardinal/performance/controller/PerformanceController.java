@@ -9,6 +9,7 @@ import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
 import com.likelionsg13th.cardinal.performance.dto.PerformanceResponse;
 import com.likelionsg13th.cardinal.performance.service.PerformanceService;
 import com.likelionsg13th.cardinal.users.service.UserService;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,8 +28,7 @@ public class PerformanceController {
 
     private final PerformanceService performanceService;
     private final UserService userService;
-
-
+    
     @GetMapping
     public ResponseEntity<ApiResponse> getPerformanceList(
             @RequestParam("category") PerformanceCategory category,
