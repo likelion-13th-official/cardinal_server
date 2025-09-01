@@ -9,11 +9,14 @@ import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapGoodsDetailDto;
+import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.GOODS;
 
 /*
@@ -24,7 +27,7 @@ import static com.likelionsg13th.cardinal.common.enums.ContentType.GOODS;
 public class GoodsProvider implements CategoryProvider,Scrappable {
 
     private final GoodsRepository goodsRepository;
-
+    private final ScrapRepository scrapRepository;
     @Override
     public boolean hasCategory(String category) {
         return  GOODS.name().equalsIgnoreCase(category);
@@ -56,4 +59,13 @@ public class GoodsProvider implements CategoryProvider,Scrappable {
             throw new EventNotFound(ErrorCode.GOODS_NOT_FOUND);
         return GOODS;
     }
+
+
+
+    public Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
+        return Scrappable.super.getScrappedContentIds(contentIds,userId,BOOTH,scrapRepository);
+
+    }
+
+
 }
