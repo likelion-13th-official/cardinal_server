@@ -1,10 +1,8 @@
 package com.likelionsg13th.cardinal.users.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
-import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ListResponseDto;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.ScrapAlreadyExists;
 import com.likelionsg13th.cardinal.common.exception.ScrapNotFoundException;
@@ -38,16 +36,16 @@ public class ScrapService {
     *   운영 여부: 운영 중 / 운영 종료
         요일: 월 / 화 / 수 / 목 / 금 : 상시 일경우 모든 경우에 반환
         * *
-* dto : 공통(카테고리,subCategory,썸네일,매장 이름,장소,요일)
-- 부스 : + 시작시간,끝시간,
-- 이벤트 : + 시작시간,끝시간,
-- 공연
-    - 아티스트, 동아리 : X
-    - 영화제 :  +시작시간,끝시간
-- 굿즈 : +가격
-*
-* category : booth
-* subCategory : 포토부스,주점,어쩌고 등등
+        * dto : 공통(카테고리,subCategory,썸네일,매장 이름,장소,요일)
+        - 부스 : + 시작시간,끝시간,
+        - 이벤트 : + 시작시간,끝시간,
+        - 공연
+            - 아티스트, 동아리 : X
+            - 영화제 :  +시작시간,끝시간
+        - 굿즈 : +가격
+        *
+        * category : booth
+        * subCategory : 포토부스,주점,어쩌고 등등
 * */
 
     public ListResponseDto<ScrapCommonDto> getAllScrapsByDayOrIsOperation(UserDto user, String day, Boolean isOperating){
