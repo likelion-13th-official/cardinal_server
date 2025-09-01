@@ -22,5 +22,5 @@ public abstract class OperationAwareEntity {
     @Embedded
     private OperatingInfo operatingInfo;
 
-    //운영여부 계산 메서드
+    //TODO :운영여부 계산 메서드
 }

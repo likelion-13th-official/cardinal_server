@@ -7,16 +7,15 @@ import org.springframework.http.HttpStatus;
 
 @Getter @RequiredArgsConstructor
 public enum ErrorCode {
-    //user
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"U001","해당 유저를 찾을 수 없습니다."),
-
     //common
     INVALID_CATEGORY(HttpStatus.BAD_REQUEST, "C001", "유효하지 않은 카테고리입니다."),
     PARAMETER_IS_NULL_OR_EMPTY(HttpStatus.BAD_REQUEST,"C002","매개변수가 NULL 또는 비어있습니다."),
     //부스
     BOOTH_NOT_FOUND(HttpStatus.NOT_FOUND,"B001","해당 id의 부스를 찾을 수 없습니다"),
+
     //공연
     PERFORMANCE_NOT_FOUND(HttpStatus.NOT_FOUND,"P001","해당 id의 공연을 찾을 수 없습니다."),
+
     //이벤트
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND,"E001","해당 id의 이벤트를 찾을 수 없습니다."),
     //굿즈
@@ -27,8 +26,11 @@ public enum ErrorCode {
     //scrap
     SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND,"S001","해당 Id의 스크랩을 찾을 수 없습니다."),
     SCRAP_ALREADY_EXISTS(HttpStatus.CONFLICT,"S002","이미 스크랩한 항목입니다."),
-    SCRAP_NOT_SUPPORTED_FOR_CATEGORY(HttpStatus.BAD_REQUEST,"S003","해당 카테고리를 스크랩 할 수 없습니다.");
+    SCRAP_NOT_SUPPORTED_FOR_CATEGORY(HttpStatus.BAD_REQUEST,"S003","해당 카테고리를 스크랩 할 수 없습니다."),
 
+    //유저
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"U001", "해당 사용자를 찾을 수 없습니다"),
+    STAMP_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "U002", "이미 적립한 스탬프입니다");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
