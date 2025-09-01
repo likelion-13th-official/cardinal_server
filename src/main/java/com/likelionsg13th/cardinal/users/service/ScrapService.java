@@ -9,7 +9,7 @@ import com.likelionsg13th.cardinal.common.provider.ProviderFactory;
 import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
-import com.likelionsg13th.cardinal.users.dto.requestDto.ScrapRequestDto;
+import com.likelionsg13th.cardinal.users.dto.request.ScrapRequestDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.exception.ScrapAlreadyExists;
 import com.likelionsg13th.cardinal.users.exception.ScrapNotFoundException;
@@ -36,6 +36,8 @@ public class ScrapService {
     private final ScrapRepository scrapRepository;
     private final UserRepository userRepository;
 
+
+
     /*
     *   운영 여부: 운영 중 / 운영 종료
         요일: 월 / 화 / 수 / 목 / 금 : 상시 일경우 모든 경우에 반환
@@ -51,7 +53,6 @@ public class ScrapService {
         * category : booth
         * subCategory : 포토부스,주점,어쩌고 등등
 * */
-
     public ListResponseDto<ScrapCommonDto> getAllScrapsByDayOrIsOperation(UserDto user, String day, Boolean isOperating){
         Users  userEntity = checkUser(user);
 
@@ -132,8 +133,9 @@ public class ScrapService {
 
     }
 
-    /*user 검증 메서드 */
-    private Users checkUser(UserDto user) {
+    /*user 필수 시 검증 메서드 */
+    public Users checkUser(UserDto user) {
         return userRepository.findById(user.getId()).orElseThrow(() ->  new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
+
 }
