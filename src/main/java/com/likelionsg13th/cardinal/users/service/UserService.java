@@ -1,7 +1,9 @@
 package com.likelionsg13th.cardinal.users.service;
 
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -49,7 +51,7 @@ public class UserService {
         try {
             return getMeBySubject(subject).getId();
         } catch (Exception e) {
-            return null;
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
         }
     }
 
