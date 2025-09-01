@@ -1,8 +1,7 @@
 package com.likelionsg13th.cardinal.users.service;
 
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.common.exception.UserNotFoundException;
-import com.likelionsg13th.cardinal.security.jwt.JwtTokenProvider;
+import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;

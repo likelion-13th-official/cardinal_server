@@ -13,7 +13,7 @@ public class GoodsResponse {
     private Long price;
     private String thumbnailUrl;
 
-    private boolean bookmarked;
+    private boolean isScrapped;
 
 
     public static GoodsResponse from(Goods goods) {
@@ -23,7 +23,7 @@ public class GoodsResponse {
                 .price(goods.getPrice())
                 .thumbnailUrl(goods.getThumbnailUrl())
                 //TODO: 북마크 확인 로직
-                .bookmarked(false)
+                .isScrapped(false)
                 .build();
 
     }

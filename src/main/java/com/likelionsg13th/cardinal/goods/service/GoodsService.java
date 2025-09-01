@@ -1,9 +1,11 @@
 package com.likelionsg13th.cardinal.goods.service;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.goods.dto.GoodsDetailResponse;
 import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
+import com.likelionsg13th.cardinal.goods.exception.GoodsNotFound;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -51,7 +53,7 @@ public class GoodsService {
 
     public GoodsDetailResponse getGoods(Long id){
         Goods goods = goodsRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("해당 ID의 goods을 찾을 수 없습니다. ID: "+id));
+                .orElseThrow(()-> new GoodsNotFound(ErrorCode.GOODS_NOT_FOUND));
         return GoodsDetailResponse.from(goods, false);
     }
 

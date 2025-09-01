@@ -21,7 +21,7 @@ public class GoodsDetailResponse {
     private String description;
 
     private List<String> detailImageList;
-    private boolean bookmarked;
+    private boolean isScrapped;
 
     public static GoodsDetailResponse from(Goods goods, boolean bookmarked) {
         List<String> imageList = Optional.ofNullable(goods.getDetailImageList())
@@ -39,7 +39,7 @@ public class GoodsDetailResponse {
                 .description(goods.getDescription())
                 .detailImageList(imageList)
                 //TODO: 북마크 확인 로직
-                .bookmarked(bookmarked)
+                .isScrapped(bookmarked)
                 .build();
     }
 }
