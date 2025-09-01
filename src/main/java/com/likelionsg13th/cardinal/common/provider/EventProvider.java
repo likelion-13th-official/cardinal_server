@@ -2,16 +2,18 @@ package com.likelionsg13th.cardinal.common.provider;
 
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-
+import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.exception.EventNotFound;
-
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.EVENT;
 
@@ -20,7 +22,7 @@ import static com.likelionsg13th.cardinal.common.enums.ContentType.EVENT;
  * */
 @Component
 @RequiredArgsConstructor
-public class EventProvider implements CategoryProvider{
+public class EventProvider implements CategoryProvider,Scrappable{
 
     private final EventRepository eventRepository;
 
@@ -28,6 +30,20 @@ public class EventProvider implements CategoryProvider{
     @Override
     public boolean hasCategory(String category){
         return EVENT.name().equalsIgnoreCase(category.trim());
+    }
+
+    @Override
+    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating){
+
+        Optional<Event> eventOptional = eventRepository.findById(contentId);
+        if(eventOptional.isEmpty()) return Optional.empty();
+
+        Event event  = eventOptional.get();
+
+        return isFilteredByDay(day,event.getOperatingDays())
+                && isFilteredByIsOperating(isOperating,event.getOperatingInfo().isOperating())
+                ? Optional.of(ScrapCommonDto.of(event, ScrapTimeDetailDto.from(event)))
+                : Optional.empty();
     }
 
     @Override

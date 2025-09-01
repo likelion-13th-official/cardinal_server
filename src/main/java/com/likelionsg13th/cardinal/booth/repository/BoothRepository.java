@@ -21,6 +21,8 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     List<Booth> findAllByCategory(BoothCategory category);
     List<Booth> findByCategory(BoothCategory category);
 
+    List<Booth> findAllByIdIn(List<Long> ids);
+
 
     /*메뉴 이름+부스 이름으로 검색*/
     @Query("SELECT DISTINCT b FROM Booth b LEFT JOIN b.menus m " +

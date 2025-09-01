@@ -1,7 +1,9 @@
 package com.likelionsg13th.cardinal.common.provider;
 
+import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
+import com.likelionsg13th.cardinal.users.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.stereotype.Component;
@@ -19,7 +21,7 @@ public class ProviderFactory {
 
     //all  provider DI
     private final List<CategoryProvider> categoryProviders;
-
+    private final List<Scrappable> scrappables;
 
 
     //find a provider
@@ -29,5 +31,13 @@ public class ProviderFactory {
                 .filter(provider -> provider.hasCategory(Category.trim()))
                 .findFirst()
                 .orElseThrow(() -> new InvalidCategoryException(ErrorCode.INVALID_CATEGORY));
+    }
+
+    public Scrappable getScrappable(String Category) {
+        return scrappables.stream()
+                .filter(scrappable -> scrappable.hasCategory(Category.trim()))
+                .findFirst()
+                .orElseThrow(()->  new InvalidCategoryException(ErrorCode.SCRAP_NOT_SUPPORTED_FOR_CATEGORY));
+
     }
 }

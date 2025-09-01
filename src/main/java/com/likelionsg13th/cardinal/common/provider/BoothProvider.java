@@ -1,26 +1,24 @@
 package com.likelionsg13th.cardinal.common.provider;
 
+import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.users.domain.Scrap;
-import com.likelionsg13th.cardinal.users.domain.Users;
-import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.repository.UserRepository;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
+import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 
 @Component
 @RequiredArgsConstructor
-public class BoothProvider implements CategoryProvider {
+public class BoothProvider implements CategoryProvider,Scrappable{
     private final BoothRepository boothRepository;
-    private final ScrapRepository scrapRepository;
-    private final UserRepository userRepository;
+
 
     @Override
     public boolean hasCategory(String category){
@@ -41,17 +39,19 @@ public class BoothProvider implements CategoryProvider {
 
 
 
-//    @Override
-//    public Object getMapMarkersByCategory(String category) {
-//        BoothCategory boothCategory= boothCategoryValueOfIgnoreCase(category);
-//
-//        MapInfoDto mapInfo = MapInfoDto.from(BoothRepository.findLocationFirstByIdAndCategory(boothCategory));
-//
-//        return MapFilteredByCategoryDto.from(List.of(mapInfo),boothCategory.name());
-//
-//    }
+    @Override
+    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating){
+
+       Optional<Booth> boothOptional = boothRepository.findById(contentId);
+       if(boothOptional.isEmpty()) return Optional.empty();
+       Booth booth  = boothOptional.get();
+
+       return isFilteredByDay(day,booth.getOperatingDays())
+               && isFilteredByIsOperating(isOperating,booth.getOperatingInfo().isOperating())
+               ? Optional.of(ScrapCommonDto.of(booth, ScrapTimeDetailDto.from(booth)))
+               : Optional.empty();
+    }
 
 
-//
 
 }
