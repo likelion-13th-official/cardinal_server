@@ -7,6 +7,7 @@ import com.likelionsg13th.cardinal.users.dto.response.SimpleStampResponse;
 import com.likelionsg13th.cardinal.users.dto.response.StampResponse;
 import com.likelionsg13th.cardinal.users.service.StampService;
 import com.likelionsg13th.cardinal.users.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class StampController {
 
     @PostMapping
     public ResponseEntity<ApiResponse> createStamp(
-            @RequestBody StampCreateRequest request,
+            @Valid @RequestBody StampCreateRequest request,
             @AuthenticationPrincipal UserDetails userDetails
     ){
         UserDto userDto=userService.getMeBySubject(userDetails.getUsername());
