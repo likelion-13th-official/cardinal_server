@@ -33,15 +33,15 @@ public class SearchService {
        Pageable pageable= PageRequest.of(0,RESULT_LIMIT);
 
        //카테고리별 검색 결과 4개씩
-        Page<BoothResponse> boothsPage=boothRepository.findByNameOrMenuNameContaining(query,pageable)
-                .map(BoothResponse::from);
+//        Page<BoothResponse> boothsPage=boothRepository.findByNameOrMenuNameContaining(query,pageable)
+//                .map(BoothResponse::from);
         Page<EventResponse> eventsPage=eventRepository.findByNameContaining(query,pageable)
                 .map(EventResponse::from);
         Page<GoodsResponse>goodsPage=goodsRepository.findByNameContaining(query,pageable)
                 .map(GoodsResponse::from);
 
         List<SearchResultDto> results=new ArrayList<>();
-        results.add(SearchResultDto.from("부스",boothsPage));
+//        results.add(SearchResultDto.from("부스",boothsPage));
         results.add(SearchResultDto.from("이벤트",eventsPage));
         results.add(SearchResultDto.from("굿즈",goodsPage));
         
