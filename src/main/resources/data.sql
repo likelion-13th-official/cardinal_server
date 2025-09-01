@@ -377,7 +377,7 @@ VALUES (1, 'FRI'),
        (18, 'TUE');
 --
 -- -- 11. Scraps (10 records)
-INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
+/*INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
 (1, 1, 'BOOTH', '2025-08-16 19:00:00'),
 (1, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
 (1, 6, 'BOOTH', '2025-08-16 13:00:00'),
@@ -388,7 +388,7 @@ INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
 (1, 4, 'EVENT', '2025-08-18 12:00:00'),
 (1, 16, 'BOOTH', '2025-08-18 14:00:00'),
 (1, 5, 'GOODS', '2025-08-18 15:00:00');
-
+*/
 -- 12. Amenity 데이터 삽입
 
 INSERT INTO amenity (name, location_id)

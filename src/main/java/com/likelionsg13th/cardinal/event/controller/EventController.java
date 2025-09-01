@@ -7,8 +7,11 @@ import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.service.EventService;
+import com.likelionsg13th.cardinal.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +22,7 @@ import java.util.List;
 @RequestMapping("/events")
 public class EventController {
     private final EventService eventService;
+    private final UserService userService;
 
     /* 검색*/
     @GetMapping("/search")
@@ -32,8 +36,12 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> getEvent(@PathVariable Long id){
-        EventDetailResponse response = eventService.getEvent(id);
+    public ResponseEntity<ApiResponse> getEvent(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails principal
+    ){
+        Long userId = userService.resolveUserIdOrNull(principal);
+        EventDetailResponse response = eventService.getEvent(id, userId);
         return ResponseEntity.ok(new ApiResponse(true, 200, "이벤트 개별 조회 성공", response));
     }
 
