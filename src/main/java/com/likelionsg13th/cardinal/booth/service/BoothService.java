@@ -5,6 +5,7 @@ import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.booth.repository.specification.BoothSpecification;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
@@ -19,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,54 +35,70 @@ import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 @RequiredArgsConstructor
 public class BoothService {
     private final BoothRepository boothRepository;
-    private static final int PAGE_SIZE = 2;
+    private static final int PAGE_SIZE = 10;
+    private static final int SEARCH_PAGE_SIZE = 2;
     private final BoothProvider boothProvider;
     private final ScrapRepository scrapRepository;
-    //전체 목록 조회
-    public List<BoothResponse> getBoothList(UserDto user, String categoryStr, Boolean isOperating, String dayStr) {
 
-        //요일 변환
-        DayOfWeek day = (dayStr != null) ? DayOfWeek.valueOf(dayStr.toUpperCase()) : null;
+    @Transactional(readOnly = true)
+    public PageDto<BoothResponse> getBoothList(Long userId, String categoryStr, Boolean isOperating, String dayStr, int page) {
+        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
 
-        List<Booth> booths;
-        // 카테고리=ALL인지 확인
-        if ("ALL".equalsIgnoreCase(categoryStr)) {
-            booths = boothRepository.findAll();
-        } else {
+        Specification<Booth> spec=null;
+        if(!"ALL".equalsIgnoreCase(categoryStr)){
             try {
-                // enum으로 변환 후 조회
                 BoothCategory category = BoothCategory.valueOf(categoryStr.toUpperCase());
-                booths = boothRepository.findByCategory(category);
-            } catch (IllegalArgumentException e) {
+                spec = BoothSpecification.hasCategory(category);
+            }catch(IllegalArgumentException e){
                 throw new InvalidCategoryException(ErrorCode.INVALID_CATEGORY);
             }
         }
+        if(isOperating!=null){
+            Specification<Booth> operatingSpec = BoothSpecification.isOperating(isOperating);
+            // spec이 null이면(카테고리가 ALL) 새로할당. null이 아니면 연결
+            spec = (spec == null) ? operatingSpec : spec.and(operatingSpec);
+        }
+        if(dayStr!=null){
+            DayOfWeek day = DayOfWeek.valueOf(dayStr.toUpperCase());
 
-        Set<Long> scrappedBoothIds = boothProvider.getScrappedContentIds(booths.stream().map(Booth::getId).toList()
-                                                                        ,user!=null?user.getId():null);
+            Specification<Booth> daySpec = BoothSpecification.hasDay(day);
+            spec = (spec == null) ? daySpec : spec.and(daySpec);
+        }
 
-        return booths.stream()
-                // 운영 여부 필터링
-                .filter(booth -> isOperating == null || booth.getOperatingInfo().isOperating() == isOperating)
-                // 요일 필터링
-                .filter(booth -> day == null || booth.getOperatingDays().contains(day))
-                // DTO 변환
-                .map(booth -> {
+        //필터링+페이지네이션 적용해서 DB 조회
+        Page<Booth> boothsPage=boothRepository.findAll(spec, pageable);
+
+        //스크랩 처리
+        Set<Long> scrappedBoothIds;
+        if (userId != null && boothsPage.hasContent()) {
+            List<Long> boothIds = boothsPage.getContent().stream().map(Booth::getId).toList();
+            scrappedBoothIds = boothProvider.getScrappedContentIds(boothIds, userId);
+        } else {
+            scrappedBoothIds = Collections.emptySet();
+        }
+
+
+        Page<BoothResponse> boothResponsePage=boothsPage.map(
+                booth -> {
                     boolean isScrapped = scrappedBoothIds.contains(booth.getId());
                     return BoothResponse.from(booth, isScrapped);
-                })
-                .collect(Collectors.toList());
+                }
+        );
+        return PageDto.from(boothResponsePage);
+
     }
+
+
 
     //개별 상세 조회
     @Transactional(readOnly = true)
-    public BoothDetailResponse getBoothDetail(UserDto user,long id) {
+    public BoothDetailResponse getBoothDetail(Long userId,long id) {
         Booth booth=boothRepository.findById(id)
                 .orElseThrow(()->new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
 
         boolean isScrapped=false;
-        if(user!=null){
-            isScrapped=scrapRepository.existsByUser_IdAndContentIdAndContentType(user.getId(),id,BOOTH);
+        if(userId!=null){
+            isScrapped=scrapRepository.existsByUser_IdAndContentIdAndContentType(userId,id,BOOTH);
         }
         return BoothDetailResponse.of(booth,isScrapped);
     }
@@ -88,20 +107,13 @@ public class BoothService {
 
     // 검색
     @Transactional(readOnly = true)
-    public PageDto<BoothResponse> searchBooths(UserDto userDto,String query, int page) {
-        Pageable pageable= PageRequest.of(page-1,PAGE_SIZE);
-        Page<Booth> boothsPage=boothRepository.findByNameOrMenuNameContaining(query,pageable);
+    public PageDto<BoothResponse> searchBooths(Long userId,String query, int page) {
+        Pageable pageable= PageRequest.of(page-1,SEARCH_PAGE_SIZE);
 
-
-        Set<Long> scrappedBoothIds = boothProvider.getScrappedContentIds(boothsPage.stream().map(Booth::getId).toList()
-                                                                        ,userDto!=null?userDto.getId():null);
-
-        Page<BoothResponse> boothResponsePage=boothsPage.map(
-                booth -> {
-                    boolean isScrapped = scrappedBoothIds.contains(booth.getId());
-                    return BoothResponse.from(booth, isScrapped);
-                }
+        Page<BoothResponse> boothResponsePage = boothRepository.findWithScrapStatus(
+                query, userId, BOOTH, pageable
         );
+
 
         return PageDto.from(boothResponsePage);
     }

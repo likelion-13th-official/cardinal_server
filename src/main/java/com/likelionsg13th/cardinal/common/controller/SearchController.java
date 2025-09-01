@@ -30,11 +30,8 @@ public class SearchController {
             @AuthenticationPrincipal UserDetails user)
     {
 
-        UserDto userDto = null;
-        if (user != null)
-            userDto = userService.getMeBySubject(user.getUsername());
-
-        List<SearchResultDto> response=searchService.searchAll(query, userDto);
+        Long userId= userService.resolveUserIdOrNull(user);
+        List<SearchResultDto> response=searchService.searchAll(query, userId);
         return ResponseEntity.ok(new ApiResponse(true,200,"검색결과 초기화면 조회 성공",response));
     }
 

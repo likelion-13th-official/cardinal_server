@@ -31,11 +31,8 @@ public class EventController {
             @RequestParam("page") int page,
             @AuthenticationPrincipal UserDetails user
     ) {
-        UserDto userDto = null;
-        if (user != null)
-            userDto = userService.getMeBySubject(user.getUsername());
-
-        PageDto<EventResponse> response=eventService.searchEvents(query,page,userDto);
+        Long userId= userService.resolveUserIdOrNull(user);
+        PageDto<EventResponse> response=eventService.searchEvents(query,page,userId);
         return ResponseEntity.ok(new ApiResponse(true,200,"이벤트 검색 목록 조회 성공",response));
 
     }

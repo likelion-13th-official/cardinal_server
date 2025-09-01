@@ -30,9 +30,9 @@ public class SearchService {
     private static final int RESULT_LIMIT = 4;
 
     /* 검색 초기 화면 */
-    public List<SearchResultDto> searchAll(String query, UserDto user){
+    public List<SearchResultDto> searchAll(String query, Long userId){
        Pageable pageable= PageRequest.of(0,RESULT_LIMIT);
-        Long userId=(user!=null)?user.getId():null;
+
 
         //스크랩 여부 포함해서 검색
         Page<BoothResponse> boothsPage = boothRepository.findWithScrapStatus(query, userId, pageable);

@@ -34,7 +34,7 @@ public class GoodsService {
 
     /* 검색 */
     @Transactional(readOnly = true)
-    public PageDto<GoodsResponse> searchGoods(String query, int page, UserDto user) {
+    public PageDto<GoodsResponse> searchGoods(String query, int page, Long userId) {
         Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
         Page<Goods> goodsPage = goodsRepository.findByNameContaining(query, pageable);
 
@@ -45,7 +45,7 @@ public class GoodsService {
 //        return PageDto.from(goodsResponsePage);
 
         Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(goodsPage.stream().map(Goods::getId).toList()
-                , user != null ? user.getId() : null);
+                , userId);
 
         Page<GoodsResponse> goodsResponsePage = goodsPage.map(
                 goods -> {

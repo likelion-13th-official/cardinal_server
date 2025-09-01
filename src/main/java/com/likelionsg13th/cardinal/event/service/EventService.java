@@ -30,14 +30,14 @@ public class EventService {
 
     /* 검색*/
     @Transactional(readOnly = true)
-    public PageDto<EventResponse> searchEvents(String query, int page, UserDto user) {
+    public PageDto<EventResponse> searchEvents(String query, int page, Long userId) {
         Pageable pageable= PageRequest.of(page-1,PAGE_SIZE);
         Page<Event> eventsPage=eventRepository.findByNameContaining(query,pageable);
 
 
 
         Set<Long> scrappedEventsIds = eventProvider.getScrappedContentIds(eventsPage.stream().map(Event::getId).toList()
-                , user != null ? user.getId() : null);
+                , userId);
 
         Page<EventResponse> eventsResponsePage = eventsPage.map(
                 event -> {
