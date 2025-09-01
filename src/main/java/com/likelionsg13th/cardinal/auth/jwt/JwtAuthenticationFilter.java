@@ -1,18 +1,14 @@
-package com.likelionsg13th.cardinal.security.jwt;
+package com.likelionsg13th.cardinal.auth.jwt;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpStatus;
@@ -27,6 +23,19 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwt;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String p = request.getRequestURI();
+        // CORS preflight도 통과
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) return true;
+
+        // 토큰 없이도 접근/처리해야 하는 엔드포인트는 필터 제외
+        return p.startsWith("/auth/refresh")
+                || p.startsWith("/auth/logout")
+                || p.startsWith("/oauth2/")
+                || p.equals("/login");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
@@ -54,23 +63,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 // 만료: 401 + WWW-Authenticate 헤더 + JSON 바디
                 writeUnauthorized(res, "TOKEN_EXPIRED", "Access token has expired");
-                return;
             } catch (JwtException | IllegalArgumentException e) {
                 // 위변조/포맷 오류 등: 401
                 writeUnauthorized(res, "INVALID_TOKEN", "Invalid or malformed token");
-                return;
             }
         }
         chain.doFilter(req, res);
+        return;
     }
 
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // OAuth2 로그인 경로는 필터 적용 제외
-        String path = request.getRequestURI();
-        return path.startsWith("/oauth2/") || path.startsWith("/auth/") || path.startsWith("/booths") || path.startsWith("/events") || path.startsWith("/goods") || path.startsWith("/search");
-    }
+
 
     private void writeUnauthorized(HttpServletResponse res, String code, String message) throws IOException {
         res.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -82,5 +85,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         """.formatted(code, message));
 
     }
+
 }
 

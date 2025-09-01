@@ -1,13 +1,18 @@
-package com.likelionsg13th.cardinal.users.controller;
+package com.likelionsg13th.cardinal.auth.controller;
 
-import com.likelionsg13th.cardinal.security.jwt.JwtTokenProvider;
-import com.likelionsg13th.cardinal.security.jwt.dto.MessageResponse;
-import com.likelionsg13th.cardinal.security.jwt.dto.TokenResponseDto;
+import com.likelionsg13th.cardinal.auth.dto.RefreshRequest;
+import com.likelionsg13th.cardinal.auth.dto.TokenResponse;
+import com.likelionsg13th.cardinal.auth.jwt.JwtTokenProvider;
+import com.likelionsg13th.cardinal.auth.dto.MessageResponse;
+import com.likelionsg13th.cardinal.auth.dto.TokenResponseDto;
+import com.likelionsg13th.cardinal.auth.service.AuthService;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.request.DummyLoginRequest;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,19 +26,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final JwtTokenProvider jwt;
+    private final AuthService authService;
+
+    // 나중에 삭제해주세요 (@윤예은)
     private final UserRepository userRepository;
 
-
-    @PostMapping("/logout")
-    public ResponseEntity<MessageResponse> logout(HttpServletResponse res) {
-        // 클라이언트에 저장된 토큰 쿠키 삭제 지시
-        deleteCookie(res, "access_token");
-        deleteCookie(res, "refresh_token");
-
-        // 헤더로 토큰을 쓰는 앱이라면, 프론트가 로컬 저장소 토큰 삭제하도록 안내만 가능
-        return ResponseEntity.ok(new MessageResponse("로그아웃 되었습니다."));
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse> refresh(@Valid @RequestBody RefreshRequest req) {
+        TokenResponse res  = authService.refresh(req.getRefreshToken());
+        return ResponseEntity.ok(new ApiResponse(true, 200, "refresh token refreshed",res));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse> logout(@Valid @RequestBody RefreshRequest req) {
+        authService.logoutByRefresh(req.getRefreshToken());
+        return ResponseEntity.ok(new ApiResponse(true, 200, "Logout successful",null));
+    }
+
+/*
     private void deleteCookie(HttpServletResponse res, String name) {
         Cookie c = new Cookie(name, null);
         c.setPath("/");           // 발급 시와 동일 path
@@ -42,6 +52,7 @@ public class AuthController {
         c.setMaxAge(0);           // 즉시 만료
         res.addCookie(c);
     }
+*/
 
 
     @PostMapping("/dummy-login")

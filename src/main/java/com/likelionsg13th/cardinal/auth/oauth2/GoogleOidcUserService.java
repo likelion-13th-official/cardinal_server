@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.security;
+package com.likelionsg13th.cardinal.auth.oauth2;
 
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;

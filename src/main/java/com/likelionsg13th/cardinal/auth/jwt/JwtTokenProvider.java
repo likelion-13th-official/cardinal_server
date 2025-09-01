@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.security.jwt;
+package com.likelionsg13th.cardinal.auth.jwt;
 
 
 import io.jsonwebtoken.*;

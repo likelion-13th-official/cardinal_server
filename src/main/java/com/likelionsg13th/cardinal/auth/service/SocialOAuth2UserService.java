@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.security;
+package com.likelionsg13th.cardinal.auth.service;
 
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
