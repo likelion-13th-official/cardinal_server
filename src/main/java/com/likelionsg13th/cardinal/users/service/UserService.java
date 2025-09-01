@@ -1,5 +1,7 @@
 package com.likelionsg13th.cardinal.users.service;
 
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.UserNotFoundException;
 import com.likelionsg13th.cardinal.security.jwt.JwtTokenProvider;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
@@ -43,5 +45,11 @@ public class UserService {
         }
 
         return parts;
+    }
+
+
+    /*user 검증 메서드 */
+    private Users checkUser(UserDto user) {
+        return userRepository.findById(user.getId()).orElseThrow(() ->  new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 }
