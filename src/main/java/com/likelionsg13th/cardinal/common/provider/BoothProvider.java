@@ -4,11 +4,14 @@ import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
+import com.likelionsg13th.cardinal.users.domain.Scrap;
+import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 

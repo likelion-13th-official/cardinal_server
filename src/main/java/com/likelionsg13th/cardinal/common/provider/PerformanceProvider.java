@@ -1,16 +1,19 @@
 package com.likelionsg13th.cardinal.common.provider;
 
+import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.performance.exception.PerformanceNotFound;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
+import com.likelionsg13th.cardinal.performance.exception.PerformanceNotFound;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.List;
 
+import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
 /*
  * CASE 1

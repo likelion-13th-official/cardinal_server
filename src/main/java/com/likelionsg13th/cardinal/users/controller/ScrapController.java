@@ -2,8 +2,7 @@ package com.likelionsg13th.cardinal.users.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
-import com.likelionsg13th.cardinal.users.dto.request.ScrapRequestDto;
-import com.likelionsg13th.cardinal.users.dto.request.ScrapRequestDto;
+import com.likelionsg13th.cardinal.users.dto.requestDto.ScrapRequestDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.service.ScrapService;
 import com.likelionsg13th.cardinal.users.service.UserService;

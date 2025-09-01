@@ -29,7 +29,6 @@ import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -42,7 +41,6 @@ public class SecurityConfig {
     public JwtAuthenticationFilter jwtFilter() {
         return new JwtAuthenticationFilter(jwtTokenProvider);
     }
-
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
