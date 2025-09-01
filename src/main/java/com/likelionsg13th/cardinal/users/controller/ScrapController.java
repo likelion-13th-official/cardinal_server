@@ -3,7 +3,6 @@ package com.likelionsg13th.cardinal.users.controller;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.requestDto.ScrapRequestDto;
-import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import com.likelionsg13th.cardinal.users.service.ScrapService;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import jakarta.validation.Valid;
@@ -24,9 +23,10 @@ public class ScrapController {
     @GetMapping()
     public ResponseEntity<ApiResponse> viewScraps(@AuthenticationPrincipal @Valid UserDetails principal, //user
                                                   @RequestParam(required = false)  String day,
-                                                  @RequestParam(required = false) String category) {
+                                                  @RequestParam(required = false) Boolean isOperating) {
+        UserDto user = userService.getMeBySubject(principal.getUsername());
 
-        return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 조회 성공"));
+        return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 조회 성공",scrapService.getAllScrapsByDayOrIsOperation(user,day,isOperating)));
     }
      @PostMapping()
     public ResponseEntity<ApiResponse> createScraps(@AuthenticationPrincipal @Valid UserDetails principal,

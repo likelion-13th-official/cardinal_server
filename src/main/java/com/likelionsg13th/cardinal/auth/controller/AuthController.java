@@ -8,7 +8,7 @@ import com.likelionsg13th.cardinal.auth.dto.TokenResponseDto;
 import com.likelionsg13th.cardinal.auth.service.AuthService;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.users.domain.Users;
-import com.likelionsg13th.cardinal.users.dto.requestDto.DummyLoginRequest;
+import com.likelionsg13th.cardinal.users.dto.request.DummyLoginRequest;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

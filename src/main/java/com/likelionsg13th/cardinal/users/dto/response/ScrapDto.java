@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.users.dto.resonseDto;
+package com.likelionsg13th.cardinal.users.dto.response;
 
 import java.util.List;
 

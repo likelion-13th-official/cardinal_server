@@ -7,8 +7,7 @@ package com.likelionsg13th.cardinal.common.provider;
 
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
-import com.likelionsg13th.cardinal.common.exception.ScrapNotSupportedForCategory;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
+import com.likelionsg13th.cardinal.users.exception.ScrapNotSupportedForCategory;
 
 public interface CategoryProvider {
     boolean hasCategory(String category);

@@ -22,6 +22,7 @@ public class SecurityConfig {
     private final SocialOAuth2UserService socialOAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
     private final GoogleOidcUserService googleOidcUserService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
@@ -69,9 +70,8 @@ public class SecurityConfig {
         """.formatted(escape(code), escape(desc)));
                         })
                 )
-                .exceptionHandling(e -> e.authenticationEntryPoint(
-                        new org.springframework.security.web.authentication.HttpStatusEntryPoint(
-                                org.springframework.http.HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(ex->ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
