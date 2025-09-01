@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +35,7 @@ public class SecurityConfig {
     private final SocialOAuth2UserService socialOAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
     private final GoogleOidcUserService googleOidcUserService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
@@ -45,14 +48,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/**", 
-                                "/booths/**",
-                                "/events/**",
-                                "/goods/**",
+                                "/auth/**",
                                 "/search/**", "/health",
                                 "/login",               // 커스텀 로그인 페이지 자체는 허용
                                 "/oauth2/**",           // OAuth2 흐름 허용
                                 "/map/**",
+                                "/booths/**",
+                                "/goods/**",
+                                "/performances/**",
+                                "/events/**",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/favicon.ico", "/default-ui.css").permitAll()
                         .anyRequest().authenticated()
@@ -63,7 +67,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(ue -> ue.userService(socialOAuth2UserService).oidcUserService(googleOidcUserService)) // Google (OIDC))
                         .successHandler(successHandler)
                         .failureHandler((req, res, ex) -> {
-                            // 가장 중요한 한 줄: 정확한 실패 원인 로그
+
                             ex.printStackTrace(); // 또는 logger.error("OAuth2 login failed", ex);
 
                             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -80,9 +84,8 @@ public class SecurityConfig {
         """.formatted(escape(code), escape(desc)));
                         })
                 )
-                .exceptionHandling(e -> e.authenticationEntryPoint(
-                        new org.springframework.security.web.authentication.HttpStatusEntryPoint(
-                                org.springframework.http.HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(ex->ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

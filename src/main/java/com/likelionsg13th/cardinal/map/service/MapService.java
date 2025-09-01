@@ -6,10 +6,8 @@ import com.likelionsg13th.cardinal.common.domain.Amenity;
 import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
-import com.likelionsg13th.cardinal.common.exception.LocationNotProvidedForFoodTruck;
-import com.likelionsg13th.cardinal.common.exception.ParameterIsNullOrEmpty;
+import com.likelionsg13th.cardinal.map.exception.LocationNotProvidedForFoodTruck;
 import com.likelionsg13th.cardinal.map.dto.*;
-import com.likelionsg13th.cardinal.common.exception.InvalidParameterException;
 import com.likelionsg13th.cardinal.common.provider.CategoryProvider;
 import com.likelionsg13th.cardinal.common.provider.ProviderFactory;
 import com.likelionsg13th.cardinal.common.repository.AmenityRepository;
@@ -19,7 +17,6 @@ import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Collection;
@@ -120,7 +117,7 @@ public class MapService {
                     .getLocation().getPosition();
 
         }else
-            throw new InvalidParameterException(ErrorCode.INVALID_CATEGORY);
+            throw new InvalidCategoryException(ErrorCode.INVALID_CATEGORY);
 
         return MapDetailDto .builder()
                 .name(name)
