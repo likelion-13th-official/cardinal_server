@@ -1,17 +1,17 @@
-package com.likelionsg13th.cardinal.security;
+package com.likelionsg13th.cardinal.auth.oauth2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.likelionsg13th.cardinal.security.jwt.JwtTokenProvider;
-import com.likelionsg13th.cardinal.security.jwt.dto.TokenResponse;
+import com.likelionsg13th.cardinal.auth.dto.TokenResponse;
+import com.likelionsg13th.cardinal.auth.jwt.JwtTokenProvider;
+import com.likelionsg13th.cardinal.auth.service.AuthService;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.v4.runtime.Token;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,19 +25,21 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwt;
     private static final ObjectMapper OM = new ObjectMapper();
+    private final AuthService authService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth) throws IOException {
-  /*      OAuth2User principal = (OAuth2User) auth.getPrincipal();
+
+  /*    OAuth2User principal = (OAuth2User) auth.getPrincipal();
         System.out.println("✅ OAuth2SuccessHandler 진입: " + auth.getName());
 
 
         // provider 구분 : kakao / google
-*//*        String registrationId = (auth instanceof OAuth2AuthenticationToken o)
+        String registrationId = (auth instanceof OAuth2AuthenticationToken o)
                 ? o.getAuthorizedClientRegistrationId()
                 : "unknown";
 
-        String provider = registrationId.toLowerCase();*//*
+        String provider = registrationId.toLowerCase();
 
         String provider = (auth instanceof OAuth2AuthenticationToken o)
                 ? o.getAuthorizedClientRegistrationId()
@@ -54,7 +56,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         // 2) providerId: 정규화 속성 우선, 없으면 auth.getName() (nameAttributeKey)
         String providerId = asStr(principal.getAttributes().get("providerId"));
         if (providerId == null) providerId = auth.getName(); // Kakao는 "providerId"를 name 키로 설정해둠
-        // 마지막 폴백(혹시 정규화 없이 들어온 경우)
         if (providerId == null) {
             if ("google".equals(provider)) providerId = asStr(principal.getAttributes().get("sub"));
             if ("kakao".equals(provider))  providerId = asStr(principal.getAttributes().get("id"));
@@ -62,7 +63,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         String subject = profile.provider + ":" + profile.providerId;
         System.out.println("✅ provider = " +  profile.provider);
-        System.out.println("✅ providerID = " +  profile.providerId);*/
+        System.out.println("✅ providerID = " +  profile.providerId);
+        */
 
 
         OAuth2User principal = (OAuth2User) auth.getPrincipal();
@@ -89,16 +91,18 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         log.debug("✅ provider={}, providerId={}", provider, providerId);
 
         String subject = provider + ":" + providerId;
-        String access  = jwt.createAccessToken(subject);
-        String refresh = jwt.createRefreshToken(subject);
 
-        System.out.println("-발급된 AccessToken = " + access);
-        System.out.println("-발급된 RefreshToken = " + refresh);
+/*        String access  = jwt.createAccessToken(subject);
+        String refresh = jwt.createRefreshToken(subject);*/
+        TokenResponse tokens = authService.issueToken(subject);
+
+        System.out.println("-발급된 AccessToken = " + tokens.getAccessToken());
+        System.out.println("-발급된 RefreshToken = " + tokens.getRefreshToken());
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("tokenType", "Bearer");
-        body.put("accessToken", access);
-        body.put("refreshToken", refresh);
+        body.put("accessToken", tokens.getAccessToken() );
+        body.put("refreshToken", tokens.getRefreshToken());
         body.put("profile", Map.of(
                 "provider", provider,
                 "providerId", providerId

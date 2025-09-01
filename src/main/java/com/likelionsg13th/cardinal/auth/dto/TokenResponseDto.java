@@ -1,8 +1,7 @@
-package com.likelionsg13th.cardinal.security.jwt.dto;
+package com.likelionsg13th.cardinal.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.context.annotation.Profile;
 
 @Getter
 @AllArgsConstructor
