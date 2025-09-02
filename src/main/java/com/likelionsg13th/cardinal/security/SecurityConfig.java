@@ -40,7 +40,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         //허용 주소,메서드,헤더
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000" /*, "https://your-frontend.com" */));
+        config.setAllowedOrigins(List.of("http://localhost:5173"/*, "https://your-frontend.com" */));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
