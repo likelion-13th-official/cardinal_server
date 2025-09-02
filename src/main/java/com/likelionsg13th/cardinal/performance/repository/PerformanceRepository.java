@@ -1,4 +1,37 @@
 package com.likelionsg13th.cardinal.performance.repository;
 
-public class PerformanceRepository {
+
+import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
+import com.likelionsg13th.cardinal.map.domain.Map;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
+import com.likelionsg13th.cardinal.performance.domain.Performance;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface PerformanceRepository extends JpaRepository<Performance, Long> {
+    Optional<Performance> findFirstByOrderByIdAsc();
+
+    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
+            "'PERFORMANCE',"+
+            "g.name," +
+            "g.id," +
+            "g.location.position," +
+            "g.location.longitude," +
+            "g.location.latitude) " +
+            "FROM Performance g WHERE g.name LIKE :keyword")
+    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+
+    @Query("SELECT p.location" +
+            " FROM Performance p " +
+            " WHERE p.id = 1")
+    Map findLocationFirstById();
+
+    List<Performance> findByCategory(PerformanceCategory category);
+
 }

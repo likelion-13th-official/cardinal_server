@@ -1,11 +1,13 @@
 package com.likelionsg13th.cardinal.performance.domain;
 
-import com.likelionsg13th.cardinal.common.domain.Map;
+
+import com.likelionsg13th.cardinal.common.domain.OperationAwareEntity;
+import com.likelionsg13th.cardinal.map.domain.Map;
+
 import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Performance {
+public class Performance extends OperationAwareEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +28,6 @@ public class Performance {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private LocalDateTime date;
 
     @Column(nullable = false)
     private String description;
@@ -39,5 +39,5 @@ public class Performance {
     @Column(nullable = false)
     private String ThumbnailUrl;
 
-    private Long viewCount;
+    private long viewCount;
 }

@@ -1,4 +1,46 @@
 package com.likelionsg13th.cardinal.goods.repository;
 
-public class GoodsRepository {
+import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
+import com.likelionsg13th.cardinal.map.domain.Map;
+import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
+import com.likelionsg13th.cardinal.goods.domain.Goods;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface GoodsRepository extends JpaRepository<Goods, Long> {
+    Optional<Goods> findFirstByOrderByIdAsc();
+
+    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
+            "'GOODS',"+
+            "g.name," +
+            "g.id," +
+            "g.location.position," +
+            "g.location.longitude," +
+            "g.location.latitude) " +
+            "FROM Goods g WHERE g.name LIKE :keyword")
+    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+
+    Page<Goods> findByNameContaining(String query, Pageable pageable);
+
+    @Query("SELECT p.location" +
+            " FROM Performance p " +
+            " WHERE p.id = 1")
+    Map findLocationFirstById();
+
+    //검색
+    @Query("SELECT new com.likelionsg13th.cardinal.goods.dto.GoodsResponse(" +
+            "   g, " +
+            "   CASE WHEN s.id IS NOT NULL THEN true ELSE false END" +
+            ") " +
+            "FROM Goods g LEFT JOIN Scrap s ON s.contentType = 'GOODS' AND s.contentId = g.id AND s.user.id = :userId " +
+            "WHERE g.name LIKE %:query%")
+    Page<GoodsResponse> findByNameContainingWithScrapStatus(@Param("query") String query, @Param("userId") Long userId, Pageable pageable);
 }

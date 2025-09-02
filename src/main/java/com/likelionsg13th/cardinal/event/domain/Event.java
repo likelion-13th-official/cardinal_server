@@ -2,22 +2,19 @@ package com.likelionsg13th.cardinal.event.domain;
 
 
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
-import com.likelionsg13th.cardinal.common.domain.Map;
-import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
+import com.likelionsg13th.cardinal.map.domain.Map;
+import com.likelionsg13th.cardinal.common.domain.OperationAwareEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Event {
+@SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Event extends OperationAwareEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,15 +23,14 @@ public class Event {
     @Column(nullable = false)
     private String name;
 
-    @Embedded
-    private OperatingInfo operatingInfo;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Map location;
 
     @Column(nullable = false)
     private String description;
+
+    private String applicationFormUrl; // 참가 신청 폼 경로
 
     @Column(nullable = false)
     private String thumbnailUrl;
@@ -44,5 +40,5 @@ public class Event {
     @OrderColumn(name = "image_order")
     private List<DetailImage> detailImageList = new ArrayList<>();
 
-    private Long viewCount;
+    private long viewCount;
 }

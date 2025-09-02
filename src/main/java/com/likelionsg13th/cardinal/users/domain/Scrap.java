@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","contentId","contentType"})
+)
 public class Scrap {
 
     @Id
@@ -30,5 +33,14 @@ public class Scrap {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    public static Scrap toEntity(ContentType contentType,Long contentId,Users user){
+        return Scrap.builder()
+                .user(user)
+                .contentId(contentId)
+                .contentType(contentType)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 
 }
