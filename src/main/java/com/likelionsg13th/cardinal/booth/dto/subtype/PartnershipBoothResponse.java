@@ -29,7 +29,7 @@ public class PartnershipBoothResponse extends BoothDetailResponse {
                                 .collect(Collectors.toList())
                 )
                 .logoImageUrl(b.getLogoImageUrl())
-                .isScrapped(isScrapped)
+                .scrapped(isScrapped)
                 .build();
 
     }

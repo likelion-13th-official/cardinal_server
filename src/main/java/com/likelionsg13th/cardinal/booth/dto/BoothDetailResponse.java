@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.booth.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.dto.subtype.*;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
@@ -23,7 +24,8 @@ public class BoothDetailResponse {
     private String description;
 
     private String thumbnailUrl;
-    private boolean isScrapped;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
 
 
     public static BoothDetailResponse of(Booth booth, boolean isScrapped) {

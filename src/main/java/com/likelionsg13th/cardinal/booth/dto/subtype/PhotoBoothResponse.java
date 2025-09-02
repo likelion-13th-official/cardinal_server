@@ -40,7 +40,7 @@ public class PhotoBoothResponse extends BoothDetailResponse {
                                 .map(DetailImage::getImageUrl)
                                 .collect(Collectors.toList())
                 )
-                .isScrapped(isScrapped)
+                .scrapped(isScrapped)
                 .build();
 
     }

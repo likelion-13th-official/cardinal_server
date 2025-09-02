@@ -26,7 +26,7 @@ public class YardBoothResponse extends BoothDetailResponse {
                                 .map(day -> day.toKorean())
                                 .collect(Collectors.toList())
                 )
-                .isScrapped(isScrapped)
+                .scrapped(isScrapped)
                 .build();
 
     }

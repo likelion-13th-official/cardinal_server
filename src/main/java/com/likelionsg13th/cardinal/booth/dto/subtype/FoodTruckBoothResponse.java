@@ -51,7 +51,7 @@ public class FoodTruckBoothResponse extends BoothDetailResponse {
 //                                .map(DetailImage::getImageUrl)
 //                                .collect(Collectors.toList())
 //                )
-                .isScrapped(isScrapped)
+                .scrapped(isScrapped)
                 .build();
 
     }

@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.event.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,8 @@ public class EventResponse {
     private List<String> operatingDays;
 
     private String thumbnailUrl;
-    private boolean isScrapped;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
 
     public EventResponse(Event event, boolean isScrapped) {
         this.id = event.getId();
@@ -32,7 +34,7 @@ public class EventResponse {
                 .map(day -> day.toKorean())
                 .collect(Collectors.toList());
         this.thumbnailUrl = event.getThumbnailUrl();
-        this.isScrapped = isScrapped;
+        this.scrapped = isScrapped;
     }
 
 

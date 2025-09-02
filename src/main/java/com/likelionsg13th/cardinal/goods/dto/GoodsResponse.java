@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.goods.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,8 @@ public class GoodsResponse {
     private String name;
     private Long price;
     private String thumbnailUrl;
-
-    private boolean isScrapped;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
 
 
     public GoodsResponse(Goods goods, boolean isScrapped) {
@@ -22,7 +23,7 @@ public class GoodsResponse {
         this.name = goods.getName();
         this.price = goods.getPrice();
         this.thumbnailUrl = goods.getThumbnailUrl();
-        this.isScrapped = isScrapped;
+        this.scrapped = isScrapped;
     }
 
     public static GoodsResponse from(Goods goods, boolean isScrapped) {

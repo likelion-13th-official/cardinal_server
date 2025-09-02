@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.booth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,9 @@ public class BoothResponse {
     private OperatingInfo operatingInfo;
     private List<String> operatingDays;
     private String thumbnailUrl;
-    private boolean isScrapped;
+
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
 
     //JPQL은 생성자만 지원
     public BoothResponse(Booth booth, boolean isScrapped) {
@@ -29,7 +32,7 @@ public class BoothResponse {
         this.location = booth.getLocation().getPosition();
         this.operatingInfo = booth.getOperatingInfo();
         this.thumbnailUrl = booth.getThumbnailUrl();
-        this.isScrapped = isScrapped;
+        this.scrapped = isScrapped;
         this.operatingDays = booth.getOperatingDays().stream()
                 .map(day -> day.toKorean())
                 .collect(Collectors.toList());

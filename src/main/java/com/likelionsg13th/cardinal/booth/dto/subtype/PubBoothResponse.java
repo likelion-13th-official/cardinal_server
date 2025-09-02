@@ -54,7 +54,7 @@ public class PubBoothResponse extends BoothDetailResponse {
                 .noticeUpdatedAt(b.getNoticeUpdatedAt())
                 .instagramUrl(b.getInstagramUrl())
                 .tableLayoutUrl(b.getTableLayoutUrl())
-                .isScrapped(isScrapped)
+                .scrapped(isScrapped)
                 .build();
 
     }
