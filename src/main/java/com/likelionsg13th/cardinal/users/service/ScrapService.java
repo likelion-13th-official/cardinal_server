@@ -52,6 +52,7 @@ public class ScrapService {
         *
         * category : booth
         * subCategory : 포토부스,주점,어쩌고 등등
+        * TODO : DTO 수정 : 스크랩 여부 확인 field 추가 ? 프론트 상의
 * */
     public ListResponseDto<ScrapCommonDto> getAllScrapsByDayOrIsOperation(UserDto user, String day, Boolean isOperating){
         Users  userEntity = checkUser(user);

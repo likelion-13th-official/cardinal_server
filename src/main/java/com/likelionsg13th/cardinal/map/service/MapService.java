@@ -60,6 +60,8 @@ public class MapService {
 
     /*
        TODO : keyword null 에러 처리으로
+       TODO : keyword size 추가
+
      * 검색 범위 :
      * 굿즈 : 제품 명,
      * 이벤트 : 이벤트 명,
@@ -72,6 +74,7 @@ public class MapService {
 
 
         String searchKeyword = "%"+keyword+"%";
+
         Stream<List<MapSearchDto>> streams = Stream.of(
                 goodsRepository.findAllByNameContaining(searchKeyword),
                 eventRepository.findAllByNameContaining(searchKeyword),
