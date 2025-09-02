@@ -36,9 +36,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
-                                "/booths/**",
-                                "/events/**",
-                                "/goods/**",
+                                "/booths/**","/booths",
+                                "/events/**", "/events",
+                                "/goods/**", "/goods",
                                 "/performances/** ", "/performances",
                                 "/search/**", "/health",
                                 "/login",               // 커스텀 로그인 페이지 자체는 허용
