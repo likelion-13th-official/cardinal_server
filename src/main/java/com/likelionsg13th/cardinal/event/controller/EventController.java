@@ -7,12 +7,12 @@ import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.service.EventService;
-import com.likelionsg13th.cardinal.users.service.UserService;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
+import com.likelionsg13th.cardinal.users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,9 +28,11 @@ public class EventController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> searchEvent(
             @RequestParam("query") String query,
-            @RequestParam("page") int page
+            @RequestParam("page") int page,
+            @AuthenticationPrincipal UserDetails user
     ) {
-        PageDto<EventResponse> response=eventService.searchEvents(query,page);
+        Long userId= userService.resolveUserIdOrNull(user);
+        PageDto<EventResponse> response=eventService.searchEvents(query,page,userId);
         return ResponseEntity.ok(new ApiResponse(true,200,"이벤트 검색 목록 조회 성공",response));
 
     }

@@ -13,7 +13,7 @@ public class PartnershipBoothResponse extends BoothDetailResponse {
 
     private String logoImageUrl;
 
-    public static PartnershipBoothResponse of(Booth booth){
+    public static PartnershipBoothResponse of(Booth booth,boolean isScrapped){
         PartnershipBooth b=(PartnershipBooth) booth;
         return PartnershipBoothResponse.builder()
                 .id(b.getId())
@@ -29,6 +29,7 @@ public class PartnershipBoothResponse extends BoothDetailResponse {
                                 .collect(Collectors.toList())
                 )
                 .logoImageUrl(b.getLogoImageUrl())
+                .scrapped(isScrapped)
                 .build();
 
     }

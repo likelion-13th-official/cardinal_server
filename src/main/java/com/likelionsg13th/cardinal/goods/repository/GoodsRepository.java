@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.goods.repository;
 
+import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
 import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
@@ -33,4 +34,13 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
             " FROM Performance p " +
             " WHERE p.id = 1")
     Map findLocationFirstById();
+
+    //검색
+    @Query("SELECT new com.likelionsg13th.cardinal.goods.dto.GoodsResponse(" +
+            "   g, " +
+            "   CASE WHEN s.id IS NOT NULL THEN true ELSE false END" +
+            ") " +
+            "FROM Goods g LEFT JOIN Scrap s ON s.contentType = 'GOODS' AND s.contentId = g.id AND s.user.id = :userId " +
+            "WHERE g.name LIKE %:query%")
+    Page<GoodsResponse> findByNameContainingWithScrapStatus(@Param("query") String query, @Param("userId") Long userId, Pageable pageable);
 }
