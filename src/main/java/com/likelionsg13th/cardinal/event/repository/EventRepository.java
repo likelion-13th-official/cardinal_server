@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.event.repository;
 
+import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
 
     Page<Event> findByNameContaining(String query, Pageable pageable);
+
+    @Query("SELECT new com.likelionsg13th.cardinal.event.dto.EventResponse(" +
+            "   e, " +
+            "   CASE WHEN s.id IS NOT NULL THEN true ELSE false END" +
+            ") " +
+            "FROM Event e LEFT JOIN Scrap s ON s.contentType = 'EVENT' AND s.contentId = e.id AND s.user.id = :userId " +
+            "WHERE e.name LIKE %:query%")
+    Page<EventResponse> findByNameContainingWithScrapStatus(@Param("query") String query, @Param("userId") Long userId, Pageable pageable);
 }
