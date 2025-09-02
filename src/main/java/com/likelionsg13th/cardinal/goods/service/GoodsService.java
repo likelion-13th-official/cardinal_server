@@ -3,10 +3,12 @@ package com.likelionsg13th.cardinal.goods.service;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.provider.GoodsProvider;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.goods.dto.GoodsDetailResponse;
 import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
+import com.likelionsg13th.cardinal.goods.exception.GoodsNotFound;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -55,20 +57,35 @@ public class GoodsService {
         return PageDto.from(goodsResponsePage);
     }
 
-//    public PageDto<GoodsResponse> getGoodsList(int page){
-//        Pageable pageable=PageRequest.of(page-1,GOODS_PAGE_SIZE);
-//        Page<Goods> goodsPage = goodsRepository.findAll(pageable);
-//        boolean isScrapped=false;
-//        Page<GoodsResponse> goodsResponsePage=goodsPage.map(GoodsResponse::from);
-//
-//        //pageDTO에 담기
-//        return PageDto.from(goodsResponsePage);
-//    }
 
-    public GoodsDetailResponse getGoods(Long id){
+    public PageDto<GoodsResponse> getGoodsList(int page, Long userId) {
+        Pageable pageable=PageRequest.of(page-1,GOODS_PAGE_SIZE);
+        Page<Goods> goodsPage = goodsRepository.findAll(pageable);
+
+
+        Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(goodsPage.stream().map(Goods::getId).toList()
+                , userId);
+
+        Page<GoodsResponse> goodsResponsePage = goodsPage.map(
+                goods -> {
+                    boolean isScrapped = scrappedGoodsIds.contains(goods.getId());
+                    return GoodsResponse.from(goods, isScrapped);
+                });
+
+        //pageDTO에 담기
+        return PageDto.from(goodsResponsePage);
+    }
+
+    public GoodsDetailResponse getGoods(Long id, Long userId) {
         Goods goods = goodsRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("해당 ID의 goods을 찾을 수 없습니다. ID: "+id));
-        return GoodsDetailResponse.from(goods);
+                .orElseThrow(()-> new GoodsNotFound(ErrorCode.GOODS_NOT_FOUND));
+
+        boolean isScrapped = false;
+        if (userId != null) {
+            var scrapped = goodsProvider.getScrappedContentIds(List.of(id), userId);
+            isScrapped = scrapped.contains(id);
+        }
+        return GoodsDetailResponse.from(goods, isScrapped);
     }
 
 }

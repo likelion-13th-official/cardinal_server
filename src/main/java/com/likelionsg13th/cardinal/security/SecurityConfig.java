@@ -37,8 +37,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/booths/**",
-                                "/events/**",
-                                "/goods/**",
+                                "/events/**", "/events",
+                                "/goods/**", "/goods",
                                 "/performances/** ", "/performances",
                                 "/search/**", "/health",
                                 "/login",               // 커스텀 로그인 페이지 자체는 허용
