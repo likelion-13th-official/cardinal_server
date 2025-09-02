@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.goods.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class GoodsDetailResponse {
 
     private List<String> detailImageList;
     private boolean isScrapped;
+
 
     public static GoodsDetailResponse from(Goods goods, boolean bookmarked) {
         List<String> imageList = Optional.ofNullable(goods.getDetailImageList())

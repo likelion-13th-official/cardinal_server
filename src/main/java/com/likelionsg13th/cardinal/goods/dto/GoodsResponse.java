@@ -1,10 +1,12 @@
 package com.likelionsg13th.cardinal.goods.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter @Builder
+@Getter @Builder @AllArgsConstructor
 public class GoodsResponse {
 
     private Long id;
@@ -12,19 +14,19 @@ public class GoodsResponse {
     private String name;
     private Long price;
     private String thumbnailUrl;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
 
-    private boolean isScrapped;
 
+    public GoodsResponse(Goods goods, boolean isScrapped) {
+        this.id = goods.getId();
+        this.name = goods.getName();
+        this.price = goods.getPrice();
+        this.thumbnailUrl = goods.getThumbnailUrl();
+        this.scrapped = isScrapped;
+    }
 
-    public static GoodsResponse from(Goods goods) {
-        return GoodsResponse.builder()
-                .id(goods.getId())
-                .name(goods.getName())
-                .price(goods.getPrice())
-                .thumbnailUrl(goods.getThumbnailUrl())
-                //TODO: 북마크 확인 로직
-                .isScrapped(false)
-                .build();
-
+    public static GoodsResponse from(Goods goods, boolean isScrapped) {
+        return new GoodsResponse(goods, isScrapped);
     }
 }

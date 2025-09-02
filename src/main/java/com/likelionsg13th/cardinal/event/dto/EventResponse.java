@@ -1,7 +1,9 @@
 package com.likelionsg13th.cardinal.event.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.event.domain.Event;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Builder
+@Builder @AllArgsConstructor
 public class EventResponse {
     private long id;
 
@@ -20,23 +22,23 @@ public class EventResponse {
     private List<String> operatingDays;
 
     private String thumbnailUrl;
-    private boolean bookmarked;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
+
+    public EventResponse(Event event, boolean isScrapped) {
+        this.id = event.getId();
+        this.name = event.getName();
+        this.location = event.getLocation().getPosition();
+        this.operatingInfo = event.getOperatingInfo();
+        this.operatingDays = event.getOperatingDays().stream()
+                .map(day -> day.toKorean())
+                .collect(Collectors.toList());
+        this.thumbnailUrl = event.getThumbnailUrl();
+        this.scrapped = isScrapped;
+    }
 
 
-    public static EventResponse from(Event event) {
-        return EventResponse.builder()
-                .id(event.getId())
-                .name(event.getName())
-                .location(event.getLocation().getPosition())
-                .operatingInfo(event.getOperatingInfo())
-                .operatingDays(
-                        event.getOperatingDays().stream()
-                                .map(day->day.toKorean())
-                                .collect(Collectors.toList())
-                )
-                .thumbnailUrl(event.getThumbnailUrl())
-                //TODO: 북마크 확인 로직
-                .bookmarked(false)
-                .build();
+    public static EventResponse from(Event event, boolean isScrapped) {
+        return new EventResponse(event, isScrapped);
     }
 }

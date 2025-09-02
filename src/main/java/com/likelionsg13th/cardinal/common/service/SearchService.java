@@ -8,6 +8,7 @@ import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,16 +30,14 @@ public class SearchService {
     private static final int RESULT_LIMIT = 4;
 
     /* 검색 초기 화면 */
-    public List<SearchResultDto> searchAll(String query){
+    public List<SearchResultDto> searchAll(String query, Long userId){
        Pageable pageable= PageRequest.of(0,RESULT_LIMIT);
 
-       //카테고리별 검색 결과 4개씩
-        Page<BoothResponse> boothsPage=boothRepository.findByNameOrMenuNameContaining(query,pageable)
-                .map(BoothResponse::from);
-        Page<EventResponse> eventsPage=eventRepository.findByNameContaining(query,pageable)
-                .map(EventResponse::from);
-        Page<GoodsResponse>goodsPage=goodsRepository.findByNameContaining(query,pageable)
-                .map(GoodsResponse::from);
+
+        //스크랩 여부 포함해서 검색
+        Page<BoothResponse> boothsPage = boothRepository.findWithScrapStatus(query, userId, pageable);
+        Page<EventResponse> eventsPage = eventRepository.findByNameContainingWithScrapStatus(query, userId, pageable);
+        Page<GoodsResponse> goodsPage = goodsRepository.findByNameContainingWithScrapStatus(query, userId, pageable);
 
         List<SearchResultDto> results=new ArrayList<>();
         results.add(SearchResultDto.from("부스",boothsPage));

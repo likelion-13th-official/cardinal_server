@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.event.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.event.domain.Event;
@@ -23,10 +24,10 @@ public class EventDetailResponse {
 
     private OperatingInfo operatingInfo;
     private List<String> operatingDays;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
 
-    private boolean bookmarked;
-
-    public static EventDetailResponse from(Event event){
+    public static EventDetailResponse from(Event event, boolean scrapped){
         List<String> imageList = Optional.ofNullable(event.getDetailImageList())
                 .orElseGet(Collections::emptyList)
                 .stream()
@@ -40,6 +41,7 @@ public class EventDetailResponse {
                 .name(event.getName())
                 .description(event.getDescription())
                 .thumbnailUrl(event.getThumbnailUrl())
+                .scrapped(scrapped)
                 .detailImageList(imageList)
                 .location(event.getLocation().getPosition())
                 .operatingInfo(event.getOperatingInfo())

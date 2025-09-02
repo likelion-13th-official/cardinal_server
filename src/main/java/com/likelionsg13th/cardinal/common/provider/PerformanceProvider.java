@@ -10,12 +10,15 @@ import com.likelionsg13th.cardinal.performance.exception.PerformanceNotFound;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
+import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
 import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.FILM;
 
@@ -26,7 +29,7 @@ import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.FILM;
 @RequiredArgsConstructor
 public class PerformanceProvider implements CategoryProvider,Scrappable {
     private final PerformanceRepository performanceRepository;
-
+    private final ScrapRepository scrapRepository;
     @Override
     public boolean hasCategory(String category) {
         return  PERFORMANCE.name().equalsIgnoreCase(category);
@@ -69,4 +72,11 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
             throw new PerformanceNotFound(ErrorCode.PERFORMANCE_NOT_FOUND);
         return PERFORMANCE;
     }
+
+
+    public Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
+        return Scrappable.super.getScrappedContentIds(contentIds,userId,PERFORMANCE,scrapRepository);
+
+    }
+
 }
