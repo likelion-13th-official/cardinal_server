@@ -36,18 +36,24 @@ public class GoodsController {
         return ResponseEntity.ok(new ApiResponse(true,200,"굿즈 검색 목록 조회 성공",response));
     }
 
-//    /*전체 조회*/
-//    @GetMapping
-//    public ResponseEntity<ApiResponse> getGoodsList(
-//            @RequestParam("page") Integer page
-//    ){
-//        PageDto<GoodsResponse> response = goodsService.getGoodsList(page);
-//        return ResponseEntity.ok(new ApiResponse(true, 200, "굿즈 전체 조회 성공", response));
-//    }
+    /*전체 조회*/
+    @GetMapping
+    public ResponseEntity<ApiResponse> getGoodsList(
+            @RequestParam("page") Integer page,
+            @AuthenticationPrincipal UserDetails user
+    ){
+        Long userId= userService.resolveUserIdOrNull(user);
+        PageDto<GoodsResponse> response = goodsService.getGoodsList(page, userId);
+        return ResponseEntity.ok(new ApiResponse(true, 200, "굿즈 전체 조회 성공", response));
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> getGoods(@PathVariable long id){
-        GoodsDetailResponse response=goodsService.getGoods(id);
+    public ResponseEntity<ApiResponse> getGoods(
+            @PathVariable long id,
+            @AuthenticationPrincipal UserDetails user
+        ){
+        Long userId= userService.resolveUserIdOrNull(user);
+        GoodsDetailResponse response=goodsService.getGoods(id, userId);
         return ResponseEntity.ok(new ApiResponse(true, 200, "굿즈 개별 조회 성공", response));
         
     }
