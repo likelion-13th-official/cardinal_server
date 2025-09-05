@@ -23,7 +23,7 @@ public abstract class OperationAwareEntity {
     @Embedded
     private OperatingInfo operatingInfo;
 
-    private boolean isOperating;
+
 
 
 }

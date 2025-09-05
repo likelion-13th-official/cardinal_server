@@ -20,9 +20,7 @@ public class OperatingInfo {
 
     private  LocalTime startTime;
     private LocalTime endTime;
-
-    @Transient
-    private boolean isOperating;
+   private boolean isOperating;
 
 }
 
