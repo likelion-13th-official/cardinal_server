@@ -35,9 +35,11 @@ public interface Scrappable  {
     /* 요일별 필터링 공통 조건문 : DAY 파라미터 있으며 + (상시도 아니고, 해당 필터링요일과 일치하지 않을 시 FALSE)  */
     default boolean isFilteredByDay(String filterDay, List<DayOfWeek> operatingDays) {
 
-        if(filterDay != null
+        if(filterDay != null && !filterDay.isEmpty()
                 && (!operatingDays.contains(DayOfWeek.valueOf(filterDay.toUpperCase()))
-                && !operatingDays.contains(ALWAYS)))  return false;
+                && !operatingDays.contains(ALWAYS))) {
+            return false;
+        }
         else return true;
     }
 
@@ -45,8 +47,6 @@ public interface Scrappable  {
      default boolean isFilteredByIsOperating(Boolean filterIsOperating, boolean isOperating) {
          return filterIsOperating == null || isOperating == filterIsOperating;
     }
-
-
 
 
     /*

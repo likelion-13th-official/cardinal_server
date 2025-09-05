@@ -7,7 +7,6 @@ import com.likelionsg13th.cardinal.map.dto.MapListDto;
 import com.likelionsg13th.cardinal.map.service.MapService;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;

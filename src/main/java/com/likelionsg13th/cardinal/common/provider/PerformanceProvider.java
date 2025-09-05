@@ -3,6 +3,7 @@ package com.likelionsg13th.cardinal.common.provider;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 
+import com.likelionsg13th.cardinal.common.service.UpdateIsOperating;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
@@ -20,7 +21,7 @@ import java.util.Set;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.PERFORMANCE;
-import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.FILM;
+import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.*;
 
 /*
  * CASE 1
@@ -30,6 +31,7 @@ import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.FILM;
 public class PerformanceProvider implements CategoryProvider,Scrappable {
     private final PerformanceRepository performanceRepository;
     private final ScrapRepository scrapRepository;
+    private final UpdateIsOperating updateIsOperating;
     @Override
     public boolean hasCategory(String category) {
         return  PERFORMANCE.name().equalsIgnoreCase(category);
@@ -37,7 +39,7 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
 
     /*
     * - 공연
-    - 아티스트, 동아리 : X
+    - 아티스트, 동아리 : X :
     - 영화제 :  +시작시간,끝시간
     * */
     @Override
@@ -46,14 +48,22 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
         if(performanceOptional.isEmpty()) return Optional.empty();
         Performance performance = performanceOptional.get();
 
-        if(performance.getCategory().equals(FILM)){
-            return isFilteredByDay(day,performance.getOperatingDays())
-                    && isFilteredByIsOperating(isOperating,performance.getOperatingInfo().isOperating())
-                    ? Optional.of(ScrapCommonDto.of(performance, ScrapTimeDetailDto.from(performance)))
-                    : Optional.empty();
-        }
+        //실시간 운영여부 계산
+        boolean currentIsOperating = updateIsOperating.updateOperatingStatus(performance.getOperatingInfo(),performance.getOperatingDays());
 
-        return Optional.of(ScrapCommonDto.of(performance, null));
+        boolean isFiltered = isFilteredByDay(day, performance.getOperatingDays())
+                && isFilteredByIsOperating(isOperating, currentIsOperating);
+
+        if(isFiltered) {
+            if(performance.getCategory().equals(FILM)) {return Optional.of(ScrapCommonDto.of(performance, ScrapTimeDetailDto.from(performance)));}
+            else if(performance.getCategory().equals(ARTIST) || performance.getCategory().equals(CLUB)) return Optional.of(ScrapCommonDto.of(performance,null));
+
+
+        }
+        return Optional.empty();
+
+
+
     }
 
     /*

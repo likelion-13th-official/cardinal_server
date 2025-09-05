@@ -37,8 +37,6 @@ public class ScrapCommonDto {
     String name;
     String position;
     List<String> days; //GOODS 일 때 빈 리스트 반환
-    @JsonProperty("isScrapped")
-    boolean isScrapped;
     ScrapDetail detail; //GOODS -> price , booth,event,film ->  timeDto
 
     public static ScrapCommonDto of(Booth booth, ScrapDetail detail ){
