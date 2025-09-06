@@ -114,6 +114,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰이 아예 없으면 익명으로 통과 (여기서 401 만들지 말 것)
         if (header == null || !header.startsWith("Bearer ")) {
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
             chain.doFilter(req, res);
             return;
         }
