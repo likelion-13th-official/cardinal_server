@@ -49,31 +49,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .authorizationEndpoint(ae -> ae.baseUri("/oauth2/authorization"))
-                        .redirectionEndpoint(re -> re.baseUri("/login/oauth2/code/*"))
-                        .userInfoEndpoint(ue -> ue.userService(socialOAuth2UserService).oidcUserService(googleOidcUserService)) // Google (OIDC))
+                        .authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
+                        .redirectionEndpoint(r -> r.baseUri("/login/oauth2/code/*"))
                         .successHandler(successHandler)
-                        .failureHandler((req, res, ex) -> {
-                            // 가장 중요한 한 줄: 정확한 실패 원인 로그
-                            ex.printStackTrace(); // 또는 logger.error("OAuth2 login failed", ex);
-
-                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            res.setContentType("application/json;charset=UTF-8");
-
-                            String code = (ex instanceof org.springframework.security.oauth2.core.OAuth2AuthenticationException e)
-                                    ? e.getError().getErrorCode()
-                                    : ex.getClass().getSimpleName();
-
-                            String desc = ex.getMessage();
-
-                            res.getWriter().write("""
-        {"ok":false,"stage":"oauth2Login","errorCode":"%s","message":"%s"}
-        """.formatted(escape(code), escape(desc)));
-                        })
                 )
                 .exceptionHandling(ex->ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

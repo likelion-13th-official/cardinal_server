@@ -1,9 +1,11 @@
 package com.likelionsg13th.cardinal.auth.oauth2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.likelionsg13th.cardinal.auth.config.OAuth2RedirectProps;
 import com.likelionsg13th.cardinal.auth.dto.TokenResponse;
 import com.likelionsg13th.cardinal.auth.jwt.JwtTokenProvider;
 import com.likelionsg13th.cardinal.auth.service.AuthService;
+import com.likelionsg13th.cardinal.auth.service.OneTimeCodeService;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -25,7 +28,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwt;
     private static final ObjectMapper OM = new ObjectMapper();
-    private final AuthService authService;
+    private final AuthService authService;// subject → Token 발급에 쓰던 서비스 (교환 API에서 사용)
+    private final OneTimeCodeService codeService;
+    private final OAuth2RedirectProps redirectProps;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth) throws IOException {
@@ -92,9 +97,23 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         String subject = provider + ":" + providerId;
 
-/*        String access  = jwt.createAccessToken(subject);
+        // 콜백 목적지 결정 (화이트리스트 검증)
+        String target = req.getParameter("ui_redirect");
+        if (target == null || !redirectProps.isAllowed(target)) {
+            target = redirectProps.getDefaultRedirectUri();
+        }
+
+        // 💡 여기서 토큰 만들지 말고, 1회용 코드만 발급
+        String code = codeService.issue(subject);
+        String location = UriComponentsBuilder.fromHttpUrl(target).queryParam("code", code).build(true).toUriString();
+
+        res.setStatus(HttpServletResponse.SC_FOUND);
+        res.setHeader("Location", location);
+
+/*      String access  = jwt.createAccessToken(subject);
         String refresh = jwt.createRefreshToken(subject);*/
-        TokenResponse tokens = authService.issueToken(subject);
+
+/*        TokenResponse tokens = authService.issueToken(subject);
 
         System.out.println("-발급된 AccessToken = " + tokens.getAccessToken());
         System.out.println("-발급된 RefreshToken = " + tokens.getRefreshToken());
@@ -110,7 +129,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/json;charset=UTF-8");
-        res.getWriter().write(OM.writeValueAsString(body));
+        res.getWriter().write(OM.writeValueAsString(body));*/
 
     }
 
