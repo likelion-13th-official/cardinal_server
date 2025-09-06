@@ -60,7 +60,7 @@ app:
       - https://cardinal2025.site/mypage/callback # 배포용 SPA 콜백
     default-redirect-uri: http://localhost:5173/mypage/callback
   one-time-code:
-    ttl-seconds: 60                                # 원타임 코드 유효기간(초)
+    ttl-seconds:  ${ONE_TIME_CODE}                              # 원타임 코드 유효기간(초)
 
 logging:
   level:
