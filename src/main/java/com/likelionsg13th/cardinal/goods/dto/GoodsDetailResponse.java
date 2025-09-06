@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.goods.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import lombok.Builder;
@@ -21,9 +22,10 @@ public class GoodsDetailResponse {
     private String description;
 
     private List<String> detailImageList;
-    private boolean bookmarked;
+    private boolean isScrapped;
 
-    public static GoodsDetailResponse from(Goods goods) {
+
+    public static GoodsDetailResponse from(Goods goods, boolean scrapped) {
         List<String> imageList = Optional.ofNullable(goods.getDetailImageList())
                 .orElseGet(Collections::emptyList)
                 .stream()
@@ -39,7 +41,7 @@ public class GoodsDetailResponse {
                 .description(goods.getDescription())
                 .detailImageList(imageList)
                 //TODO: 북마크 확인 로직
-                .bookmarked(false)
+                .isScrapped(scrapped)
                 .build();
     }
 }

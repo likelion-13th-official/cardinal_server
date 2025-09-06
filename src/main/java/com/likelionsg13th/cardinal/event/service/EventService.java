@@ -2,13 +2,15 @@ package com.likelionsg13th.cardinal.event.service;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
+import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.provider.EventProvider;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
+import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
-import com.likelionsg13th.cardinal.goods.domain.Goods;
-import jakarta.persistence.EntityNotFoundException;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,29 +19,45 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class EventService {
     private static final int PAGE_SIZE = 2;
     private final EventRepository eventRepository;
+    private final EventProvider eventProvider;
 
     /* 검색*/
     @Transactional(readOnly = true)
-    public PageDto<EventResponse> searchEvents(String query, int page) {
+    public PageDto<EventResponse> searchEvents(String query, int page, Long userId) {
         Pageable pageable= PageRequest.of(page-1,PAGE_SIZE);
         Page<Event> eventsPage=eventRepository.findByNameContaining(query,pageable);
 
-        Page<EventResponse> eventResponsePage=eventsPage.map(EventResponse::from);
 
-        return PageDto.from(eventResponsePage);
+
+        Set<Long> scrappedEventsIds = eventProvider.getScrappedContentIds(eventsPage.stream().map(Event::getId).toList()
+                , userId);
+
+        Page<EventResponse> eventsResponsePage = eventsPage.map(
+                event -> {
+                    boolean isScrapped = scrappedEventsIds.contains(event.getId());
+                    return EventResponse.from(event, isScrapped);
+                });
+        return PageDto.from(eventsResponsePage);
 
     }
 
-    public EventDetailResponse getEvent(Long id) {
+    public EventDetailResponse getEvent(Long id, Long userId ) {
         Event event = eventRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("해당 ID의 events을 찾을 수 없습니다. ID: "+id));
-        return EventDetailResponse.from(event);
+                .orElseThrow(()-> new EventNotFound(ErrorCode.EVENT_NOT_FOUND));
+
+        boolean isScrapped = false;
+        if (userId != null) {
+            var scrapped = eventProvider.getScrappedContentIds(List.of(id), userId);
+            isScrapped = scrapped.contains(id);
+        }
+        return EventDetailResponse.from(event, isScrapped);
 
     }
 

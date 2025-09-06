@@ -63,7 +63,7 @@ public class GoodsProvider implements CategoryProvider,Scrappable {
 
 
     public Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
-        return Scrappable.super.getScrappedContentIds(contentIds,userId,BOOTH,scrapRepository);
+        return Scrappable.super.getScrappedContentIds(contentIds,userId,GOODS,scrapRepository);
 
     }
 

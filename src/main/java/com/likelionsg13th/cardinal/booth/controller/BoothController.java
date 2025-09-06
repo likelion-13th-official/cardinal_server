@@ -28,13 +28,11 @@ public class BoothController {
             @RequestParam("category") String category,
             @RequestParam(value = "isOperating", required = false) Boolean isOperating,
             @RequestParam(value = "day", required = false) String day,
+            @RequestParam("page") int page,
             @AuthenticationPrincipal  UserDetails user){
 
-        UserDto userDto = null;
-        if (user != null)
-            userDto = userService.getMeBySubject(user.getUsername());
-
-        List<BoothResponse> boothList=boothService.getBoothList(userDto,category,isOperating,day);
+        Long userId= userService.resolveUserIdOrNull(user);
+        PageDto<BoothResponse> boothList=boothService.getBoothList(userId,category,isOperating,day,page);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 목록 조회 성공", boothList));
 
     }
@@ -42,9 +40,11 @@ public class BoothController {
     /* 개별 상세 조회*/
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getBoothDetail(
-            @PathVariable long id
+            @PathVariable long id,
+            @AuthenticationPrincipal UserDetails user
     ){
-        BoothDetailResponse boothDetailResponse=boothService.getBoothDetail(id);
+        Long userId= userService.resolveUserIdOrNull(user);
+        BoothDetailResponse boothDetailResponse=boothService.getBoothDetail(userId,id);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 개별 조회 성공", boothDetailResponse));
     }
 
@@ -55,11 +55,8 @@ public class BoothController {
             @RequestParam("page") int page,
             @AuthenticationPrincipal  UserDetails user
     ){
-        UserDto userDto = null;
-        if (user != null)
-            userDto = userService.getMeBySubject(user.getUsername());
-
-        PageDto<BoothResponse> response=boothService.searchBooths(userDto,query,page);
+        Long userId= userService.resolveUserIdOrNull(user);
+        PageDto<BoothResponse> response=boothService.searchBooths(userId,query,page);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 검색 목록 조회 성공", response));
     }
 

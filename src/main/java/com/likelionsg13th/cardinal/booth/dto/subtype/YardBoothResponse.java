@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Getter @SuperBuilder
 public class YardBoothResponse extends BoothDetailResponse {
 
-    public static YardBoothResponse of(Booth booth){
+    public static YardBoothResponse of(Booth booth,boolean isScrapped){
         YardBooth b=(YardBooth) booth;
         return YardBoothResponse.builder()
                 .id(b.getId())
@@ -26,6 +26,7 @@ public class YardBoothResponse extends BoothDetailResponse {
                                 .map(day -> day.toKorean())
                                 .collect(Collectors.toList())
                 )
+                .scrapped(isScrapped)
                 .build();
 
     }

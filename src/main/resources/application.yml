@@ -10,7 +10,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   sql:
     init:
-      mode: never
+      mode: always
 
   jpa:
     database: postgresql
