@@ -33,13 +33,16 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(
+                        org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED
+                ))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
                                 "/booths/**","/booths",
                                 "/events/**", "/events",
                                 "/goods/**", "/goods",
-                                "/performances/** ", "/performances",
+                                "/performances/**", "/performances",
                                 "/search/**", "/health",
                                 "/login",               // 커스텀 로그인 페이지 자체는 허용
                                 "/oauth2/**",           // OAuth2 흐름 허용
@@ -49,8 +52,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .authorizationEndpoint(ae -> ae.baseUri("/oauth2/authorization"))
-                        .redirectionEndpoint(re -> re.baseUri("/login/oauth2/code/*"))
+                        .authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
+                        .redirectionEndpoint(r -> r.baseUri("/login/oauth2/code/*"))
                         .userInfoEndpoint(ue -> ue.userService(socialOAuth2UserService).oidcUserService(googleOidcUserService)) // Google (OIDC))
                         .successHandler(successHandler)
                         .failureHandler((req, res, ex) -> {
@@ -74,6 +77,7 @@ public class SecurityConfig {
                 .exceptionHandling(ex->ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
