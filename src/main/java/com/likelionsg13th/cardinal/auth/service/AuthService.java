@@ -15,6 +15,19 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshRepo;
+    private final OneTimeCodeService codeService;
+
+    /** ★ 리팩토링 핵심: 원타임 코드 교환을 서비스로 이동 */
+    public TokenResponse exchangeOneTimeCode(String code) {
+        if (code == null || code.isBlank()) {
+            throw new IllegalArgumentException("code_required");
+        }
+        String subject = codeService.consume(code); // 1회성 소비
+        if (subject == null) {
+            throw new IllegalArgumentException("invalid_or_expired_code");
+        }
+        return issueToken(subject);
+    }
 
     public TokenResponse issueToken(String subject) {
         String access = jwtTokenProvider.createAccessToken(subject);
