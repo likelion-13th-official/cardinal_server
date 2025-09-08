@@ -1,8 +1,7 @@
-package com.likelionsg13th.cardinal.pubOffice;
+package com.likelionsg13th.cardinal.pubOffice.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,6 +9,8 @@ import org.springframework.stereotype.Component;
 public class PasswordEncoderUtils {
     public static void main(String[] args) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        /*test비밀번호 , 추후 .env에 넣어서 사용할 예정입니다. */
 
         // 1. 여기에 원하는 평문 비밀번호를 입력하세요.
         String plainPassword1 = "pubadmin1";

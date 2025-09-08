@@ -1,5 +1,7 @@
-package com.likelionsg13th.cardinal.pubOffice;
+package com.likelionsg13th.cardinal.pubOffice.service;
 
+import com.likelionsg13th.cardinal.pubOffice.domain.PubAdmin;
+import com.likelionsg13th.cardinal.pubOffice.repository.PubAdminRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
