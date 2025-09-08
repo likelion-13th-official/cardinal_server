@@ -1,5 +1,8 @@
 package com.likelionsg13th.cardinal.common.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum DayOfWeek {
     MON("월"),
     TUE("화"),
@@ -18,5 +21,11 @@ public enum DayOfWeek {
 
     public String toKorean() {
         return koreanName;
+    }
+
+    public static DayOfWeek getDayOfWeek(String day) {
+       return  Arrays.stream(DayOfWeek.values())
+               .filter(dayOfWeek -> day.contains(dayOfWeek.name()))
+               .findFirst().orElse(null);
     }
 }
