@@ -122,10 +122,26 @@ public class BoothService {
         //쿼리 작성
         NativeQuery nativeQuery = NativeQuery.builder()
                 .withQuery(q -> q
-                        .multiMatch(mm -> mm
-                                .query(query)
-                                .fields("name^3", "description", "category^2", "menu.itemName")
-                                .fuzziness("AUTO")
+                        .bool(b -> b
+                                .should(s -> s
+                                        .multiMatch(mm -> mm
+                                                .query(query)
+                                                .fields("name^3", "description", "category^2")
+                                                .fuzziness("AUTO")
+                                        )
+                                )
+                                .should(s -> s
+                                        .nested(n -> n
+                                                .path("menu")
+                                                .query(nq -> nq
+                                                        .match(m -> m
+                                                                .field("menu.itemName")
+                                                                .query(query)
+                                                                .fuzziness("AUTO")
+                                                        )
+                                                )
+                                        )
+                                )
                         )
                 )
                 .withPageable(pageable)

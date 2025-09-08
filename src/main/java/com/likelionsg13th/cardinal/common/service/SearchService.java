@@ -81,11 +81,30 @@ public class SearchService {
 
     private SearchHits<UnifiedDocument> searchUnified(String query) {
         NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(q -> q.multiMatch(mm -> mm
-                        .query(query)
-                        .fields("name^3", "description", "category^2", "menu.itemName", "type^2")
-                        .fuzziness("AUTO")))
-                // 12개 요청
+                .withQuery(q -> q
+                        .bool(b -> b
+                                .should(s -> s
+                                        .multiMatch(mm -> mm
+                                                .query(query)
+                                                .fields("name^3", "description", "category^2", "type^2")
+                                                .fuzziness("AUTO")
+                                        )
+                                )
+                                .should(s -> s
+                                        .nested(n -> n
+                                                .path("menu")
+                                                .query(nq -> nq
+                                                        .match(m -> m
+                                                                .field("menu.itemName")
+                                                                .query(query)
+                                                                .fuzziness("AUTO")
+                                                        )
+                                                )
+                                                .ignoreUnmapped(true) //menu필드 없으면 무시
+                                        )
+                                )
+                        )
+                )
                 .withPageable(PageRequest.of(0, SEARCH_PAGE_SIZE * 3))
                 .build();
 
