@@ -25,10 +25,10 @@ public class PubOfficeController {
         return ResponseEntity.ok(new ApiResponse(true, 200, "주점 관리자 로그인 성공",resposne ));
     }
 
-    @PatchMapping("/{pubId}")
-    public ResponseEntity<ApiResponse> updateNoticeAndDescrption(@PathVariable Long pubId,
-                                                                 @AuthenticationPrincipal @Valid UserDetails principal){
-        Long userId= userService.resolveUserIdOrNull(user);
-
-    }
+//    @PatchMapping("/{pubId}")
+//    public ResponseEntity<ApiResponse> updateNoticeAndDescrption(@PathVariable Long pubId,
+//                                                                 @AuthenticationPrincipal @Valid UserDetails principal){
+//       // Long userId= userService.resolveUserIdOrNull(user);
+//
+//    }
 }
