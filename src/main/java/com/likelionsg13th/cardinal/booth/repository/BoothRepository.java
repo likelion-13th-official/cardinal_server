@@ -26,19 +26,6 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
 
     List<Booth> findAllByIdIn(List<Long> ids);
 
-    //단일검색에서 사용 (페이지네이션O)
-    @Query("SELECT new com.likelionsg13th.cardinal.booth.dto.BoothResponse(" +
-            "   b, " +
-            "   (SELECT COUNT(s.id) > 0 FROM Scrap s WHERE s.contentType = :contentType AND s.contentId = b.id AND s.user.id = :userId)" +
-            ") " +
-            "FROM Booth b " +
-            "WHERE b.name LIKE CONCAT('%', :query, '%') OR EXISTS (SELECT 1 FROM b.menus m WHERE m.name LIKE CONCAT('%', :query, '%'))")
-    Page<BoothResponse> findWithScrapStatus(
-            @Param("query") String query,
-            @Param("userId") Long userId,
-            @Param("contentType") ContentType contentType,
-            Pageable pageable
-    );
 
     //전체검색에서 사용(페이지네이션x)
     @Query("SELECT new com.likelionsg13th.cardinal.booth.dto.BoothResponse(" +
