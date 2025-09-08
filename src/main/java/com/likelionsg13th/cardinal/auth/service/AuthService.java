@@ -42,6 +42,20 @@ public class AuthService {
         return TokenResponse.of(access, refresh);
     }
 
+    public TokenResponse issueToken(String adminId,Long pudId) {
+        String access = jwtTokenProvider.createAccessToken(adminId);
+        String  refresh = jwtTokenProvider.createPubAdminAccessToken(adminId,pudId);
+
+        refreshRepo.deleteBySubject(adminId);
+        refreshRepo.save(RefreshToken.builder()
+                .token(refresh)
+                .subject(adminId)
+                .build());
+
+        return TokenResponse.of(access, refresh);
+    }
+
+
     public TokenResponse refresh(String refreshToken) {
         if(!jwtTokenProvider.isRefreshToken(refreshToken)) {
             throw new IllegalArgumentException("Not a refresh token");
@@ -53,6 +67,7 @@ public class AuthService {
                 .orElseThrow(()-> new IllegalArgumentException("Refresh token not found"));
         return issueToken(subject);
     }
+
 
 
     /** 로그아웃(현재 세션): 해당 refresh 삭제 → 즉시 무효화 */

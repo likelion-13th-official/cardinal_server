@@ -5,6 +5,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,7 @@ public class OperatingInfo {
 
     private  LocalTime startTime;
     private LocalTime endTime;
+   private boolean isOperating;
 
-    private boolean isOperating;
-        //TODO :   isOperating 계산 로직 필요
 }
+
