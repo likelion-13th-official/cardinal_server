@@ -4,6 +4,7 @@ package com.likelionsg13th.cardinal.auth.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -29,6 +30,12 @@ public class JwtTokenProvider {
     public String createAccessToken(String subject) {
         return createToken(subject, Map.of(), accessValidityMs);
     }
+
+    /*주점 관리자 전용 accessToken : payLoad에 pubId 추가. */
+    public String createPubAdminAccessToken(String adminId,Long pubId) {
+        return createToken(adminId, Map.of("pubId",pubId), accessValidityMs);
+    }
+
     public String createRefreshToken(String subject) {
         return createToken(subject, Map.of("typ","refresh"), refreshValidityMs);
     }
@@ -43,6 +50,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public Jws<Claims> parse(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
     }
@@ -50,6 +58,7 @@ public class JwtTokenProvider {
     public String getSubject(String token) {
         return parse(token).getBody().getSubject();
     }
+
     public boolean isRefreshToken(String token) {
         Object typ = parse(token).getBody().get("typ"); return "refresh".equals(typ);
     }
@@ -62,6 +71,7 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
     private String stripBearer(String token) {
         if (token == null) return null;
         return token.startsWith("Bearer ") ? token.substring(7) : token;

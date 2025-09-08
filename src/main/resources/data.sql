@@ -371,3 +371,9 @@ VALUES ('분리수거', 1),
        ('대피로', 2),
        ('간이테이블1', 3),
        ('간이테이블2', 5);
+
+insert into pub_admin ( department,booth_id, admin_id, password) VALUES ('컴공',1,'pubadmin1','pubadmin1'),
+                                                           ('총동',2,'pubadmin2','pubadmin2'),
+                                                           ('사과대',3,'pubadmin3','pubadmin3'),
+                                                           ('자과대',5,'pubadmin5','pubadmin5'),
+                                                           ('경제대',4,'pubadmin4','pubadmin4')

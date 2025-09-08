@@ -9,7 +9,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -17,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
 
     private final JwtTokenProvider jwtTokenProvider;
     private final SocialOAuth2UserService socialOAuth2UserService;
@@ -27,6 +33,42 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
         return new JwtAuthenticationFilter(jwtTokenProvider);
+    }
+
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    /*주점 관리자 전용 filterChain*/
+    @Bean
+    @Order(1)
+    SecurityFilterChain pubAdminFilterChain(HttpSecurity http) throws Exception {
+
+            http
+                    .securityMatcher("/pubOffice/**") //  /pubOffice/ 로 시작하는 URL에만 적용
+                    .csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/pubOffice/auth/login").permitAll() //로그인 경로는 해제
+                            .anyRequest().authenticated() // /pubOffice/ 하위 모든 경로는 인증 필요
+                    )
+                    .sessionManagement(sm -> sm.sessionCreationPolicy(
+                            org.springframework.security.config.http.SessionCreationPolicy.STATELESS
+                    ))
+                    .exceptionHandling(ex->ex
+                            .authenticationEntryPoint(customAuthenticationEntryPoint))
+                    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .formLogin(form -> form.disable()) //  기본 FormLogin 비활성화
+                    .httpBasic(httpBasic -> httpBasic.disable()); // 기본 HttpBasic 비활성화
+
+            return http.build();
+
     }
 
     @Bean
