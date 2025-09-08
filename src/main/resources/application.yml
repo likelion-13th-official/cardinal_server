@@ -57,8 +57,8 @@ app:
   oauth2:
     allowed-redirect-uris:
       - http://localhost:5173/mypage/callback     # 개발용 SPA 콜백
-      - https://cardinal2025.site/mypage/callback # 배포용 SPA 콜백
-    default-redirect-uri: http://localhost:5173/mypage/callback
+      - https://sogang-cardinal.vercel.app/mypage/callback  # 배포용 SPA 콜백
+    default-redirect-uri: https://sogang-cardinal.vercel.app/mypage/callback
   one-time-code:
     ttl-seconds:  ${ONE_TIME_CODE}                              # 원타임 코드 유효기간(초)
 
