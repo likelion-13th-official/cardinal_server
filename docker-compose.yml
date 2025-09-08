@@ -19,3 +19,6 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       ACCESS_SEC: ${ACCESS_SEC}
       REFRESH_SEC: ${REFRESH_SEC}
+
+      #추가
+      ONE_TIME_CODE: ${ONE_TIME_CODE}
