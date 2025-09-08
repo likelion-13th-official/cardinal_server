@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.pubOffice;
+package com.likelionsg13th.cardinal.pubOffice.dto.response;
 
 
 import com.likelionsg13th.cardinal.auth.dto.TokenResponse;

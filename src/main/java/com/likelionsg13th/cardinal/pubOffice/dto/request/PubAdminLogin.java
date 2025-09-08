@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.pubOffice;
+package com.likelionsg13th.cardinal.pubOffice.dto.request;
 
 import lombok.Getter;
 
