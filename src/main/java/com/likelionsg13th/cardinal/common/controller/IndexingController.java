@@ -24,4 +24,14 @@ public class IndexingController {
         }
     }
 
+    @PostMapping("/events")
+    public ResponseEntity<String> indexAllEvents() {
+        try {
+            indexingService.indexAllEvents();
+            return ResponseEntity.ok("Event 데이터 전체 색인 작업이 성공적으로 시작되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("색인 작업 중 오류 발생: " + e.getMessage());
+        }
+    }
+
 }
