@@ -6,6 +6,9 @@ import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.domain.EventDocument;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
+import com.likelionsg13th.cardinal.goods.domain.Goods;
+import com.likelionsg13th.cardinal.goods.domain.GoodsDocument;
+import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class IndexingService {
 
     private final EventRepository eventRepository;
+    private final GoodsRepository goodsRepository;
     private final BoothRepository boothRepository;
     private final ElasticsearchOperations elasticsearchOperations;
 
@@ -96,6 +100,32 @@ public class IndexingService {
         doc.setName(event.getName());
         doc.setDescription(event.getDescription());
         doc.setType("이벤트"); // 'type' 필드에 "이벤트" 저장
+        return doc;
+    }
+
+    @Transactional(readOnly = true)
+    public void indexAllGoods() {
+        log.info("Goods 데이터 전체 색인 시작");
+        List<Goods> allGoods = goodsRepository.findAll();
+
+        List<GoodsDocument> goodsDocuments = allGoods.stream()
+                .map(this::convertGoodsToDocument)
+                .collect(Collectors.toList());
+
+        if (goodsDocuments.isEmpty()) {
+            log.info("색인할 Goods 데이터가 없습니다.");
+            return;
+        }
+        elasticsearchOperations.save(goodsDocuments);
+        log.info("총 {}개의 Goods 데이터 색인 완료", goodsDocuments.size());
+    }
+
+    private GoodsDocument convertGoodsToDocument(Goods goods) {
+        GoodsDocument doc = new GoodsDocument();
+        doc.setGoodsId(goods.getId());
+        doc.setName(goods.getName());
+        doc.setDescription(goods.getDescription());
+        doc.setType("굿즈"); // 'type' 필드에 "굿즈" 저장
         return doc;
     }
 }

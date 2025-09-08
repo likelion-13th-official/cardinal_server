@@ -28,7 +28,6 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
             "FROM Goods g WHERE g.name LIKE :keyword")
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
 
-    Page<Goods> findByNameContaining(String query, Pageable pageable);
 
     @Query("SELECT p.location" +
             " FROM Performance p " +

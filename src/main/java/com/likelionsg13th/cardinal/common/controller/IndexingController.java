@@ -34,4 +34,14 @@ public class IndexingController {
         }
     }
 
+    @PostMapping("/goods")
+    public ResponseEntity<String> indexAllGoods() {
+        try {
+            indexingService.indexAllGoods();
+            return ResponseEntity.ok("Goods 데이터 전체 색인 작업이 성공적으로 시작되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("색인 작업 중 오류 발생: " + e.getMessage());
+        }
+    }
+
 }
