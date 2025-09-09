@@ -30,5 +30,11 @@ public class PubBooth extends Booth {
         this.noticeUpdatedAt = LocalDateTime.now();
     }
 
+    public void updateNoticeAndDescription(String notice,String description) {
+        this.notice = notice;
+        super.updateDescription(description);
+        this.noticeUpdatedAt = LocalDateTime.now();
+    }
+
 
 }

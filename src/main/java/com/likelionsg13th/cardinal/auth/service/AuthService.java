@@ -42,6 +42,7 @@ public class AuthService {
         return TokenResponse.of(access, refresh);
     }
 
+    /*pub admin 전용 토큰 발급 */
     public TokenResponse issueToken(String adminId,Long pudId) {
         String access = jwtTokenProvider.createAccessToken(adminId);
         String  refresh = jwtTokenProvider.createPubAdminAccessToken(adminId,pudId);

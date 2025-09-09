@@ -55,4 +55,8 @@ public abstract class Booth extends OperationAwareEntity {
 
 
     private long viewCount;
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
 }

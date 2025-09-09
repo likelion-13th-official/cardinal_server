@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
+@EnableMethodSecurity /*API 별 preAuthorize 사용 위함 By yeeun*/
 public class SecurityConfig {
 
 
@@ -29,6 +31,8 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler successHandler;
     private final GoogleOidcUserService googleOidcUserService;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
 
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
@@ -62,7 +66,7 @@ public class SecurityConfig {
                             org.springframework.security.config.http.SessionCreationPolicy.STATELESS
                     ))
                     .exceptionHandling(ex->ex
-                            .authenticationEntryPoint(customAuthenticationEntryPoint))
+                            .accessDeniedHandler(customAccessDeniedHandler))
                     .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                     .formLogin(form -> form.disable()) //  기본 FormLogin 비활성화
                     .httpBasic(httpBasic -> httpBasic.disable()); // 기본 HttpBasic 비활성화
