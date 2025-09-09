@@ -5,6 +5,7 @@ import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.domain.subtype.PubBooth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
+import com.likelionsg13th.cardinal.common.exception.BusinessException;
 import com.likelionsg13th.cardinal.pubOffice.dto.PubAdminDto;
 import com.likelionsg13th.cardinal.pubOffice.dto.request.PubAdminLogin;
 import com.likelionsg13th.cardinal.pubOffice.dto.request.UpdateNoticeAndDescripDto;
@@ -44,30 +45,22 @@ public class PubAdminService {
 
         return PubAdminLoginResposne.of(
                  pubAdmin.getId()
-                ,authService.issueToken(pubAdmin.getAdminId(), pubAdmin.getBooth().getId()));
+                ,authService.issueToken(pubAdmin.getAdminId(),pubAdmin.getBooth().getId()));
 
     }
 
     @Transactional
-    public UpdatePubResponse updateNoticeAndDescription(Long pubId, UserDetails principal, UpdateNoticeAndDescripDto  updateNoticeAndDescripDto) {
-        PubBooth pub =  boothRepository.findPubBoothById(pubId).orElseThrow();
-
-        String updatedNotice = updateNoticeAndDescripDto.getNotice();
-        String updatedDescription = updateNoticeAndDescripDto.getDescription();
-
-        pub.updateNoticeAndDescription(updatedNotice, updatedDescription);
-
-        //dto 변환
+    public UpdatePubResponse updateNoticeAndDescription(Long pubId, UpdateNoticeAndDescripDto  updateNoticeAndDescripDto) {
+        PubBooth pub = boothRepository.findPubBoothById(pubId).orElseThrow();
+        pub.updateNoticeAndDescription(updateNoticeAndDescripDto);
         return UpdatePubResponse.of(pub);
     }
 
-    //pubId와 pubAdmin 인가 확인
-    public boolean canUpdate(UserDetails principal,Long pubId){
-        PubAdmin pubAdmin =  pubAdminRepository.findByAdminId(principal.getUsername()).orElse(null);
-        if(pubAdmin == null) return false;
-        return pubAdmin.getBooth().getId().equals(pubId);
-
+    public boolean canUpdate(CustomUserDetails principal,Long pubId ) {
+        if(principal == null || principal.getUsername() == null ) return false;
+        return principal.getPubId().equals(pubId);
     }
+
 
 
 

@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.security;
 
+import com.likelionsg13th.cardinal.auth.jwt.JwtAuthenticationAdminFilter;
 import com.likelionsg13th.cardinal.auth.jwt.JwtAuthenticationFilter;
 import com.likelionsg13th.cardinal.auth.jwt.JwtTokenProvider;
 import com.likelionsg13th.cardinal.auth.oauth2.GoogleOidcUserService;
@@ -32,7 +33,7 @@ public class SecurityConfig {
     private final GoogleOidcUserService googleOidcUserService;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
-
+    private final JwtAuthenticationAdminFilter jwtAuthenticationAdminFilter;
 
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
@@ -56,10 +57,11 @@ public class SecurityConfig {
     SecurityFilterChain pubAdminFilterChain(HttpSecurity http) throws Exception {
 
             http
-                    .securityMatcher("/pubOffice/**") //  /pubOffice/ 로 시작하는 URL에만 적용
+                    .securityMatcher("/pubOffice/**")//  /pubOffice/ 로 시작하는 URL에만 적용
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/pubOffice/auth/login").permitAll() //로그인 경로는 해제
+                            .requestMatchers(
+                                    "/pubOffice/auth/login","/pubOffice/auth/refresh") .permitAll() //로그인,token 갱신 경로는 해제
                             .anyRequest().authenticated() // /pubOffice/ 하위 모든 경로는 인증 필요
                     )
                     .sessionManagement(sm -> sm.sessionCreationPolicy(
@@ -67,7 +69,7 @@ public class SecurityConfig {
                     ))
                     .exceptionHandling(ex->ex
                             .accessDeniedHandler(customAccessDeniedHandler))
-                    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(jwtAuthenticationAdminFilter,UsernamePasswordAuthenticationFilter.class)
                     .formLogin(form -> form.disable()) //  기본 FormLogin 비활성화
                     .httpBasic(httpBasic -> httpBasic.disable()); // 기본 HttpBasic 비활성화
 

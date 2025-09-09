@@ -31,13 +31,14 @@ public class JwtTokenProvider {
         return createToken(subject, Map.of(), accessValidityMs);
     }
 
-    /*주점 관리자 전용 accessToken : payLoad에 pubId 추가. */
-    public String createPubAdminAccessToken(String adminId,Long pubId) {
-        return createToken(adminId, Map.of("pubId",pubId), accessValidityMs);
-    }
 
     public String createRefreshToken(String subject) {
         return createToken(subject, Map.of("typ","refresh"), refreshValidityMs);
+    }
+
+    /*주점 관리자 전용 accessToken : payLoad에 pubId 추가. */
+    public String createPubAdminAccessToken(String adminId,Long pubId) {
+        return createToken(adminId, Map.of("pubId",pubId), accessValidityMs);
     }
 
     private String createToken(String subject, Map<String,Object> claims, long validityMs) {
@@ -58,6 +59,7 @@ public class JwtTokenProvider {
     public String getSubject(String token) {
         return parse(token).getBody().getSubject();
     }
+
 
     public boolean isRefreshToken(String token) {
         Object typ = parse(token).getBody().get("typ"); return "refresh".equals(typ);

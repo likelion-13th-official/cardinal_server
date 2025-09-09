@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.booth.domain.subtype;
 
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.pubOffice.dto.request.UpdateNoticeAndDescripDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,9 +31,9 @@ public class PubBooth extends Booth {
         this.noticeUpdatedAt = LocalDateTime.now();
     }
 
-    public void updateNoticeAndDescription(String notice,String description) {
-        this.notice = notice;
-        super.updateDescription(description);
+    public void updateNoticeAndDescription(UpdateNoticeAndDescripDto updateNoticeAndDescripDto) {
+        this.notice = updateNoticeAndDescripDto.getNotice();
+        super.updateDescription(updateNoticeAndDescripDto.getDescription());
         this.noticeUpdatedAt = LocalDateTime.now();
     }
 
