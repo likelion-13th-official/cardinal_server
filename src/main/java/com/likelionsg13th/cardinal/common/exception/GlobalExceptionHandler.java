@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +34,13 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse(false,errorCode.getHttpStatus().value(), errorCode.getMessage());
 
         return new ResponseEntity<>(response, errorCode.getHttpStatus());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        String message = "아이디 또는 비밀번호가 일치하지 않습니다.";
+        ApiResponse response = new ApiResponse(false, HttpStatus.UNAUTHORIZED.value(), message);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
 
@@ -62,6 +70,8 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse(false, 400, errorMessage, null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+
 
 
 

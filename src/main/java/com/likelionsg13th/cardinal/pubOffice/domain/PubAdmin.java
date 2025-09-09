@@ -1,4 +1,4 @@
-package com.likelionsg13th.cardinal.pubOffice;
+package com.likelionsg13th.cardinal.pubOffice.domain;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import jakarta.persistence.*;

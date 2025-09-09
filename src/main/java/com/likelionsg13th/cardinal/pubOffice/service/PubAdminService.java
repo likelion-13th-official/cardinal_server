@@ -1,6 +1,10 @@
-package com.likelionsg13th.cardinal.pubOffice;
+package com.likelionsg13th.cardinal.pubOffice.service;
 
 import com.likelionsg13th.cardinal.auth.service.AuthService;
+import com.likelionsg13th.cardinal.pubOffice.dto.request.PubAdminLogin;
+import com.likelionsg13th.cardinal.pubOffice.dto.response.PubAdminLoginResposne;
+import com.likelionsg13th.cardinal.pubOffice.repository.PubAdminRepository;
+import com.likelionsg13th.cardinal.pubOffice.domain.PubAdmin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,15 +19,13 @@ public class PubAdminService {
     private final PubAdminRepository pubAdminRepository;
     private final AuthenticationManager authenticationManager;
     private final AuthService authService;
-    private final PasswordEncoder passwordEncoder;
+
+
     public PubAdminLoginResposne pubAdminLogin(PubAdminLogin loginDto){
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginDto.getAdminId(),loginDto.getPassword());
         Authentication authentication = authenticationManager.authenticate(authToken);
 
         PubAdmin pubAdmin = pubAdminRepository.findByAdminId(authentication.getName()).orElseThrow();
-        if(!passwordEncoder.matches(loginDto.getPassword(),pubAdmin.getPassword())){
-            throw new RuntimeException("password error");
-        }
 
         return PubAdminLoginResposne.of(
                  pubAdmin.getId()
