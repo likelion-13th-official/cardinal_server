@@ -56,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || uri.startsWith("/auth/logout")
                 || uri.startsWith("/oauth2/")
                 || uri.equals("/login")
+                || uri.startsWith("/pubOffice") //지우면 큰일납니다!
                 || uri.startsWith("/health")
                 || uri.startsWith("/css/") || uri.startsWith("/js/")
                 || uri.startsWith("/images/") || uri.startsWith("/webjars/")
