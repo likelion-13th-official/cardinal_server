@@ -1,11 +1,15 @@
 package com.likelionsg13th.cardinal.common.service;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.domain.UnifiedDocument;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.search.AutoCompleteDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResultDto;
 import com.likelionsg13th.cardinal.common.provider.BoothProvider;
 import com.likelionsg13th.cardinal.common.provider.EventProvider;
@@ -18,7 +22,9 @@ import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +33,8 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.SourceFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -145,6 +153,110 @@ public class SearchService {
         if (entity instanceof Goods g) return g.getId();
         throw new IllegalArgumentException("Unknown entity type");
     }
+
+
+
+
+    /* 자동완성
+
+     */
+    public List<AutoCompleteDto> getSuggestion(String query) {
+        SourceFilter sourceFilter = new FetchSourceFilter(
+                true,
+                new String[]{"boothId", "eventId", "goodsId", "name", "category", "type"},
+                new String[]{});
+
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .bool(b -> b
+                                // 1순위: 카테고리/타입 이름이 정확히 일치
+                                .should(s -> s
+                                        .multiMatch(mm -> mm
+                                                .query(query)
+                                                .fields("category.keyword^4", "type.keyword^4")
+                                        )
+                                )
+                                // 2순위: 이름/메뉴명 접두사 일치
+                                .should(s -> s
+                                        .multiMatch(mm -> mm
+                                                .query(query)
+                                                .type(TextQueryType.BoolPrefix)
+                                                .fields("name.as_you_type^3")
+                                        )
+                                )
+                                .should(s -> s
+                                        .nested(n -> n
+                                                .path("menu")
+                                                .query(nq -> nq
+                                                        .multiMatch(mm -> mm
+                                                                .query(query)
+                                                                .type(TextQueryType.BoolPrefix)
+                                                                .fields("menu.itemName.as_you_type^3")
+                                                        )
+                                                )
+                                                .ignoreUnmapped(true)
+                                        )
+                                )
+                                // 3순위: 그 외
+                                .should(s -> s
+                                        .multiMatch(mm -> mm
+                                                .query(query)
+                                                .fields("name", "description", "type^2", "category^2")
+                                                .fuzziness("AUTO")
+                                        )
+                                )
+                        )
+                )
+                .withPageable(PageRequest.of(0, 10))
+                .withSourceFilter(sourceFilter)
+                .build();
+
+
+        SearchHits<AutoCompleteSourceDto> searchHits = elasticsearchOperations.search(
+                nativeQuery,
+                AutoCompleteSourceDto.class,
+                IndexCoordinates.of("booths", "events", "goods")
+        );
+
+        return searchHits.stream()
+                .map(SearchHit::getContent)
+                .map(source -> new AutoCompleteDto(
+                        source.getEntityId(),
+                        source.getName(),
+                        source.getFinalContentsType()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Getter
+    @Setter
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class AutoCompleteSourceDto {
+
+        private Long boothId;
+        private Long eventId;
+        private Long goodsId;
+        private String name;
+        private String category;
+        private String type;
+
+        public long getEntityId() {
+            if (boothId != null) return boothId;
+            if (eventId != null) return eventId;
+            return goodsId;
+        }
+
+        // contentsType을 결정
+        public String getFinalContentsType() {
+            //부스의 경우
+            if ("부스".equals(type) && category != null && !category.isBlank()) {
+                return category;
+            }
+            // 이벤트, 굿즈의 경우
+            return type;
+        }
+    }
+
 
 
 }

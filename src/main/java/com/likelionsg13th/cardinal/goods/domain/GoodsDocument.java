@@ -3,10 +3,7 @@ package com.likelionsg13th.cardinal.goods.domain;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.Setting;
+import org.springframework.data.elasticsearch.annotations.*;
 
 @Getter
 @Setter
@@ -20,7 +17,12 @@ public class GoodsDocument {
     @Field(type = FieldType.Keyword)
     private Long goodsId;
 
-    @Field(type = FieldType.Text, analyzer = "nori")
+    @MultiField(
+            mainField = @Field(type = FieldType.Text, analyzer = "nori"),
+            otherFields = {
+                    @InnerField(suffix = "autocomplete", type = FieldType.Search_As_You_Type, analyzer = "nori")
+            }
+    )
     private String name;
 
     @Field(type = FieldType.Text, analyzer = "nori")

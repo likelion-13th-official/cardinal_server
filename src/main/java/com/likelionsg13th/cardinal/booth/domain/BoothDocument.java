@@ -19,13 +19,20 @@ public class BoothDocument {
     @Field(type = FieldType.Keyword)
     private Long boothId;
 
-    @Field(type = FieldType.Text, analyzer = "nori")
+
+    @MultiField(
+            mainField = @Field(type = FieldType.Text, analyzer = "nori"),
+            otherFields = {
+                    @InnerField(suffix = "autocomplete", type = FieldType.Search_As_You_Type, analyzer = "nori")
+            }
+    )
     private String name;
 
     @Field(type = FieldType.Text, analyzer = "nori")
     private String description;
 
 
+    //부스 하위 타입 5개
     @MultiField(
             mainField = @Field(type = FieldType.Text, analyzer = "booth_category_analyzer"),
             otherFields = {
@@ -34,13 +41,23 @@ public class BoothDocument {
     )
     private String category;
 
+    //부스
+    @Field(type = FieldType.Text, analyzer = "contents_type_analyzer")
+    private String type;
+
+
     @Field(type = FieldType.Nested)
     private List<Menu> menu;
 
     @Getter
     @Setter
     public static class Menu {
-        @Field(type = FieldType.Text, analyzer = "nori")
+        @MultiField(
+                mainField = @Field(type = FieldType.Text, analyzer = "nori"),
+                otherFields = {
+                        @InnerField(suffix = "autocomplete", type = FieldType.Search_As_You_Type, analyzer = "nori")
+                }
+        )
         private String itemName;
 
         @Field(type = FieldType.Integer)
