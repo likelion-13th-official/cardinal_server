@@ -41,8 +41,6 @@ public class BoothProvider implements CategoryProvider,Scrappable{
         return BOOTH;
     }
 
-
-
     @Override
     public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating){
 

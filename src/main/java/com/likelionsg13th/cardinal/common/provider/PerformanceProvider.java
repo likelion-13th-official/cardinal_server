@@ -29,19 +29,21 @@ import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.*;
 @Component
 @RequiredArgsConstructor
 public class PerformanceProvider implements CategoryProvider,Scrappable {
+
     private final PerformanceRepository performanceRepository;
     private final ScrapRepository scrapRepository;
     private final UpdateIsOperating updateIsOperating;
+
     @Override
     public boolean hasCategory(String category) {
         return  PERFORMANCE.name().equalsIgnoreCase(category);
     }
 
     /*
-    * - 공연
+    - 공연
     - 아티스트, 동아리 : X :
     - 영화제 :  +시작시간,끝시간
-    * */
+    */
     @Override
     public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating) {
         Optional<Performance> performanceOptional = performanceRepository.findById(contentId);
@@ -61,8 +63,6 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
 
         }
         return Optional.empty();
-
-
 
     }
 

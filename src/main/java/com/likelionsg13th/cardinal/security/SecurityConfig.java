@@ -18,7 +18,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 
 @Configuration
@@ -51,17 +57,46 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /* CORS 설정*/
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        //허용 주소,메서드,헤더
+        config.setAllowedOrigins(List.of("http://localhost:5173"/*, "https://your-frontend.com" */));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+
+        // 브라우저에 노출할 헤더
+        config.setExposedHeaders(List.of("Authorization"));
+
+        // 자격 증명(쿠키, 인증 헤더 등)
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config); // 모든 경로에 대해 위 설정 적용
+        return source;
+    }
+
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationAdminFilter> jwtAdminFilterRegistration(JwtAuthenticationAdminFilter filter) {
+        FilterRegistrationBean<JwtAuthenticationAdminFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+
     /*주점 관리자 전용 filterChain*/
     @Bean
     @Order(1)
     SecurityFilterChain pubAdminFilterChain(HttpSecurity http) throws Exception {
 
             http
-                    .securityMatcher("/pubOffice/**")//  /pubOffice/ 로 시작하는 URL에만 적용
+                    .securityMatcher("/pubOffice/**") //  /pubOffice/ 로 시작하는 URL에만 적용
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(
-                                    "/pubOffice/auth/login","/pubOffice/auth/refresh") .permitAll() //로그인,token 갱신 경로는 해제
+                                    "/pubOffice/auth/login","/pubOffice/auth/refresh").permitAll() //로그인,token 갱신 경로는 해제
                             .anyRequest().authenticated() // /pubOffice/ 하위 모든 경로는 인증 필요
                     )
                     .sessionManagement(sm -> sm.sessionCreationPolicy(
@@ -78,8 +113,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(2)
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("/**")
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(
                         org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED
