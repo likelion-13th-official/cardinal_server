@@ -20,6 +20,7 @@ import java.io.IOException;
 public class JwtAuthenticationAdminFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final PubAdminDetailService pubAdminDetailService;
+
     /*CustomUserDetail*/
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -53,4 +54,5 @@ public class JwtAuthenticationAdminFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
 }

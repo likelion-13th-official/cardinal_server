@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -52,7 +54,7 @@ public class SecurityConfig {
     }
 
     /*주점 관리자 전용 filterChain*/
-    @Bean
+    /*@Bean
     @Order(1)
     SecurityFilterChain pubAdminFilterChain(HttpSecurity http) throws Exception {
 
@@ -78,12 +80,14 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(2)
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(
-                        org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED
+                        org.springframework.security.config.http.SessionCreationPolicy.STATELESS // ★
                 ))
+                .requestCache(rc -> rc.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
@@ -127,7 +131,75 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }*/
+
+    @Bean @Order(1)
+    SecurityFilterChain oauth2Chain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/oauth2/**", "/login/**")
+                .csrf(csrf -> csrf.disable())
+                .requestCache(rc -> rc.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
+                .authorizeHttpRequests(a -> a.anyRequest().permitAll())
+                .oauth2Login(oauth -> {
+                    oauth.authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"));
+                    oauth.redirectionEndpoint(r -> r.baseUri("/login/oauth2/code/*"));
+                    oauth.userInfoEndpoint(ue -> ue
+                            .userService(socialOAuth2UserService)
+                            .oidcUserService(googleOidcUserService)
+                    );
+                    oauth.successHandler(successHandler);
+                });
+        return http.build();
     }
+
+    @Bean @Order(2)
+    SecurityFilterChain pubAdminChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/pubOffice/**")                  // ★ 관리자 전용 경로만!
+                .csrf(csrf -> csrf.disable())
+                .requestCache(rc -> rc.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
+                .authorizeHttpRequests(a -> a
+                        .requestMatchers("/pubOffice/auth/login", "/pubOffice/auth/refresh").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationAdminFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                )
+                .formLogin(f -> f.disable())
+                .httpBasic(b -> b.disable());
+        return http.build();
+    }
+
+    @Bean @Order(3)
+    SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/**")                            // ★ 나머지 전부 (예: /users/me)
+                .csrf(csrf -> csrf.disable())
+                .requestCache(rc -> rc.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
+                .authorizeHttpRequests(a -> a
+                        .requestMatchers(
+                                "/auth/**",
+                                "/booths/**","/booths",
+                                "/events/**","/events",
+                                "/goods/**","/goods",
+                                "/performances/**","/performances",
+                                "/search/**","/health",
+                                "/map/**",
+                                "/css/**","/js/**","/images/**","/webjars/**",
+                                "/favicon.ico","/default-ui.css"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint));
+        return http.build();
+    }
+
 
     private static String escape(String s) {
         return s == null ? "" : s.replace("\\", "\\\\").replace("\"", "\\\"");

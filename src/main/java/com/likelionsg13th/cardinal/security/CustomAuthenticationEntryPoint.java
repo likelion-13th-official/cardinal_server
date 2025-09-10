@@ -5,6 +5,7 @@ import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper mapper = new ObjectMapper();
@@ -19,7 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 
-
+        log.warn("EntryPoint 401: uri={}, exType={}, msg={}", request.getRequestURI(), authException.getClass().getSimpleName(), authException.getMessage());
         System.out.println("[ENTRY] method=" + request.getMethod()
                 + " uri=" + request.getRequestURI()
                 + " ctx=" + request.getContextPath()

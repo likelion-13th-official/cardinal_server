@@ -76,6 +76,7 @@ public class JwtTokenProvider {
 
     private String stripBearer(String token) {
         if (token == null) return null;
-        return token.startsWith("Bearer ") ? token.substring(7) : token;
+        token = token.trim();
+        return token.startsWith("Bearer ") ? token.substring(7).trim() : token;
     }
 }
