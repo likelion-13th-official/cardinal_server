@@ -7,6 +7,7 @@ import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.pubOffice.dto.PubAdminDto;
 import com.likelionsg13th.cardinal.pubOffice.dto.request.PubAdminLogin;
 import com.likelionsg13th.cardinal.pubOffice.dto.request.UpdateNoticeAndDescripDto;
+import com.likelionsg13th.cardinal.pubOffice.dto.response.PubAdminInfoResponse;
 import com.likelionsg13th.cardinal.pubOffice.dto.response.PubAdminLoginResposne;
 import com.likelionsg13th.cardinal.pubOffice.dto.response.UpdatePubResponse;
 import com.likelionsg13th.cardinal.pubOffice.service.CustomUserDetails;
@@ -51,4 +52,14 @@ public class PubOfficeController {
         TokenResponse res  = authService.adminRefresh(req.getRefreshToken());
         return ResponseEntity.ok(new ApiResponse(true, 200, "refresh token refreshed",res));
     }
+
+    /*몇번 관리자인지, department */
+    @GetMapping("/auth/me")
+    public ResponseEntity<ApiResponse> refresh(@AuthenticationPrincipal CustomUserDetails principal) {
+
+        PubAdminInfoResponse response = pubAdminService.checkAdminInfo(principal);
+
+        return ResponseEntity.ok(new ApiResponse(true, 200, "주점 관리자 정보 ",response));
+    }
+
 }

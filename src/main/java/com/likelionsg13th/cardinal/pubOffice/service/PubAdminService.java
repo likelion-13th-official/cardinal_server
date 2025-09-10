@@ -9,6 +9,7 @@ import com.likelionsg13th.cardinal.common.exception.BusinessException;
 import com.likelionsg13th.cardinal.pubOffice.dto.PubAdminDto;
 import com.likelionsg13th.cardinal.pubOffice.dto.request.PubAdminLogin;
 import com.likelionsg13th.cardinal.pubOffice.dto.request.UpdateNoticeAndDescripDto;
+import com.likelionsg13th.cardinal.pubOffice.dto.response.PubAdminInfoResponse;
 import com.likelionsg13th.cardinal.pubOffice.dto.response.PubAdminLoginResposne;
 import com.likelionsg13th.cardinal.pubOffice.dto.response.UpdatePubResponse;
 import com.likelionsg13th.cardinal.pubOffice.exception.UpdateNotAllowed;
@@ -61,6 +62,17 @@ public class PubAdminService {
         return principal.getPubId().equals(pubId);
     }
 
+
+    public PubAdminInfoResponse checkAdminInfo(CustomUserDetails principal){
+        if(principal == null || principal.getUsername() == null ) return null;
+        PubAdmin pubAdmin = pubAdminRepository.findByAdminId(principal.getUsername()).orElseThrow();
+
+        return PubAdminInfoResponse.builder()
+                .pubId(pubAdmin.getBooth().getId())
+                .department(pubAdmin.getDepartment())
+                .build();
+
+    }
 
 
 
