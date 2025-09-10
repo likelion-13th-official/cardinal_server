@@ -59,7 +59,6 @@ public class MapService {
 
 
     /*
-       TODO : keyword null 에러 처리으로
      * 검색 범위 :
      * 굿즈 : 제품 명,
      * 이벤트 : 이벤트 명,
