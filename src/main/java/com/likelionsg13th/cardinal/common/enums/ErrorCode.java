@@ -30,7 +30,10 @@ public enum ErrorCode {
 
     //유저
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"U001", "해당 사용자를 찾을 수 없습니다"),
-    STAMP_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "U002", "이미 적립한 스탬프입니다");
+    STAMP_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "U002", "이미 적립한 스탬프입니다"),
+
+    //pubadmin
+    UPDATE_NOT_ALLOWED(HttpStatus.FORBIDDEN,"A001","해당 정보를 수정할 권한이 없습니다.");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

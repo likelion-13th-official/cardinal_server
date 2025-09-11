@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpStatus;
 
@@ -18,7 +17,7 @@ import java.util.List;
 
 
 
-@Component
+
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -56,6 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || uri.startsWith("/auth/logout")
                 || uri.startsWith("/oauth2/")
                 || uri.equals("/login")
+                || uri.startsWith("/pubOffice") //지우면 큰일납니다!
                 || uri.startsWith("/health")
                 || uri.startsWith("/css/") || uri.startsWith("/js/")
                 || uri.startsWith("/images/") || uri.startsWith("/webjars/")

@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @MappedSuperclass
-@Getter @SuperBuilder
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class OperationAwareEntity {
 
@@ -22,5 +23,8 @@ public abstract class OperationAwareEntity {
     @Embedded
     private OperatingInfo operatingInfo;
 
-    //TODO :운영여부 계산 메서드
+
+
+
 }
+

@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.booth.repository;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.booth.domain.subtype.PubBooth;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.map.domain.Map;
@@ -15,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecificationExecutor<Booth> {
@@ -22,9 +24,9 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
 
     List<Booth> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
-    List<Booth> findByCategory(BoothCategory category);
 
-    List<Booth> findAllByIdIn(List<Long> ids);
+    @Query("SELECT p FROM PubBooth p WHERE p.id = :id")
+    Optional<PubBooth> findPubBoothById(@Param("id") Long id);
 
 
     /*이벤트맵 검색 : 라벨 = 매장 이름  */

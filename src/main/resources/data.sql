@@ -78,7 +78,7 @@ VALUES ('학생회관 앞', 37.5833, 127.0001),
 
 -- 주점
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating, NOTICE, instagram_url, table_layout_url, notice_updated_at)
-VALUES ('주점', 'PUB', '코딩 주점', 6, '코딩하며 즐기는 신개념 주점!', 'https://example.com/booth1.jpg', 150, '18:00:00', '02:00:00', TRUE, '신분증 필수 지참!', 'https://instagram.com/coding_pub', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00'),
+VALUES ('주점', 'PUB', '코딩 주점', 6, '코딩하며 즐기는 신개념 주점!', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', 150, '18:00:00', '02:00:00', TRUE, '신분증 필수 지참!', 'https://instagram.com/coding_pub', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00'),
        ('주점', 'PUB', '개발자들의 쉼터', 6, '지친 개발자들을 위한 힐링 공간', 'https://example.com/booth2.jpg', 250, '17:00:00', '01:00:00', TRUE, '외부 안주 반입 금지', 'https://instagram.com/dev_rest', 'https://example.com/pub_layout2.jpg','2025-08-18 22:00:00'),
        ('주점', 'PUB', '알고리즘 파티', 6, '알고리즘 문제 풀고, 술도 마시고!', 'https://example.com/booth3.jpg', 180, '19:00:00', '03:00:00', TRUE, '팀 대항전 이벤트 진행!', 'https://instagram.com/algo_party', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00'),
        ('주점', 'PUB', '버그 사냥꾼', 6, '버그 잡고 스트레스 풀자!', 'https://example.com/booth4.jpg', 320, '18:00:00', '02:00:00', TRUE, '현금 결제만 가능합니다', 'https://instagram.com/bug_hunter', 'https://example.com/pub_layout4.jpg','2025-08-18 22:00:00'),

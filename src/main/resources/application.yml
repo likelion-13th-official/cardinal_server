@@ -1,3 +1,10 @@
+server:
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        secure: true
+
 spring:
   elasticsearch:
     uris: ${ELASTIC_SEARCH_URI}
@@ -20,7 +27,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   sql:
     init:
-      mode: always
+      mode: never
 
   jpa:
     database: postgresql
@@ -67,8 +74,8 @@ app:
   oauth2:
     allowed-redirect-uris:
       - http://localhost:5173/mypage/callback     # 개발용 SPA 콜백
-      - https://cardinal2025.site/mypage/callback # 배포용 SPA 콜백
-    default-redirect-uri: http://localhost:5173/mypage/callback
+      - https://sogang-cardinal.vercel.app/mypage/callback  # 배포용 SPA 콜백
+    default-redirect-uri: https://sogang-cardinal.vercel.app/mypage/callback
   one-time-code:
     ttl-seconds:  ${ONE_TIME_CODE}                              # 원타임 코드 유효기간(초)
 
@@ -77,3 +84,16 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     org.springframework.web.client.RestTemplate: DEBUG
+
+cloud:
+  aws:
+    s3:
+      bucket: cardinal2025.bucket
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
