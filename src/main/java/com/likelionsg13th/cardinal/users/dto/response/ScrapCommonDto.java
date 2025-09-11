@@ -6,6 +6,7 @@ import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class ScrapCommonDto {
     List<String> days; //GOODS 일 때 빈 리스트 반환
     ScrapDetail detail; //GOODS -> price , booth,event,film ->  timeDto
 
-    public static ScrapCommonDto of(Booth booth, ScrapDetail detail){
+    public static ScrapCommonDto of(Booth booth, ScrapDetail detail ){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
                 .category(BOOTH.toString())
@@ -53,7 +54,7 @@ public class ScrapCommonDto {
                 .build();
     }
 
-    public static ScrapCommonDto of(Event booth, ScrapDetail detail){
+    public static ScrapCommonDto of(Event booth, ScrapDetail detail ){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
                 .category(EVENT.toString())
@@ -67,7 +68,7 @@ public class ScrapCommonDto {
                 .build();
     }
 
-    public static ScrapCommonDto of(Goods booth, ScrapDetail detail){
+    public static ScrapCommonDto of(Goods booth, ScrapDetail detail ){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
                 .category(GOODS.toString())

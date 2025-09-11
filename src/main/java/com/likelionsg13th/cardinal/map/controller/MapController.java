@@ -8,10 +8,12 @@ import com.likelionsg13th.cardinal.map.service.MapService;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
-
+@Validated
 @RestController
 @RequestMapping("/map")
 @RequiredArgsConstructor
@@ -59,7 +61,7 @@ public class MapController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse> getSearch(@RequestParam @NotBlank String keyword){
+    public ResponseEntity<ApiResponse> getSearch(@RequestParam @NotBlank @Size(min = 2,message = "검색어는 최소 2글자 이상") String keyword){
 
         List<MapSearchDto> resopnse =  mapService.getSearchResult(keyword);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공",resopnse));

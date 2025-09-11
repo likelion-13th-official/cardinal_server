@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.booth.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
 import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
@@ -12,14 +13,19 @@ import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
 import com.likelionsg13th.cardinal.common.provider.BoothProvider;
-import com.likelionsg13th.cardinal.users.domain.Users;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.service.ScrapService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +36,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
+//import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +46,12 @@ public class BoothService {
     private static final int SEARCH_PAGE_SIZE = 2;
     private final BoothProvider boothProvider;
     private final ScrapRepository scrapRepository;
+    //ES
+    private final ElasticsearchOperations elasticsearchOperations;
+    //ES 로그
+    private static final Logger searchLogger= LoggerFactory.getLogger("cardinal.search");
+
+
 
     @Transactional(readOnly = true)
     public PageDto<BoothResponse> getBoothList(Long userId, String categoryStr, Boolean isOperating, String dayStr, int page) {
@@ -105,16 +118,72 @@ public class BoothService {
 
 
 
-    // 검색
+    /* ElasticSearch 이용 부스 검색*/
     @Transactional(readOnly = true)
-    public PageDto<BoothResponse> searchBooths(Long userId,String query, int page) {
-        Pageable pageable= PageRequest.of(page-1,SEARCH_PAGE_SIZE);
+    public PageDto<BoothResponse> searchBooths(Long userId, String query, int page) {
+//        //로그 기록
+//        searchLogger.info("search performed",
+//                kv("query", query),
+//                kv("userId",userId));
 
-        Page<BoothResponse> boothResponsePage = boothRepository.findWithScrapStatus(
-                query, userId, BOOTH, pageable
-        );
+        //검색
+        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
+        SearchHits<BoothDocument> searchHits = boothQuery(query,pageable);
+        //검색결과 아무것도 없을 경우
+        if(searchHits.getTotalHits()==0)return PageDto.from(Page.empty());
 
+        //부스 아이디 추출해서 스크랩 정보 가져오기
+        Set<Long> scrappedBoothIds = getScrapInfo(userId, searchHits);
+
+        //최종응답생성
+        List<BoothResponse> boothResponses = getFinalResponse(searchHits,scrappedBoothIds);
+        Page<BoothResponse> boothResponsePage = new PageImpl<>(boothResponses, pageable, searchHits.getTotalHits());
 
         return PageDto.from(boothResponsePage);
     }
+
+
+    //검색 수행
+    public SearchHits<BoothDocument> boothQuery(String query, Pageable pageable) {
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withQuery(q -> q
+                        .bool(b -> b
+                                .should(s -> s
+                                        .multiMatch(mm -> mm
+                                                .query(query)
+                                                .fields("name^3", "description", "category^2", "menu")
+                                                .fuzziness("AUTO")
+                                        )
+                                )
+                        )
+                )
+                .withPageable(pageable)
+                .build();
+
+        return elasticsearchOperations.search(nativeQuery, BoothDocument.class, IndexCoordinates.of("booths"));
+    }
+
+
+    //스크랩 정보
+    public Set<Long> getScrapInfo(Long userId, SearchHits<BoothDocument> searchHits) {
+        //부스 아이디 추출
+        List<Long> boothIds = searchHits.getSearchHits().stream()
+                .map(SearchHit::getContent)
+                .map(BoothDocument::getBoothId)
+                .collect(Collectors.toList());
+
+        Set<Long> scrappedBoothIds = (userId != null)
+                ? boothProvider.getScrappedContentIds(boothIds, userId)
+                : Collections.emptySet();
+        return scrappedBoothIds;
+    }
+
+    //최종 응답 생성
+    public List<BoothResponse> getFinalResponse  (SearchHits<BoothDocument> searchHits, Set<Long> scrappedBoothIds) {
+        return searchHits.getSearchHits().stream()
+                .map(SearchHit::getContent)
+                .map(boothDocument -> BoothResponse.from(boothDocument, scrappedBoothIds.contains(boothDocument.getBoothId())))
+                .collect(Collectors.toList());
+    }
+
 }

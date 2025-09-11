@@ -1,9 +1,9 @@
 package com.likelionsg13th.cardinal.common.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SimpleSearchDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResultDto;
 import com.likelionsg13th.cardinal.common.service.SearchService;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,23 @@ public class SearchController {
         Long userId= userService.resolveUserIdOrNull(user);
         List<SearchResultDto> response=searchService.searchAll(query, userId);
         return ResponseEntity.ok(new ApiResponse(true,200,"검색결과 초기화면 조회 성공",response));
+    }
+
+
+    /* 자동완성*/
+    @GetMapping("/autocomplete")
+    public ResponseEntity<ApiResponse> getSuggestions(
+            @RequestParam("query") String query
+    ){
+        List<SimpleSearchDto> response=searchService.getSuggestion(query);
+        return ResponseEntity.ok(new ApiResponse(true,200,"추천 검색어 조회 성공", response));
+    }
+
+    /*인기검색어*/
+    @GetMapping("/trending")
+    public ResponseEntity<ApiResponse> getPopularQueries(){
+        List<SimpleSearchDto> response=searchService.getPopularQueries();
+        return ResponseEntity.ok(new ApiResponse(true,200,"인기 검색어 조회 성공", response));
     }
 
 

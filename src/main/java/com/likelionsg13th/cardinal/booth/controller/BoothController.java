@@ -5,16 +5,12 @@ import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/booths")

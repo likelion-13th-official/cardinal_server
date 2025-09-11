@@ -7,7 +7,6 @@ import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.service.EventService;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import org.springframework.http.ResponseEntity;
