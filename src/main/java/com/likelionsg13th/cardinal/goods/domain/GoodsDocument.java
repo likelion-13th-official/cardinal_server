@@ -31,5 +31,11 @@ public class GoodsDocument {
     @Field(type = FieldType.Text, analyzer = "contents_type_analyzer")
     private String type;
 
+    @Field(type = FieldType.Long)
+    private Long price;
+
+    @Field(type = FieldType.Text)
+    private String thumbnailUrl;
+
 
 }

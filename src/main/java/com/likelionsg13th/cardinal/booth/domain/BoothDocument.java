@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.booth.domain;
 
+import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -46,21 +47,24 @@ public class BoothDocument {
     private String type;
 
 
-    @Field(type = FieldType.Nested)
-    private List<Menu> menu;
+    @Field(type = FieldType.Text, analyzer = "nori")
+    private List<String> menu;
 
-    @Getter
-    @Setter
-    public static class Menu {
-        @MultiField(
-                mainField = @Field(type = FieldType.Text, analyzer = "nori"),
-                otherFields = {
-                        @InnerField(suffix = "autocomplete", type = FieldType.Search_As_You_Type, analyzer = "nori")
-                }
-        )
-        private String itemName;
+    @Field(type = FieldType.Text, fielddata = true)
+    private String location;
 
-        @Field(type = FieldType.Integer)
-        private Integer price;
-    }
+    // OperatingInfo를 개별 필드로 분리
+    @Field(type = FieldType.Text)
+    private String startTime;
+
+    @Field(type = FieldType.Text)
+    private String endTime;
+
+    @Field(type = FieldType.Keyword)
+    private List<String> operatingDays;
+
+    @Field(type = FieldType.Text)
+    private String thumbnailUrl;
+
+
 }

@@ -3,6 +3,7 @@ package com.likelionsg13th.cardinal.common.service;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.domain.EventDocument;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
@@ -55,28 +56,41 @@ public class IndexingService {
         BoothDocument doc = new BoothDocument();
         doc.setBoothId(booth.getId());
         doc.setName(booth.getName());
-        doc.setCategory(booth.getCategory().name());
+        doc.setCategory(booth.getCategory().toKorean());
+        doc.setDescription(booth.getDescription());
 
+        if (booth.getLocation() != null) {
+            doc.setLocation(booth.getLocation().getPosition());
+        }
 
-        List<BoothDocument.Menu> menuDocs = booth.getMenus().stream()
-                .map(menuEntity -> {
-                    BoothDocument.Menu menuDoc = new BoothDocument.Menu();
-                    menuDoc.setItemName(menuEntity.getName());
-                    menuDoc.setPrice(menuEntity.getPrice());
-                    return menuDoc;
-                })
+        if (booth.getOperatingInfo() != null) {
+            if (booth.getOperatingInfo().getStartTime() != null) {
+                doc.setStartTime(booth.getOperatingInfo().getStartTime().toString());
+            }
+            if (booth.getOperatingInfo().getEndTime() != null) {
+                doc.setEndTime(booth.getOperatingInfo().getEndTime().toString());
+            }
+        }
+
+        List<String> operatingDays = booth.getOperatingDays().stream()
+                .map(DayOfWeek::toKorean)
+                .collect(Collectors.toList());
+        doc.setOperatingDays(operatingDays);
+
+        doc.setThumbnailUrl(booth.getThumbnailUrl());
+
+        // 메뉴 이름만 추출하여 List<String>으로 변환
+        List<String> menuNames = booth.getMenus().stream()
+                .map(menuEntity -> menuEntity.getName())
                 .collect(Collectors.toList());
 
-        doc.setMenu(menuDocs);
+        doc.setMenu(menuNames);
 
-        // id는 ES가 자동으로 생성하도록 null로 두거나, boothId와 동일하게 설정 가능
-        // doc.setId(String.valueOf(booth.getId()));
+        doc.setId(String.valueOf(booth.getId()));
 
         return doc;
     }
 
-
-    // --- Event 색인 로직 (신규 추가) ---
     @Transactional(readOnly = true)
     public void indexAllEvents() {
         log.info("Event 데이터 전체 색인 시작");
@@ -100,6 +114,31 @@ public class IndexingService {
         doc.setName(event.getName());
         doc.setDescription(event.getDescription());
         doc.setType("이벤트"); // 'type' 필드에 "이벤트" 저장
+
+        // EventDocument에 추가된 필드 매핑
+        if (event.getLocation() != null) {
+            doc.setLocation(event.getLocation().getPosition());
+        }
+
+        if (event.getOperatingInfo() != null) {
+            if (event.getOperatingInfo().getStartTime() != null) {
+                doc.setStartTime(event.getOperatingInfo().getStartTime().toString());
+            }
+            if (event.getOperatingInfo().getEndTime() != null) {
+                doc.setEndTime(event.getOperatingInfo().getEndTime().toString());
+            }
+        }
+
+        if (event.getOperatingDays() != null) {
+            List<String> operatingDays = event.getOperatingDays().stream()
+                    .map(DayOfWeek::toKorean)
+                    .collect(Collectors.toList());
+            doc.setOperatingDays(operatingDays);
+        }
+
+        doc.setThumbnailUrl(event.getThumbnailUrl());
+
+        doc.setId(String.valueOf(event.getId()));
         return doc;
     }
 
@@ -125,6 +164,8 @@ public class IndexingService {
         doc.setGoodsId(goods.getId());
         doc.setName(goods.getName());
         doc.setDescription(goods.getDescription());
+        doc.setPrice(goods.getPrice());
+        doc.setThumbnailUrl(goods.getThumbnailUrl());
         doc.setType("굿즈"); // 'type' 필드에 "굿즈" 저장
         return doc;
     }

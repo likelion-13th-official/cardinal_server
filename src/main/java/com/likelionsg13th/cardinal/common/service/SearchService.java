@@ -5,27 +5,38 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
+import com.likelionsg13th.cardinal.booth.dto.BoothSearchResponse;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.domain.UnifiedDocument;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.AutoCompleteDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResultDto;
 import com.likelionsg13th.cardinal.common.provider.BoothProvider;
 import com.likelionsg13th.cardinal.common.provider.EventProvider;
 import com.likelionsg13th.cardinal.common.provider.GoodsProvider;
 import com.likelionsg13th.cardinal.event.domain.Event;
+import com.likelionsg13th.cardinal.event.domain.EventDocument;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
+import com.likelionsg13th.cardinal.event.dto.EventSearchResponse;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
+import com.likelionsg13th.cardinal.event.service.EventService;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
+import com.likelionsg13th.cardinal.goods.domain.GoodsDocument;
 import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
+import com.likelionsg13th.cardinal.goods.service.GoodsService;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -43,6 +54,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 @RequiredArgsConstructor
 public class SearchService {
@@ -54,112 +67,48 @@ public class SearchService {
     private final GoodsProvider goodsProvider;
     private final EventProvider eventProvider;
     private final BoothService boothService;
+    private final EventService eventService;
+    private final GoodsService goodsService;
+
+    //search 로거
+    private static final Logger searchLogger= LoggerFactory.getLogger("cardinal.search");
 
     private static final int SEARCH_PAGE_SIZE = 4;
 
+    /* 전체 통합 검색 */
     @Transactional(readOnly = true)
     public List<SearchResultDto> searchAll(String query, Long userId) {
-        //검색
-        SearchHits<UnifiedDocument> searchHits = searchUnified(query);
+        searchLogger.info("search performed", kv("query", query), kv("userId", userId));
 
-        //검색 결과 타입별로 분류
-        Map<String, List<SearchHit<UnifiedDocument>>> hitsByIndex = searchHits.getSearchHits().stream()
-                .collect(Collectors.groupingBy(SearchHit::getIndex));
+        Pageable pageable = PageRequest.of(0, SEARCH_PAGE_SIZE);
 
-        // 타입별 응답 dto생성
+        SearchHits<BoothDocument> boothResults = boothService.boothQuery(query, pageable);
+        SearchHits<EventDocument> eventResults = eventService.eventQuery(query, pageable);
+        SearchHits<GoodsDocument> goodsResults = goodsService.goodsQuery(query, pageable);
+
         List<SearchResultDto> results = new ArrayList<>();
+        // 부스 결과 처리
+        List<BoothSearchResponse> boothResponses=boothService.getFinalResponse(boothResults,boothService.getScrapInfo(userId,boothResults));
+        results.add(SearchResultDto.from("부스", (int) boothResults.getTotalHits(), boothResponses));
 
-        results.add(createSearchResult("부스", hitsByIndex.getOrDefault("booths", Collections.emptyList()),
-                ids -> boothRepository.findAllByIdIn(ids).stream().collect(Collectors.toMap(Booth::getId, Function.identity())),
-                (ids, uId) -> boothProvider.getScrappedContentIds(ids, uId), BoothResponse::from, userId));
+        // 이벤트 결과 처리
+        List<EventSearchResponse> eventResponses = eventService.getFinalResponse(eventResults,eventService.getScrapInfo(userId,eventResults));
+        results.add(SearchResultDto.from("이벤트", (int) eventResults.getTotalHits(), eventResponses));
 
-        results.add(createSearchResult("이벤트", hitsByIndex.getOrDefault("events", Collections.emptyList()),
-                ids -> eventRepository.findAllById(ids).stream().collect(Collectors.toMap(Event::getId, Function.identity())),
-                (ids, uId) -> eventProvider.getScrappedContentIds(ids, uId), EventResponse::from, userId));
+        // 굿즈 결과 처리
+        List<GoodsResponse> goodsResponses = goodsService.getFinalResponse(goodsResults,goodsService.getScrapInfo(userId,goodsResults));
+        results.add(SearchResultDto.from("굿즈", (int) goodsResults.getTotalHits(), goodsResponses));
 
-        results.add(createSearchResult("굿즈", hitsByIndex.getOrDefault("goods", Collections.emptyList()),
-                ids -> goodsRepository.findAllById(ids).stream().collect(Collectors.toMap(Goods::getId, Function.identity())),
-                (ids, uId) -> goodsProvider.getScrappedContentIds(ids, uId), GoodsResponse::from, userId));
-
-        // 결과 개수 순으로 내림차순 정렬
-        results.sort(Comparator.comparingLong(SearchResultDto::getTotalCount).reversed());
+        // 전체 개수가 많은 순서대로 정렬
+        results.sort(Comparator.comparingInt(SearchResultDto::getTotalCount).reversed());
 
         return results;
-    }
 
-    private SearchHits<UnifiedDocument> searchUnified(String query) {
-        NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(q -> q
-                        .bool(b -> b
-                                .should(s -> s
-                                        .multiMatch(mm -> mm
-                                                .query(query)
-                                                .fields("name^3", "description", "category^2", "type^2")
-                                                .fuzziness("AUTO")
-                                        )
-                                )
-                                .should(s -> s
-                                        .nested(n -> n
-                                                .path("menu")
-                                                .query(nq -> nq
-                                                        .match(m -> m
-                                                                .field("menu.itemName")
-                                                                .query(query)
-                                                                .fuzziness("AUTO")
-                                                        )
-                                                )
-                                                .ignoreUnmapped(true) //menu필드 없으면 무시
-                                        )
-                                )
-                        )
-                )
-                .withPageable(PageRequest.of(0, SEARCH_PAGE_SIZE * 3))
-                .build();
-
-        return elasticsearchOperations.search(nativeQuery, UnifiedDocument.class,
-                IndexCoordinates.of("booths", "events", "goods"));
-    }
-
-    private <T, R> SearchResultDto createSearchResult(
-            String contentsName, List<SearchHit<UnifiedDocument>> hits,
-            Function<List<Long>, Map<Long, T>> dbFetcher,
-            BiFunction<List<Long>, Long, Set<Long>> scrapFetcher,
-            BiFunction<T, Boolean, R> dtoConverter, Long userId) {
-
-        List<Long> ids = hits.stream()
-                .limit(SEARCH_PAGE_SIZE)
-                .map(hit -> hit.getContent().getEntityId())
-                .collect(Collectors.toList());
-
-        if (ids.isEmpty()) {
-            return SearchResultDto.from(contentsName, 0, Collections.emptyList());
-        }
-
-        Map<Long, T> entityMap = dbFetcher.apply(ids);
-        Set<Long> scrappedIds = (userId != null) ? scrapFetcher.apply(ids, userId) : Collections.emptySet();
-
-        List<R> items = ids.stream()
-                .map(entityMap::get)
-                .filter(Objects::nonNull)
-                .map(entity -> dtoConverter.apply(entity, scrappedIds.contains(getEntityId(entity))))
-                .collect(Collectors.toList());
-
-        return SearchResultDto.from(contentsName, hits.size(), items);
-    }
-
-    private Long getEntityId(Object entity) {
-        if (entity instanceof Booth b) return b.getId();
-        if (entity instanceof Event e) return e.getId();
-        if (entity instanceof Goods g) return g.getId();
-        throw new IllegalArgumentException("Unknown entity type");
     }
 
 
 
-
-    /* 자동완성
-
-     */
+    /* 자동완성 */
     public List<AutoCompleteDto> getSuggestion(String query) {
         SourceFilter sourceFilter = new FetchSourceFilter(
                 true,
@@ -173,7 +122,7 @@ public class SearchService {
                                 .should(s -> s
                                         .multiMatch(mm -> mm
                                                 .query(query)
-                                                .fields("category.keyword^4", "type.keyword^4")
+                                                .fields("category.keyword^4", "type^4")
                                         )
                                 )
                                 // 2순위: 이름/메뉴명 접두사 일치
@@ -181,20 +130,14 @@ public class SearchService {
                                         .multiMatch(mm -> mm
                                                 .query(query)
                                                 .type(TextQueryType.BoolPrefix)
-                                                .fields("name.as_you_type^3")
+                                                .fields("name.autocomplete^3")
                                         )
                                 )
                                 .should(s -> s
-                                        .nested(n -> n
-                                                .path("menu")
-                                                .query(nq -> nq
-                                                        .multiMatch(mm -> mm
-                                                                .query(query)
-                                                                .type(TextQueryType.BoolPrefix)
-                                                                .fields("menu.itemName.as_you_type^3")
-                                                        )
-                                                )
-                                                .ignoreUnmapped(true)
+                                        .multiMatch(mm -> mm
+                                                .query(query)
+                                                .type(TextQueryType.BoolPrefix)
+                                                .fields("menu^2")
                                         )
                                 )
                                 // 3순위: 그 외
@@ -249,7 +192,7 @@ public class SearchService {
         // contentsType을 결정
         public String getFinalContentsType() {
             //부스의 경우
-            if ("부스".equals(type) && category != null && !category.isBlank()) {
+            if (category != null && !category.isBlank()) {
                 return category;
             }
             // 이벤트, 굿즈의 경우

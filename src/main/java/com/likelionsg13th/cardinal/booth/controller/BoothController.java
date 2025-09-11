@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.booth.controller;
 
 import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
+import com.likelionsg13th.cardinal.booth.dto.BoothSearchResponse;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
@@ -56,7 +57,7 @@ public class BoothController {
             @AuthenticationPrincipal  UserDetails user
     ){
         Long userId= userService.resolveUserIdOrNull(user);
-        PageDto<BoothResponse> response=boothService.searchBooths(userId,query,page);
+        PageDto<BoothSearchResponse> response=boothService.searchBooths(userId,query,page);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 검색 목록 조회 성공", response));
     }
 
