@@ -3,7 +3,6 @@ version: '3.8'
 services:
   app:
     image: naaadang/cardinal:latest
-
     container_name: app
     restart: always
     ports:
@@ -19,6 +18,20 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       ACCESS_SEC: ${ACCESS_SEC}
       REFRESH_SEC: ${REFRESH_SEC}
-
-      #추가
       ONE_TIME_CODE: ${ONE_TIME_CODE}
+      ELASTIC_SEARCH_URI: ${ELASTIC_SEARCH_URI}
+      ELASTIC_SEARCH_PASSWORD: ${ELASTIC_SEARCH_PASSWORD}
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
