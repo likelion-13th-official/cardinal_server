@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.goods.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
+import com.likelionsg13th.cardinal.goods.domain.GoodsDocument;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,15 +19,23 @@ public class GoodsResponse {
     private boolean scrapped;
 
 
-    public GoodsResponse(Goods goods, boolean isScrapped) {
-        this.id = goods.getId();
-        this.name = goods.getName();
-        this.price = goods.getPrice();
-        this.thumbnailUrl = goods.getThumbnailUrl();
-        this.scrapped = isScrapped;
+    public static GoodsResponse from(GoodsDocument doc, boolean isScrapped) {
+        return GoodsResponse.builder()
+                .id(doc.getGoodsId())
+                .name(doc.getName())
+                .price(doc.getPrice())
+                .thumbnailUrl(doc.getThumbnailUrl())
+                .scrapped(isScrapped)
+                .build();
     }
 
     public static GoodsResponse from(Goods goods, boolean isScrapped) {
-        return new GoodsResponse(goods, isScrapped);
+        return GoodsResponse.builder()
+                .id(goods.getId())
+                .name(goods.getName())
+                .price(goods.getPrice())
+                .thumbnailUrl(goods.getThumbnailUrl())
+                .scrapped(isScrapped)
+                .build();
     }
 }
