@@ -65,10 +65,10 @@ public class IndexingService {
 
         if (booth.getOperatingInfo() != null) {
             if (booth.getOperatingInfo().getStartTime() != null) {
-                doc.setStartTime(booth.getOperatingInfo().getStartTime().toString());
+                doc.setStartTime(booth.getOperatingInfo().getStartTime());
             }
             if (booth.getOperatingInfo().getEndTime() != null) {
-                doc.setEndTime(booth.getOperatingInfo().getEndTime().toString());
+                doc.setEndTime(booth.getOperatingInfo().getEndTime());
             }
         }
 
@@ -122,10 +122,10 @@ public class IndexingService {
 
         if (event.getOperatingInfo() != null) {
             if (event.getOperatingInfo().getStartTime() != null) {
-                doc.setStartTime(event.getOperatingInfo().getStartTime().toString());
+                doc.setStartTime(event.getOperatingInfo().getStartTime());
             }
             if (event.getOperatingInfo().getEndTime() != null) {
-                doc.setEndTime(event.getOperatingInfo().getEndTime().toString());
+                doc.setEndTime(event.getOperatingInfo().getEndTime());
             }
         }
 

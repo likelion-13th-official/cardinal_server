@@ -3,9 +3,11 @@ package com.likelionsg13th.cardinal.booth.domain;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.*;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -54,11 +56,11 @@ public class BoothDocument {
     private String location;
 
     // OperatingInfo를 개별 필드로 분리
-    @Field(type = FieldType.Text)
-    private String startTime;
+    @Field(type = FieldType.Date, format = DateFormat.hour_minute_second)
+    private LocalTime startTime;
 
-    @Field(type = FieldType.Text)
-    private String endTime;
+    @Field(type = FieldType.Date, format = DateFormat.hour_minute_second)
+    private LocalTime endTime;
 
     @Field(type = FieldType.Keyword)
     private List<String> operatingDays;

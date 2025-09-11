@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
-import com.likelionsg13th.cardinal.booth.dto.BoothSearchResponse;
+import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SimpleSearchDto;
@@ -14,7 +14,7 @@ import com.likelionsg13th.cardinal.common.provider.BoothProvider;
 import com.likelionsg13th.cardinal.common.provider.EventProvider;
 import com.likelionsg13th.cardinal.common.provider.GoodsProvider;
 import com.likelionsg13th.cardinal.event.domain.EventDocument;
-import com.likelionsg13th.cardinal.event.dto.EventSearchResponse;
+import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.event.service.EventService;
 import com.likelionsg13th.cardinal.goods.domain.GoodsDocument;
@@ -78,11 +78,11 @@ public class SearchService {
 
         List<SearchResultDto> results = new ArrayList<>();
         // 부스 결과 처리
-        List<BoothSearchResponse> boothResponses=boothService.getFinalResponse(boothResults,boothService.getScrapInfo(userId,boothResults));
+        List<BoothResponse> boothResponses=boothService.getFinalResponse(boothResults,boothService.getScrapInfo(userId,boothResults));
         results.add(SearchResultDto.from("부스", (int) boothResults.getTotalHits(), boothResponses));
 
         // 이벤트 결과 처리
-        List<EventSearchResponse> eventResponses = eventService.getFinalResponse(eventResults,eventService.getScrapInfo(userId,eventResults));
+        List<EventResponse> eventResponses = eventService.getFinalResponse(eventResults,eventService.getScrapInfo(userId,eventResults));
         results.add(SearchResultDto.from("이벤트", (int) eventResults.getTotalHits(), eventResponses));
 
         // 굿즈 결과 처리

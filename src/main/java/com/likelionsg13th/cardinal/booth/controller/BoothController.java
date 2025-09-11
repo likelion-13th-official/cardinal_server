@@ -2,20 +2,15 @@ package com.likelionsg13th.cardinal.booth.controller;
 
 import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
-import com.likelionsg13th.cardinal.booth.dto.BoothSearchResponse;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/booths")
@@ -57,7 +52,7 @@ public class BoothController {
             @AuthenticationPrincipal  UserDetails user
     ){
         Long userId= userService.resolveUserIdOrNull(user);
-        PageDto<BoothSearchResponse> response=boothService.searchBooths(userId,query,page);
+        PageDto<BoothResponse> response=boothService.searchBooths(userId,query,page);
         return ResponseEntity.ok(new ApiResponse(true,200,"부스 검색 목록 조회 성공", response));
     }
 

@@ -1,7 +1,5 @@
 package com.likelionsg13th.cardinal.event.service;
 
-import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
-import com.likelionsg13th.cardinal.booth.dto.BoothSearchResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
@@ -10,12 +8,10 @@ import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.domain.EventDocument;
 import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
-import com.likelionsg13th.cardinal.event.dto.EventSearchResponse;
 import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 //import static net.logstash.logback.argument.StructuredArguments.kv;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +43,7 @@ public class EventService {
     private static final Logger searchLogger = LoggerFactory.getLogger("cardinal.search");
     @Transactional(readOnly = true)
 
-    public PageDto<EventSearchResponse> searchEvents(String query, int page, Long userId) {
+    public PageDto<EventResponse> searchEvents(String query, int page, Long userId) {
 //        searchLogger.info("search performed",
 //                kv("query",query),
 //                kv("userId",userId));
@@ -62,8 +57,8 @@ public class EventService {
         Set<Long> scrappedEventIds=getScrapInfo(userId,searchHits);
 
         // 최종 응답 (관련도 순서 유지)
-        List<EventSearchResponse> eventResponses = getFinalResponse(searchHits,scrappedEventIds);
-        Page<EventSearchResponse> eventResponsePage = new PageImpl<>(eventResponses, pageable, searchHits.getTotalHits());
+        List<EventResponse> eventResponses = getFinalResponse(searchHits,scrappedEventIds);
+        Page<EventResponse> eventResponsePage = new PageImpl<>(eventResponses, pageable, searchHits.getTotalHits());
 
         return PageDto.from(eventResponsePage);
     }
@@ -127,10 +122,10 @@ public class EventService {
     }
 
     //최종 응답 생성
-    public List<EventSearchResponse> getFinalResponse  (SearchHits<EventDocument> searchHits, Set<Long> scrappedEventIds) {
+    public List<EventResponse> getFinalResponse  (SearchHits<EventDocument> searchHits, Set<Long> scrappedEventIds) {
         return searchHits.getSearchHits().stream()
                 .map(SearchHit::getContent)
-                .map(eventDocument -> EventSearchResponse.from(eventDocument, scrappedEventIds.contains(eventDocument.getEventId())))
+                .map(eventDocument -> EventResponse.from(eventDocument, scrappedEventIds.contains(eventDocument.getEventId())))
                 .collect(Collectors.toList());
     }
 }

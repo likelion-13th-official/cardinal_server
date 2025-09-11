@@ -1,20 +1,14 @@
 package com.likelionsg13th.cardinal.goods.service;
 
-import com.likelionsg13th.cardinal.booth.domain.Booth;
-import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.provider.GoodsProvider;
-import com.likelionsg13th.cardinal.event.domain.EventDocument;
-import com.likelionsg13th.cardinal.event.dto.EventSearchResponse;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.goods.domain.GoodsDocument;
 import com.likelionsg13th.cardinal.goods.dto.GoodsDetailResponse;
 import com.likelionsg13th.cardinal.goods.dto.GoodsResponse;
 import com.likelionsg13th.cardinal.goods.exception.GoodsNotFound;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +24,8 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
