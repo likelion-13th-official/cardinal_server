@@ -24,13 +24,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "FROM Event g WHERE g.name LIKE :keyword")
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
 
-    Page<Event> findByNameContaining(String query, Pageable pageable);
 
-    @Query("SELECT new com.likelionsg13th.cardinal.event.dto.EventResponse(" +
-            "   e, " +
-            "   CASE WHEN s.id IS NOT NULL THEN true ELSE false END" +
-            ") " +
-            "FROM Event e LEFT JOIN Scrap s ON s.contentType = 'EVENT' AND s.contentId = e.id AND s.user.id = :userId " +
-            "WHERE e.name LIKE %:query%")
-    Page<EventResponse> findByNameContainingWithScrapStatus(@Param("query") String query, @Param("userId") Long userId, Pageable pageable);
 }

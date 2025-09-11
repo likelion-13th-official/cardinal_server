@@ -35,11 +35,26 @@ public class BoothResponse {
                 .name(booth.getName())
                 .location(booth.getLocation().getPosition())
                 .operatingInfo(booth.getOperatingInfo())
+                .operatingDays(booth.getOperatingDays().stream()
+                        .map(day -> day.toKorean())
+                        .collect(Collectors.toList()))
                 .thumbnailUrl(booth.getThumbnailUrl())
                 .scrapped(isScrapped)
                 .build();
     }
 
 
-
+    public static BoothResponse from(BoothDocument doc, boolean isScrapped) {
+        OperatingInfo info=new OperatingInfo(doc.getStartTime(),doc.getEndTime(),true);
+        return BoothResponse.builder()
+                .id(doc.getBoothId())
+                .category(doc.getCategory())
+                .name(doc.getName())
+                .location(doc.getLocation())
+                .operatingInfo(info)
+                .operatingDays(doc.getOperatingDays())
+                .thumbnailUrl(doc.getThumbnailUrl())
+                .scrapped(isScrapped)
+                .build();
+    }
 }

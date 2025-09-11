@@ -4,7 +4,6 @@ import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
 import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
-import com.likelionsg13th.cardinal.booth.dto.BoothSearchResponse;
 import com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.booth.repository.specification.BoothSpecification;
@@ -14,10 +13,7 @@ import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
 import com.likelionsg13th.cardinal.common.provider.BoothProvider;
-import com.likelionsg13th.cardinal.users.domain.Users;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
-import com.likelionsg13th.cardinal.users.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -125,7 +120,7 @@ public class BoothService {
 
     /* ElasticSearch 이용 부스 검색*/
     @Transactional(readOnly = true)
-    public PageDto<BoothSearchResponse> searchBooths(Long userId, String query, int page) {
+    public PageDto<BoothResponse> searchBooths(Long userId, String query, int page) {
 //        //로그 기록
 //        searchLogger.info("search performed",
 //                kv("query", query),
@@ -141,8 +136,8 @@ public class BoothService {
         Set<Long> scrappedBoothIds = getScrapInfo(userId, searchHits);
 
         //최종응답생성
-        List<BoothSearchResponse> boothResponses = getFinalResponse(searchHits,scrappedBoothIds);
-        Page<BoothSearchResponse> boothResponsePage = new PageImpl<>(boothResponses, pageable, searchHits.getTotalHits());
+        List<BoothResponse> boothResponses = getFinalResponse(searchHits,scrappedBoothIds);
+        Page<BoothResponse> boothResponsePage = new PageImpl<>(boothResponses, pageable, searchHits.getTotalHits());
 
         return PageDto.from(boothResponsePage);
     }
@@ -184,10 +179,10 @@ public class BoothService {
     }
 
     //최종 응답 생성
-    public List<BoothSearchResponse> getFinalResponse  (SearchHits<BoothDocument> searchHits, Set<Long> scrappedBoothIds) {
+    public List<BoothResponse> getFinalResponse  (SearchHits<BoothDocument> searchHits, Set<Long> scrappedBoothIds) {
         return searchHits.getSearchHits().stream()
                 .map(SearchHit::getContent)
-                .map(boothDocument -> BoothSearchResponse.from(boothDocument, scrappedBoothIds.contains(boothDocument.getBoothId())))
+                .map(boothDocument -> BoothResponse.from(boothDocument, scrappedBoothIds.contains(boothDocument.getBoothId())))
                 .collect(Collectors.toList());
     }
 
