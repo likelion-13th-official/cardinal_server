@@ -3,14 +3,13 @@ package com.likelionsg13th.cardinal.common.service;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
 public class UpdateIsOperating {
 
-    /* 운영 여부 계산*/
+    /* 실시간 운영 여부 계산*/
     public boolean updateOperatingStatus(OperatingInfo operatingInfo, List<DayOfWeek> operatingDays) {
         /*현재 정보*/
         LocalDateTime current = LocalDateTime.now();
