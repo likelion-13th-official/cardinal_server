@@ -1,10 +1,9 @@
 package com.likelionsg13th.cardinal.common.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
-import com.likelionsg13th.cardinal.common.dto.resonseDto.search.AutoCompleteDto;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SimpleSearchDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResultDto;
 import com.likelionsg13th.cardinal.common.service.SearchService;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +41,15 @@ public class SearchController {
     public ResponseEntity<ApiResponse> getSuggestions(
             @RequestParam("query") String query
     ){
-        List<AutoCompleteDto> response=searchService.getSuggestion(query);
+        List<SimpleSearchDto> response=searchService.getSuggestion(query);
         return ResponseEntity.ok(new ApiResponse(true,200,"추천 검색어 조회 성공", response));
+    }
+
+    /*인기검색어*/
+    @GetMapping("/trending")
+    public ResponseEntity<ApiResponse> getPopularQueries(){
+        List<SimpleSearchDto> response=searchService.getPopularQueries();
+        return ResponseEntity.ok(new ApiResponse(true,200,"인기 검색어 조회 성공", response));
     }
 
 

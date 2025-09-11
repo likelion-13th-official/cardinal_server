@@ -41,7 +41,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
-import static net.logstash.logback.argument.StructuredArguments.kv;
+//import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
 @RequiredArgsConstructor
@@ -126,10 +126,10 @@ public class BoothService {
     /* ElasticSearch 이용 부스 검색*/
     @Transactional(readOnly = true)
     public PageDto<BoothSearchResponse> searchBooths(Long userId, String query, int page) {
-        //로그 기록
-        searchLogger.info("search performed",
-                kv("query", query),
-                kv("userId",userId));
+//        //로그 기록
+//        searchLogger.info("search performed",
+//                kv("query", query),
+//                kv("userId",userId));
 
         //검색
         Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);

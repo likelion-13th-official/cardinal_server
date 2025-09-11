@@ -14,7 +14,7 @@ import com.likelionsg13th.cardinal.event.dto.EventSearchResponse;
 import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
-import static net.logstash.logback.argument.StructuredArguments.kv;
+//import static net.logstash.logback.argument.StructuredArguments.kv;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -49,9 +49,9 @@ public class EventService {
     @Transactional(readOnly = true)
 
     public PageDto<EventSearchResponse> searchEvents(String query, int page, Long userId) {
-        searchLogger.info("search performed",
-                kv("query",query),
-                kv("userId",userId));
+//        searchLogger.info("search performed",
+//                kv("query",query),
+//                kv("userId",userId));
 
         //검색
         Pageable pageable = PageRequest.of(page - 1, SEARCH_PAGE_SIZE);

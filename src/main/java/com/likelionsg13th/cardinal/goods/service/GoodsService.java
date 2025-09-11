@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
+//import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +55,9 @@ public class GoodsService {
     /* Elastic Search 검색 */
     @Transactional(readOnly = true)
     public PageDto<GoodsResponse> searchGoods(String query, int page, Long userId) {
-        searchLogger.info("search performed",
-                kv("query",query),
-                kv("userId",userId));
+//        searchLogger.info("search performed",
+//                kv("query",query),
+//                kv("userId",userId));
 
         //검색
         Pageable pageable = PageRequest.of(page - 1, SEARCH_PAGE_SIZE);

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter @Builder @AllArgsConstructor
-public class AutoCompleteDto {
+public class SimpleSearchDto {
 
     private long id;
     private String name;

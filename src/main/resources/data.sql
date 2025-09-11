@@ -76,6 +76,7 @@ VALUES ('학생회관 앞', 37.5833, 127.0001),
 -- 4️⃣ Booth 데이터 삽입
 -- 'booth' 테이블에 공통 및 특정 컬럼만 삽입
 
+-- 주점
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating, NOTICE, instagram_url, table_layout_url, notice_updated_at)
 VALUES ('주점', 'PUB', '코딩 주점', 6, '코딩하며 즐기는 신개념 주점!', 'https://example.com/booth1.jpg', 150, '18:00:00', '02:00:00', TRUE, '신분증 필수 지참!', 'https://instagram.com/coding_pub', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00'),
        ('주점', 'PUB', '개발자들의 쉼터', 6, '지친 개발자들을 위한 힐링 공간', 'https://example.com/booth2.jpg', 250, '17:00:00', '01:00:00', TRUE, '외부 안주 반입 금지', 'https://instagram.com/dev_rest', 'https://example.com/pub_layout2.jpg','2025-08-18 22:00:00'),
@@ -83,7 +84,7 @@ VALUES ('주점', 'PUB', '코딩 주점', 6, '코딩하며 즐기는 신개념 �
        ('주점', 'PUB', '버그 사냥꾼', 6, '버그 잡고 스트레스 풀자!', 'https://example.com/booth4.jpg', 320, '18:00:00', '02:00:00', TRUE, '현금 결제만 가능합니다', 'https://instagram.com/bug_hunter', 'https://example.com/pub_layout4.jpg','2025-08-18 22:00:00'),
        ('주점', 'PUB', '해커들의 밤', 6, '해커톤보다 재미있는 해커들의 주점', 'https://example.com/booth5.jpg', 450, '20:00:00', '04:00:00', FALSE, '일요일은 쉽니다', 'https://instagram.com/hackers_night', 'https://example.com/pub_layout1.jpg','2025-08-18 22:00:00');
 
-
+-- 푸드트럭
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
 VALUES ('푸드트럭', 'FOOD_TRUCK', '코딩푸드', 6, '코더들을 위한 맛있는 간식!', 'https://example.com/booth6.jpg', 500, '12:00:00', '22:00:00', TRUE),
        ('푸드트럭', 'FOOD_TRUCK', '개발자 핫도그', 7, '세상에서 제일 맛있는 핫도그', 'https://example.com/booth7.jpg', 380, '11:00:00', '21:00:00', TRUE),
@@ -91,7 +92,7 @@ VALUES ('푸드트럭', 'FOOD_TRUCK', '코딩푸드', 6, '코더들을 위한 �
        ('푸드트럭', 'FOOD_TRUCK', '버그와플', 9, '버그처럼 달콤한 와플', 'https://example.com/booth9.jpg', 280, '12:00:00', '22:00:00', TRUE),
        ('푸드트럭', 'FOOD_TRUCK', '해커스테이크', 10, '해커처럼 강력한 스테이크', 'https://example.com/booth10.jpg', 600, '14:00:00', '23:00:00', TRUE);
 
-
+-- 마당사업
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
 VALUES ('마당사업', 'YARD_PROJECT', '코딩 체험 부스', 2, '누구나 쉽게 배우는 코딩!', 'https://example.com/booth11.jpg', 700, '10:00:00', '18:00:00', TRUE),
        ('마당사업', 'YARD_PROJECT', '개발자 플리마켓', 3, '개발자들의 애장품을 만나보세요', 'https://example.com/booth12.jpg', 450, '11:00:00', '17:00:00', TRUE),
@@ -99,7 +100,7 @@ VALUES ('마당사업', 'YARD_PROJECT', '코딩 체험 부스', 2, '누구나 �
        ('마당사업', 'YARD_PROJECT', '버그찾기 이벤트', 2, '버그 찾고 상품 받자!', 'https://example.com/booth14.jpg', 650, '14:00:00', '17:00:00', TRUE),
        ('마당사업', 'YARD_PROJECT', '오픈소스 컨퍼런스', 4, '오픈소스에 대한 모든 것', 'https://example.com/booth15.jpg', 900, '10:00:00', '18:00:00', TRUE);
 
-
+-- 포토부스
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
 VALUES ('포토부스', 'PHOTO_BOOTH', '인생샷 연구소', 5, '개발자 컨셉의 인생샷을 찍어보세요', 'https://example.com/booth16.jpg', 1200, '10:00:00', '22:00:00', TRUE),
        ('포토부스', 'PHOTO_BOOTH', '코딩네컷', 7, '코딩과 함께하는 네컷사진', 'https://example.com/booth17.jpg', 1500, '10:00:00', '22:00:00', TRUE),
@@ -107,10 +108,9 @@ VALUES ('포토부스', 'PHOTO_BOOTH', '인생샷 연구소', 5, '개발자 컨�
        ('포토부스', 'PHOTO_BOOTH', '버그 포토존', 9, '재미있는 버그 컨셉의 포토존', 'https://example.com/booth19.jpg', 1100, '10:00:00', '22:00:00', TRUE),
        ('포토부스', 'PHOTO_BOOTH', '해커 스냅', 10, '해커처럼 멋진 스냅사진', 'https://example.com/booth20.jpg', 1800, '10:00:00', '22:00:00', TRUE);
 
--- PartnershipBooth (10)
--- 'start_time'과 'end_time'이 'HH:MM:SS' 형식으로 변경
+-- 제휴
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating, logo_image_url) VALUES
-('제휴', 'PARTNERSHIP', '멋쟁이사자처럼', 4, '멋쟁이사자처럼과 함께하는 이벤트', 'https://example.com/booth21.jpg', 2000, '10:00:00', '18:00:00', true, 'https://example.com/logo_likelion.png'),
+('제휴', 'PARTNERSHIP', '틱톡라이브', 4, '2025 글로벌 TikTok LIVE 대학생 크리에이터 모집', 'https://example.com/booth21.jpg', 2000, '12:00:00', '18:00:00', true, 'https://example.com/logo_likelion.png'),
 ('제휴', 'PARTNERSHIP', 'Google', 4, 'Google이 준비한 특별한 선물', 'https://example.com/booth22.jpg', 2500, '10:00:00', '18:00:00', true, 'https://example.com/logo_google.png'),
 ('제휴', 'PARTNERSHIP', 'Microsoft', 4, 'Microsoft와 함께하는 코딩 워크샵', 'https://example.com/booth23.jpg', 2200, '10:00:00', '18:00:00', true, 'https://example.com/logo_ms.png'),
 ('제휴', 'PARTNERSHIP', 'Amazon Web Services', 4, 'AWS 크레딧과 다양한 굿즈 증정', 'https://example.com/booth24.jpg', 2800, '10:00:00', '18:00:00', true, 'https://example.com/logo_aws.png'),
