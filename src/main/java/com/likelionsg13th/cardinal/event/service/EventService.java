@@ -1,15 +1,18 @@
 package com.likelionsg13th.cardinal.event.service;
 
+import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.PageDto;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.provider.EventProvider;
+import com.likelionsg13th.cardinal.common.service.UpdateIsOperating;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.dto.EventDetailResponse;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
+import com.likelionsg13th.cardinal.performance.dto.PerformanceResponse;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +30,7 @@ public class EventService {
     private static final int PAGE_SIZE = 2;
     private final EventRepository eventRepository;
     private final EventProvider eventProvider;
+    private final UpdateIsOperating updateIsOperating;
 
     /* 검색*/
     @Transactional(readOnly = true)
@@ -57,7 +61,21 @@ public class EventService {
             var scrapped = eventProvider.getScrappedContentIds(List.of(id), userId);
             isScrapped = scrapped.contains(id);
         }
-        return EventDetailResponse.from(event, isScrapped);
+
+        OperatingInfo src = event.getOperatingInfo(); // 엔티티의 OI (절대 변경 X)
+        OperatingInfo viewOi = null;
+        if (src != null) {
+            boolean currentIsOperating =
+                    updateIsOperating.updateOperatingStatus(src, event.getOperatingDays());
+
+            // ★ 복제본 생성 (도메인 수정/엔티티 변경 없음)
+            viewOi = new OperatingInfo();
+            viewOi.setStartTime(src.getStartTime());
+            viewOi.setEndTime(src.getEndTime());
+            viewOi.setOperating(currentIsOperating); // 계산값만 세팅
+        }
+
+        return EventDetailResponse.from(event, isScrapped, viewOi);
 
     }
 
@@ -65,7 +83,22 @@ public class EventService {
         List<EventSimpleResponse> eventList= eventRepository.findAll().stream()
                 .filter(e -> day==null ||
                         (e.getOperatingDays() !=null && e.getOperatingDays().contains(day)))
-                .map(EventSimpleResponse::from)
+                .map(p -> {
+                    OperatingInfo src = p.getOperatingInfo(); // 엔티티의 OI (절대 변경 X)
+                    OperatingInfo viewOi = null;
+
+                    if (src != null) {
+                        boolean currentIsOperating =
+                                updateIsOperating.updateOperatingStatus(src, p.getOperatingDays());
+
+                        // ★ 복제본 생성 (도메인 수정/엔티티 변경 없음)
+                        viewOi = new OperatingInfo();
+                        viewOi.setStartTime(src.getStartTime());
+                        viewOi.setEndTime(src.getEndTime());
+                        viewOi.setOperating(currentIsOperating); // 계산값만 세팅
+                    }
+                    return EventSimpleResponse.from(p, viewOi);
+                })
                 .toList();
 
         return eventList;

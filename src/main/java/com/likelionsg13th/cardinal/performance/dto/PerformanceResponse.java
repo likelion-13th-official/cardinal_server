@@ -24,7 +24,8 @@ public class PerformanceResponse {
     @JsonProperty("isScrapped")
     private boolean scrapped;
 
-    public static PerformanceResponse from(Performance performance, boolean scrapped) {
+    public static PerformanceResponse from(Performance performance, boolean scrapped, OperatingInfo operatingInfoForView) {
+        //OperatingInfo oi = performance.getOperatingInfo();
         return PerformanceResponse.builder()
                 .id(performance.getId())
                 .name(performance.getName())
@@ -33,7 +34,8 @@ public class PerformanceResponse {
                 //TO-DO 북마크
                 .scrapped(scrapped)
                 .thumbnail(performance.getThumbnailUrl())
-                .operatingInfo(performance.getOperatingInfo())
+                .operatingInfo(operatingInfoForView)
+                //.operatingInfo(performance.getOperatingInfo())
                 .operatingDays(
                         performance.getOperatingDays().stream()
                                 .map(day -> day.toKorean())
