@@ -1,6 +1,7 @@
 package com.likelionsg13th.cardinal.common.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchTrendDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SimpleSearchDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResultDto;
 import com.likelionsg13th.cardinal.common.service.SearchService;
@@ -48,7 +49,7 @@ public class SearchController {
     /*인기검색어*/
     @GetMapping("/trending")
     public ResponseEntity<ApiResponse> getPopularQueries(){
-        List<SimpleSearchDto> response=searchService.getPopularQueries();
+        SearchTrendDto response=searchService.getPopularQueries();
         return ResponseEntity.ok(new ApiResponse(true,200,"인기 검색어 조회 성공", response));
     }
 

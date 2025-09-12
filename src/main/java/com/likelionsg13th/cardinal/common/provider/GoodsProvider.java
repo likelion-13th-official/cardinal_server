@@ -34,12 +34,12 @@ public class GoodsProvider implements CategoryProvider,Scrappable {
     }
 
     @Override
-    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId) {
+    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId,Long scrapId) {
         Optional<Goods> goodsOptional = goodsRepository.findById(contentId);
         if(goodsOptional.isEmpty()) return Optional.empty();
         Goods goods  = goodsOptional.get();
 
-        return Optional.of(ScrapCommonDto.of(goods, ScrapGoodsDetailDto.from(goods)));
+        return Optional.of(ScrapCommonDto.of(goods, ScrapGoodsDetailDto.from(goods),scrapId));
     }
 
 
