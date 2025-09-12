@@ -8,6 +8,7 @@ import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
 import com.likelionsg13th.cardinal.booth.dto.BoothResponse;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.booth.service.BoothService;
+import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchTrendDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SimpleSearchDto;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.search.SearchResultDto;
 import com.likelionsg13th.cardinal.common.provider.BoothProvider;
@@ -40,6 +41,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -194,7 +196,7 @@ public class SearchService {
     private static final String SEARCH_KEY="popular_searches";
     private final RedisTemplate<String, String> redisTemplate;
     private volatile List<PopularSearchData> popularQueriesCache = Collections.emptyList();
-
+    private volatile LocalDateTime lastCacheUpdateTime;
     private Optional<SearchHit<?>> findTopHit(SearchHits<?>... searchHits) {
         List<SearchHit<?>> allHits = new ArrayList<>();
         for (SearchHits<?> hits : searchHits) {
@@ -261,7 +263,10 @@ public class SearchService {
         }
     }
 
+    //30초마다 (테스트용)
     @Scheduled(fixedRate = 30000)
+    //매시 0분,30분(실제)
+//    @Scheduled(cron = "0 0,30 * * * *")
     public void updatePopularQueries(){
         Set<String> top5Json = redisTemplate.opsForZSet().reverseRange(SEARCH_KEY, 0, 4);
         if (top5Json != null) {
@@ -277,6 +282,7 @@ public class SearchService {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
             this.popularQueriesCache = List.copyOf(newCache);
+            this.lastCacheUpdateTime = LocalDateTime.now();
         }
     }
 
@@ -285,14 +291,16 @@ public class SearchService {
         updatePopularQueries();
     }
 
-    public List<SimpleSearchDto> getPopularQueries() {
-        return this.popularQueriesCache.stream()
+    public SearchTrendDto getPopularQueries() {
+        List<SimpleSearchDto> trending= this.popularQueriesCache.stream()
                 .map(data -> new SimpleSearchDto(
                         data.getId(),
                         data.getName(),
                         data.getType()
                 ))
                 .collect(Collectors.toList());
+        return SearchTrendDto.from(lastCacheUpdateTime,trending);
+
     }
 
 }
