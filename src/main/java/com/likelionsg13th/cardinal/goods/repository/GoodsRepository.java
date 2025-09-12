@@ -28,19 +28,11 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
             "FROM Goods g WHERE g.name LIKE :keyword")
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
 
-    Page<Goods> findByNameContaining(String query, Pageable pageable);
 
     @Query("SELECT p.location" +
             " FROM Performance p " +
             " WHERE p.id = 1")
     Map findLocationFirstById();
 
-    //검색
-    @Query("SELECT new com.likelionsg13th.cardinal.goods.dto.GoodsResponse(" +
-            "   g, " +
-            "   CASE WHEN s.id IS NOT NULL THEN true ELSE false END" +
-            ") " +
-            "FROM Goods g LEFT JOIN Scrap s ON s.contentType = 'GOODS' AND s.contentId = g.id AND s.user.id = :userId " +
-            "WHERE g.name LIKE %:query%")
-    Page<GoodsResponse> findByNameContainingWithScrapStatus(@Param("query") String query, @Param("userId") Long userId, Pageable pageable);
+
 }

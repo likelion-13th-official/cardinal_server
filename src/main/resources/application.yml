@@ -6,6 +6,16 @@ server:
         secure: true
 
 spring:
+  elasticsearch:
+    uris: ${ELASTIC_SEARCH_URI}
+    username: elastic
+    password: ${ELASTIC_SEARCH_PASSWORD}
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   application:
     name: cardinal
   config:

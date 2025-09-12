@@ -20,4 +20,12 @@ public class SearchResultDto {
                 .build();
     }
 
+    public static <T> SearchResultDto from(String categoryName, int totalCount, List<T> items) {
+        return SearchResultDto.builder()
+                .contentsName(categoryName)
+                .totalCount(totalCount)
+                .items(items)
+                .build();
+    }
+
 }

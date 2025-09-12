@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.booth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.Getter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
+@Getter @Builder
 public class BoothResponse {
 
     private Long id;
@@ -24,24 +25,36 @@ public class BoothResponse {
     @JsonProperty("isScrapped")
     private boolean scrapped;
 
-    //JPQL은 생성자만 지원
-    public BoothResponse(Booth booth, boolean isScrapped) {
-        this.id = booth.getId();
-        this.category = booth.getCategory().toKorean();
-        this.name = booth.getName();
-        this.location = booth.getLocation().getPosition();
-        this.operatingInfo = booth.getOperatingInfo();
-        this.thumbnailUrl = booth.getThumbnailUrl();
-        this.scrapped = isScrapped;
-        this.operatingDays = booth.getOperatingDays().stream()
-                .map(day -> day.toKorean())
-                .collect(Collectors.toList());
+
+
+
+    public static BoothResponse from(Booth booth, boolean isScrapped){
+        return BoothResponse.builder()
+                .id(booth.getId())
+                .category(booth.getCategory().toKorean())
+                .name(booth.getName())
+                .location(booth.getLocation().getPosition())
+                .operatingInfo(booth.getOperatingInfo())
+                .operatingDays(booth.getOperatingDays().stream()
+                        .map(day -> day.toKorean())
+                        .collect(Collectors.toList()))
+                .thumbnailUrl(booth.getThumbnailUrl())
+                .scrapped(isScrapped)
+                .build();
     }
-    public static BoothResponse from(Booth booth,boolean isScrapped){
-        return new BoothResponse(booth,isScrapped);
+
+
+    public static BoothResponse from(BoothDocument doc, boolean isScrapped) {
+        OperatingInfo info=new OperatingInfo(doc.getStartTime(),doc.getEndTime(),true);
+        return BoothResponse.builder()
+                .id(doc.getBoothId())
+                .category(doc.getCategory())
+                .name(doc.getName())
+                .location(doc.getLocation())
+                .operatingInfo(info)
+                .operatingDays(doc.getOperatingDays())
+                .thumbnailUrl(doc.getThumbnailUrl())
+                .scrapped(isScrapped)
+                .build();
     }
-
-
-
-
 }
