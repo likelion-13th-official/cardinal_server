@@ -37,7 +37,7 @@ public abstract class Booth extends OperationAwareEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String thumbnailUrl;
 
     @ElementCollection(fetch = FetchType.LAZY)

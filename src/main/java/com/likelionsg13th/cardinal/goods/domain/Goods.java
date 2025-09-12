@@ -24,7 +24,7 @@ public class Goods {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String thumbnailUrl;
 
     @Column(nullable = false)
