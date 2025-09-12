@@ -36,8 +36,8 @@ public class Performance extends OperationAwareEntity {
     @JoinColumn(name = "location_id")
     private Map location;
 
-    @Column(nullable = false)
-    private String ThumbnailUrl;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String thumbnailUrl;
 
     private long viewCount;
 }
