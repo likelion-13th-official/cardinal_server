@@ -32,7 +32,7 @@ public class Event extends OperationAwareEntity {
 
     private String applicationFormUrl; // 참가 신청 폼 경로
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String thumbnailUrl;
 
     @CollectionTable(name="event_detail_images",joinColumns = @JoinColumn(name="event_id"))

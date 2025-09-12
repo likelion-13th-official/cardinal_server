@@ -22,7 +22,9 @@ services:
       ELASTIC_SEARCH_URI: ${ELASTIC_SEARCH_URI}
       ELASTIC_SEARCH_PASSWORD: ${ELASTIC_SEARCH_PASSWORD}
     depends_on:
-      - redis
+      redis:
+        # 👇 redis가 '건강한(healthy)' 상태가 될 때까지 기다리도록 변경
+        condition: service_healthy
 
   redis:
     image: redis:alpine
@@ -32,6 +34,11 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   redis-data:
