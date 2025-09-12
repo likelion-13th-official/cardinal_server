@@ -1,0 +1,46 @@
+{
+  "analysis": {
+    "filter": {
+      "category_synonyms": {
+        "type": "synonym",
+        "synonyms": [
+          "PUB, 주점",
+          "FOOD_TRUCK, 푸드트럭",
+          "YARD_PROJECT, 마당사업",
+          "PHOTO_BOOTH, 포토부스",
+          "PARTNERSHIP, 제휴"
+        ]
+      },
+      "type_synonyms": {
+        "type": "synonym",
+        "synonyms": [
+          "EVENT, 이벤트",
+          "GOODS, 굿즈",
+          "BOOTH, 부스"
+        ]
+      }
+    },
+    "analyzer": {
+      "booth_category_analyzer": {
+        "char_filter": [],
+        "tokenizer": "nori_tokenizer",
+        "filter": [
+          "nori_part_of_speech",
+          "nori_readingform",
+          "category_synonyms",
+          "lowercase"
+        ]
+      },
+      "contents_type_analyzer": {
+        "char_filter": [],
+        "tokenizer": "nori_tokenizer",
+        "filter": [
+          "nori_part_of_speech",
+          "nori_readingform",
+          "type_synonyms",
+          "lowercase"
+        ]
+      }
+    }
+  }
+}

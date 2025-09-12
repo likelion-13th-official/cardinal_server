@@ -39,7 +39,7 @@ public class EventProvider implements CategoryProvider,Scrappable{
     }
 
     @Override
-    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating){
+    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating,Long scrapId){
 
         Optional<Event> eventOptional = eventRepository.findById(contentId);
         if(eventOptional.isEmpty()) return Optional.empty();
@@ -48,7 +48,7 @@ public class EventProvider implements CategoryProvider,Scrappable{
 
         return isFilteredByDay(day,event.getOperatingDays())
                 && isFilteredByIsOperating(isOperating,event.getOperatingInfo().isOperating())
-                ? Optional.of(ScrapCommonDto.of(event, ScrapTimeDetailDto.from(event)))
+                ? Optional.of(ScrapCommonDto.of(event, ScrapTimeDetailDto.from(event),scrapId))
                 : Optional.empty();
     }
 

@@ -4,6 +4,7 @@ import com.likelionsg13th.cardinal.auth.domain.RefreshToken;
 import com.likelionsg13th.cardinal.auth.dto.TokenResponse;
 import com.likelionsg13th.cardinal.auth.jwt.JwtTokenProvider;
 import com.likelionsg13th.cardinal.auth.repository.RefreshTokenRepository;
+import com.likelionsg13th.cardinal.pubOffice.repository.PubAdminRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshRepo;
     private final OneTimeCodeService codeService;
+    private final PubAdminRepository pubAdminRepo;
 
     /** ★ 리팩토링 핵심: 원타임 코드 교환을 서비스로 이동 */
     public TokenResponse exchangeOneTimeCode(String code) {
@@ -37,19 +39,6 @@ public class AuthService {
         refreshRepo.save(RefreshToken.builder()
                 .token(refresh)
                 .subject(subject)
-                .build());
-
-        return TokenResponse.of(access, refresh);
-    }
-
-    public TokenResponse issueToken(String adminId,Long pudId) {
-        String access = jwtTokenProvider.createAccessToken(adminId);
-        String  refresh = jwtTokenProvider.createPubAdminAccessToken(adminId,pudId);
-
-        refreshRepo.deleteBySubject(adminId);
-        refreshRepo.save(RefreshToken.builder()
-                .token(refresh)
-                .subject(adminId)
                 .build());
 
         return TokenResponse.of(access, refresh);
@@ -89,6 +78,37 @@ public class AuthService {
     /** 모든 세션 로그아웃: subject 기준 전체 refresh 삭제 */
     public void logoutAllSessions(String subject) {
         refreshRepo.deleteBySubject(subject);
+    }
+
+    /*pub admin 전용 토큰 발급 */
+    public TokenResponse issueToken(String adminId,Long pudId) {
+        String refresh = jwtTokenProvider.createRefreshToken(adminId);
+        String access = jwtTokenProvider.createPubAdminAccessToken(adminId,pudId);
+
+        refreshRepo.deleteBySubject(adminId);
+        refreshRepo.save(RefreshToken.builder()
+                .token(refresh)
+                .subject(adminId)
+                .build());
+
+
+        return TokenResponse.of(access, refresh);
+    }
+
+    public TokenResponse adminRefresh(String refreshToken) {
+        if(!jwtTokenProvider.isRefreshToken(refreshToken)) {
+            throw new IllegalArgumentException("Not a refresh token");
+        }
+
+        String adminId = jwtTokenProvider.getSubject(refreshToken); //admin id
+        Long pubId  =pubAdminRepo.findByAdminId(adminId)
+                .orElseThrow()
+                .getBooth()
+                .getId();
+
+        refreshRepo.findByToken(refreshToken)
+                .orElseThrow(()-> new IllegalArgumentException("Refresh token not found"));
+        return issueToken(adminId,pubId);
     }
 
 

@@ -1,4 +1,21 @@
+server:
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        secure: true
+
 spring:
+  elasticsearch:
+    uris: ${ELASTIC_SEARCH_URI}
+    username: elastic
+    password: ${ELASTIC_SEARCH_PASSWORD}
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
   application:
     name: cardinal
   config:
@@ -67,3 +84,16 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     org.springframework.web.client.RestTemplate: DEBUG
+
+cloud:
+  aws:
+    s3:
+      bucket: cardinal2025.bucket
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}

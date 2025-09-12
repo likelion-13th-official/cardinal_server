@@ -23,12 +23,12 @@ public interface Scrappable  {
     boolean hasCategory(String category);
 
     /* BOOTH,EVENT,PERFORMANCE*/
-     default Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating){
+     default Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating,Long scrapId){
          return Optional.empty();
      }
 
     /*GOODS */
-    default Optional<ScrapCommonDto> getScrapCommonDto(Long contentId){
+    default Optional<ScrapCommonDto> getScrapCommonDto(Long contentId,Long scrapId){
         return Optional.empty();
     }
 

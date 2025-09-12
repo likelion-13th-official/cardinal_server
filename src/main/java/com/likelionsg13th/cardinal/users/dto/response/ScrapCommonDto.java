@@ -31,6 +31,7 @@ import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
 @Builder
 public class ScrapCommonDto {
     Long id;
+    Long scrapId;
     String category; // BOOTH,PERFORMANCE,GOODS,EVENT,
     String subCategory; //BOOTH{FOOD_TRUCK,PUB,YARD_PROJECT,PHOTO_BOOTH,PARTNERSHIP} , PERFORMANCE{CLUB,FILM,ARTIST} , NULL
     String thumbnailUrl;
@@ -39,9 +40,10 @@ public class ScrapCommonDto {
     List<String> days; //GOODS 일 때 빈 리스트 반환
     ScrapDetail detail; //GOODS -> price , booth,event,film ->  timeDto
 
-    public static ScrapCommonDto of(Booth booth, ScrapDetail detail ){
+    public static ScrapCommonDto of(Booth booth, ScrapDetail detail,Long scrapId ){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
+                .scrapId(scrapId)
                 .category(BOOTH.toString())
                 .subCategory(booth.getCategory().toString())
                 .name(booth.getName())
@@ -54,9 +56,10 @@ public class ScrapCommonDto {
                 .build();
     }
 
-    public static ScrapCommonDto of(Event booth, ScrapDetail detail ){
+    public static ScrapCommonDto of(Event booth, ScrapDetail detail,Long scrapId  ){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
+                .scrapId(scrapId)
                 .category(EVENT.toString())
                 .name(booth.getName())
                 .thumbnailUrl(booth.getThumbnailUrl())
@@ -68,9 +71,10 @@ public class ScrapCommonDto {
                 .build();
     }
 
-    public static ScrapCommonDto of(Goods booth, ScrapDetail detail ){
+    public static ScrapCommonDto of(Goods booth, ScrapDetail detail,Long scrapId  ){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
+                .scrapId(scrapId)
                 .category(GOODS.toString())
                 .name(booth.getName())
                 .thumbnailUrl(booth.getThumbnailUrl())
@@ -79,9 +83,10 @@ public class ScrapCommonDto {
                 .build();
     }
 
-    public static ScrapCommonDto of(Performance booth,ScrapDetail detail){
+    public static ScrapCommonDto of(Performance booth,ScrapDetail detail,Long scrapId ){
         return ScrapCommonDto.builder()
                 .id(booth.getId())
+                .scrapId(scrapId)
                 .category(PERFORMANCE.toString())
                 .subCategory(booth.getCategory().toString())
                 .name(booth.getName())
