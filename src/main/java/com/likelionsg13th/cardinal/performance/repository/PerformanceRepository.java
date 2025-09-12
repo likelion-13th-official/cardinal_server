@@ -17,15 +17,7 @@ import java.util.Optional;
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
     Optional<Performance> findFirstByOrderByIdAsc();
 
-    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
-            "'PERFORMANCE',"+
-            "g.name," +
-            "g.id," +
-            "g.location.position," +
-            "g.location.longitude," +
-            "g.location.latitude) " +
-            "FROM Performance g WHERE g.name LIKE :keyword")
-    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+    List<Performance> findAllByNameLike(@Param("keyword") String keyword);
 
     @Query("SELECT p.location" +
             " FROM Performance p " +

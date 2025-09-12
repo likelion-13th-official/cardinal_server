@@ -2,8 +2,8 @@ package com.likelionsg13th.cardinal.map.controller;
 
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 import com.likelionsg13th.cardinal.map.dto.MapDetailDto;
-import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.map.dto.MapListDto;
+import com.likelionsg13th.cardinal.map.dto.MapSearchResponseDto;
 import com.likelionsg13th.cardinal.map.service.MapService;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.service.UserService;
@@ -63,7 +63,7 @@ public class MapController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> getSearch(@RequestParam @NotBlank @Size(min = 2,message = "검색어는 최소 2글자 이상") String keyword){
 
-        List<MapSearchDto> resopnse =  mapService.getSearchResult(keyword);
+        List<MapSearchResponseDto> resopnse =  mapService.getSearchResult(keyword);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공",resopnse));
     }
 

@@ -18,15 +18,7 @@ import java.util.Optional;
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Optional<Goods> findFirstByOrderByIdAsc();
 
-    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
-            "'GOODS',"+
-            "g.name," +
-            "g.id," +
-            "g.location.position," +
-            "g.location.longitude," +
-            "g.location.latitude) " +
-            "FROM Goods g WHERE g.name LIKE :keyword")
-    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+    List<Goods> findAllByNameLike(@Param("keyword") String keyword);
 
 
     @Query("SELECT p.location" +
