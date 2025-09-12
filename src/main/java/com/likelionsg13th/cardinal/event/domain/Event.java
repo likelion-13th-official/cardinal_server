@@ -30,6 +30,7 @@ public class Event extends OperationAwareEntity {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String applicationFormUrl; // 참가 신청 폼 경로
 
     @Column(nullable = false)

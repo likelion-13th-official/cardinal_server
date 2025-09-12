@@ -22,6 +22,8 @@ public class EventDetailResponse {
     private String description;
     private List<String> detailImageList;
 
+    private String applicationFormUrl;
+
     private OperatingInfo operatingInfo;
     private List<String> operatingDays;
     @JsonProperty("isScrapped")
@@ -43,6 +45,7 @@ public class EventDetailResponse {
                 .thumbnailUrl(event.getThumbnailUrl())
                 .scrapped(scrapped)
                 .detailImageList(imageList)
+                .applicationFormUrl(event.getApplicationFormUrl())
                 .location(event.getLocation().getPosition())
                 .operatingInfo(event.getOperatingInfo())
                 .operatingDays(

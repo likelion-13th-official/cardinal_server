@@ -20,10 +20,26 @@ public class PerformanceService {
     private final PerformanceProvider performanceProvider;
 
     //전체 조회
-    public List<PerformanceResponse> getPerfromanceList(PerformanceCategory category, DayOfWeek day, Long userId) {
-        List<Performance> performanceList =performanceRepository.findByCategory(category)
+    public List<PerformanceResponse> getPerfromanceList(String category, DayOfWeek day, Long userId) {
+/*        List<Performance> performanceList =performanceRepository.findByCategory(category)
                 .stream().filter(p -> day==null ||
-                        (p.getOperatingDays() !=null && p.getOperatingDays().contains(day))).toList();
+                        (p.getOperatingDays() !=null && p.getOperatingDays().contains(day))).toList();*/
+        // 1) 카테고리 파싱: "ALL"이면 null로 두어 전체 조회
+        PerformanceCategory cate = null;
+        if (category != null && !"ALL".equalsIgnoreCase(category)){
+            cate = PerformanceCategory.valueOf(category.toUpperCase()); // CLUB / ARTIST
+        }
+
+        // 2) DB 조회: 카테고리 유무에 따라 분기
+        List<Performance> baseList = (cate == null)
+                ? performanceRepository.findAll()
+                : performanceRepository.findByCategory(cate);
+
+        // 3) 요일 필터: day == null이면 전체 통과
+        List<Performance> performanceList = baseList.stream()
+                .filter(p -> day == null ||
+                        (p.getOperatingDays() != null && p.getOperatingDays().contains(day)))
+                .toList();
 
         Set<Long> scrappedIds;
         if (userId != null && !performanceList.isEmpty()) {

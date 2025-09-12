@@ -33,6 +33,7 @@ public class PerformanceResponse {
                 //TO-DO 북마크
                 .scrapped(scrapped)
                 .thumbnail(performance.getThumbnailUrl())
+                .operatingInfo(performance.getOperatingInfo())
                 .operatingDays(
                         performance.getOperatingDays().stream()
                                 .map(day -> day.toKorean())
