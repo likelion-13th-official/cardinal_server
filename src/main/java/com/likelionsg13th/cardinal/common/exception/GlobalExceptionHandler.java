@@ -4,6 +4,7 @@ import com.likelionsg13th.cardinal.common.dto.resonseDto.ApiResponse;
 //import com.likelionsg13th.cardinal.common.dto.resonseDto.ErrorResponse;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.likelionsg13th.cardinal.common.enums.ErrorCode.KEYWORD_NOT_VALID;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -67,6 +70,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         String errorMessage = "존재하지 않는 타입/카테고리 입니다." + ex.getMessage();
+        ApiResponse response = new ApiResponse(false, 400, errorMessage, null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /*@Size 등 유효검사 */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        String errorMessage =  "Invalid parameter : " + ex.getMessage();
         ApiResponse response = new ApiResponse(false, 400, errorMessage, null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

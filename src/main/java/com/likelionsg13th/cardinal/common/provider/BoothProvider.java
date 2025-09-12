@@ -42,7 +42,7 @@ public class BoothProvider implements CategoryProvider,Scrappable{
     }
 
     @Override
-    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating){
+    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating,Long scrapId){
 
        Optional<Booth> boothOptional = boothRepository.findById(contentId);
        if(boothOptional.isEmpty()) return Optional.empty();
@@ -53,7 +53,7 @@ public class BoothProvider implements CategoryProvider,Scrappable{
 
        return isFilteredByDay(day,booth.getOperatingDays()) &&
                 isFilteredByIsOperating(isOperating,currentIsOperating)
-               ? Optional.of(ScrapCommonDto.of(booth, ScrapTimeDetailDto.from(booth)))
+               ? Optional.of(ScrapCommonDto.of(booth, ScrapTimeDetailDto.from(booth),scrapId))
                : Optional.empty();
     }
 

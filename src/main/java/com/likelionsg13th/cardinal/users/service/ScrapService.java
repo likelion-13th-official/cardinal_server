@@ -64,11 +64,11 @@ public class ScrapService {
                         scrap -> {
                             if(scrap.getContentType().equals(GOODS)){ //GOODS는 filter 없는 버전사용.
                                 return  providerFactory.getScrappable(scrap.getContentType().toString())
-                                        .getScrapCommonDto(scrap.getContentId());
+                                        .getScrapCommonDto(scrap.getContentId(),scrap.getId());
                             }
                             return
                                     providerFactory.getScrappable(scrap.getContentType().toString())
-                                    .getScrapCommonDto(scrap.getContentId(), day, isOperating);
+                                    .getScrapCommonDto(scrap.getContentId(), day, isOperating,scrap.getId());
 
                         }
                 )

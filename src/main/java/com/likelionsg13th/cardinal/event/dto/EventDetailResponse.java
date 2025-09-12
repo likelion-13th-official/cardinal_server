@@ -22,12 +22,14 @@ public class EventDetailResponse {
     private String description;
     private List<String> detailImageList;
 
+    private String applicationFormUrl;
+
     private OperatingInfo operatingInfo;
     private List<String> operatingDays;
     @JsonProperty("isScrapped")
     private boolean scrapped;
 
-    public static EventDetailResponse from(Event event, boolean scrapped){
+    public static EventDetailResponse from(Event event, boolean scrapped, OperatingInfo operatingInfoForView){
         List<String> imageList = Optional.ofNullable(event.getDetailImageList())
                 .orElseGet(Collections::emptyList)
                 .stream()
@@ -43,8 +45,10 @@ public class EventDetailResponse {
                 .thumbnailUrl(event.getThumbnailUrl())
                 .scrapped(scrapped)
                 .detailImageList(imageList)
+                .applicationFormUrl(event.getApplicationFormUrl())
                 .location(event.getLocation().getPosition())
-                .operatingInfo(event.getOperatingInfo())
+                .operatingInfo(operatingInfoForView)
+                //.operatingInfo(event.getOperatingInfo())
                 .operatingDays(
                         event.getOperatingDays().stream()
                                 .map(day -> day.toKorean())

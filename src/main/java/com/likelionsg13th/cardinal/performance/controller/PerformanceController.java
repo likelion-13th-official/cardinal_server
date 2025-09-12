@@ -31,7 +31,7 @@ public class PerformanceController {
     
     @GetMapping
     public ResponseEntity<ApiResponse> getPerformanceList(
-            @RequestParam("category") PerformanceCategory category,
+            @RequestParam("category") String category,
             @RequestParam(value="day", required = false) DayOfWeek day,
             @AuthenticationPrincipal UserDetails principal
     ){

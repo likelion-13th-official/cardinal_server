@@ -17,11 +17,12 @@ public class EventSimpleResponse {
     private OperatingInfo operatingInfo;
     private List<String> operatingDays;
 
-    public static EventSimpleResponse from (Event event){
+    public static EventSimpleResponse from (Event event, OperatingInfo operatingInfoForView){
         return EventSimpleResponse.builder()
                 .id(event.getId())
                 .name(event.getName())
-                .operatingInfo(event.getOperatingInfo())
+                .operatingInfo(operatingInfoForView)
+                //.operatingInfo(event.getOperatingInfo())
                 .operatingDays(event.getOperatingDays().stream()
                         .map(day -> day.toKorean())
                         .collect(Collectors.toList()))

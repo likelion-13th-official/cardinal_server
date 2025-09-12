@@ -45,7 +45,7 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
     - 영화제 :  +시작시간,끝시간
     */
     @Override
-    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating) {
+    public Optional<ScrapCommonDto> getScrapCommonDto(Long contentId, String day, Boolean isOperating,Long scrapId) {
         Optional<Performance> performanceOptional = performanceRepository.findById(contentId);
         if(performanceOptional.isEmpty()) return Optional.empty();
         Performance performance = performanceOptional.get();
@@ -57,8 +57,8 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
                 && isFilteredByIsOperating(isOperating, currentIsOperating);
 
         if(isFiltered) {
-            if(performance.getCategory().equals(FILM)) {return Optional.of(ScrapCommonDto.of(performance, ScrapTimeDetailDto.from(performance)));}
-            else if(performance.getCategory().equals(ARTIST) || performance.getCategory().equals(CLUB)) return Optional.of(ScrapCommonDto.of(performance,null));
+            if(performance.getCategory().equals(FILM)) {return Optional.of(ScrapCommonDto.of(performance, ScrapTimeDetailDto.from(performance),scrapId));}
+            else if(performance.getCategory().equals(ARTIST) || performance.getCategory().equals(CLUB)) return Optional.of(ScrapCommonDto.of(performance,null,scrapId));
 
 
         }
