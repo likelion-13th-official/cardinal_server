@@ -264,9 +264,9 @@ public class SearchService {
     }
 
     //30초마다 (테스트용)
-    @Scheduled(fixedRate = 30000)
+//    @Scheduled(fixedRate = 30000)
     //매시 0분,30분(실제)
-//    @Scheduled(cron = "0 0,30 * * * *")
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updatePopularQueries(){
         Set<String> top5Json = redisTemplate.opsForZSet().reverseRange(SEARCH_KEY, 0, 4);
         if (top5Json != null) {
