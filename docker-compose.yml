@@ -21,9 +21,9 @@ services:
       ONE_TIME_CODE: ${ONE_TIME_CODE}
       ELASTIC_SEARCH_URI: ${ELASTIC_SEARCH_URI}
       ELASTIC_SEARCH_PASSWORD: ${ELASTIC_SEARCH_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
     depends_on:
       redis:
-        # 👇 redis가 '건강한(healthy)' 상태가 될 때까지 기다리도록 변경
         condition: service_healthy
 
   redis:
