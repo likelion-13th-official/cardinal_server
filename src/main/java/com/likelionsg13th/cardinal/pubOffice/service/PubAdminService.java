@@ -45,7 +45,7 @@ public class PubAdminService {
         PubAdmin pubAdmin = pubAdminRepository.findByAdminId(authentication.getName()).orElseThrow();
 
         return PubAdminLoginResposne.of(
-                 pubAdmin.getId()
+                 pubAdmin.getBooth().getId()
                 ,authService.issueToken(pubAdmin.getAdminId(),pubAdmin.getBooth().getId()));
 
     }
