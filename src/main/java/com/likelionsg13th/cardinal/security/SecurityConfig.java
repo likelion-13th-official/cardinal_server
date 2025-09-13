@@ -52,7 +52,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider);
+        return new JwtAuthenticationFilter(jwtTokenProvider, customAuthenticationEntryPoint);
     }
 
 
@@ -181,7 +181,7 @@ public class SecurityConfig {
     @Bean @Order(1)
     SecurityFilterChain oauth2Chain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/oauth2/**", "/login/**")
+                .securityMatcher("/oauth2/**", "/login/**", "/error")
                 .csrf(csrf -> csrf.disable())
                 .requestCache(rc -> rc.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
