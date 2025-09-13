@@ -23,7 +23,7 @@ public class EventDocument {
     @MultiField(
             mainField = @Field(type = FieldType.Text, analyzer = "nori"),
             otherFields = {
-                    @InnerField(suffix = "autocomplete", type = FieldType.Search_As_You_Type, analyzer = "nori")
+                    @InnerField(suffix = "autocomplete", type = FieldType.Search_As_You_Type)
             }
     )
     private String name;
