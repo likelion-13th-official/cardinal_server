@@ -13,7 +13,7 @@ spring:
 
   data:
     redis:
-      host: redis
+      host: cardinal.host
       port: 6379
 
   application:
