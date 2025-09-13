@@ -236,7 +236,6 @@ public class SecurityConfig {
                                 "/search/**","/health",
                                 "/map/**", "/admin/**",
                                 "/css/**","/js/**","/images/**","/webjars/**",
-                                "/stamps",
                                 "/favicon.ico","/default-ui.css"
                         ).permitAll()
                         .anyRequest().authenticated()
