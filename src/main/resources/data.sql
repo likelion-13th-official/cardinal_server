@@ -56,6 +56,11 @@ DROP CONSTRAINT IF EXISTS event_day_of_week_check;
 -- 3️⃣ Map 데이터 삽입
 -- ========================================
 
+-- update map(POSITION, latitude, longitude)
+-- set ('대운동장',37.5507,126.9413) where
+
+
+
 INSERT INTO map (POSITION, latitude, longitude)
 VALUES ('학생회관 앞', 37.5833, 127.0001),
        ('중앙광장', 37.5838, 127.0005),
@@ -376,19 +381,7 @@ VALUES (1, 'FRI'),
        (17, 'TUE'),
        (18, 'TUE');
 --
--- -- 11. Scraps (10 records)
-/*INSERT INTO scrap (user_id, content_id, content_type, created_at) VALUES
-(1, 1, 'BOOTH', '2025-08-16 19:00:00'),
-(1, 13, 'PERFORMANCE', '2025-08-16 23:00:00'),
-(1, 6, 'BOOTH', '2025-08-16 13:00:00'),
-(1, 3, 'EVENT', '2025-08-16 21:00:00'),
-(1, 1, 'GOODS', '2025-08-17 10:00:00'),
-(1, 21, 'BOOTH', '2025-08-17 11:00:00'),
-(1, 7, 'PERFORMANCE', '2025-08-17 19:30:00'),
-(1, 4, 'EVENT', '2025-08-18 12:00:00'),
-(1, 16, 'BOOTH', '2025-08-18 14:00:00'),
-(1, 5, 'GOODS', '2025-08-18 15:00:00');
-*/
+
 -- 12. Amenity 데이터 삽입
 
 INSERT INTO amenity (name, location_id)

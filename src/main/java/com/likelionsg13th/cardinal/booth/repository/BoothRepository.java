@@ -30,33 +30,20 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
 
 
     /*이벤트맵 검색 : 라벨 = 매장 이름  */
-    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
-            "'BOOTH',"+
-            "g.name," +
-            "g.id," +
-            "g.location.position," +
-            "g.location.longitude," +
-            "g.location.latitude) " +
-            "FROM Booth g WHERE g.name LIKE :keyword " +
+    @Query("SELECT g FROM Booth g WHERE g.name LIKE :keyword " +
             "AND " +
             "g.category NOT IN :excludeCategories")
-    List<MapSearchDto> findAllByNameContainingAndCategoryIsNotContainingAndCategoryNotIn(
+    List<Booth> findAllByNameLikeAndCategoryNotIn(
             @Param("keyword") String keyword,
             @Param("excludeCategories") List<BoothCategory> excludeCategories);
 
     /*이벤트맵 검색 : 라벨 = 위치명 또는 카테고리명   */
-    @Query("SELECT DISTINCT new com.likelionsg13th.cardinal.map.dto.MapSearchDto (" +
-            "'BOOTH',"+
-            "g.name," +
-            "g.id," +
-            "g.location.position," +
-            "g.location.longitude," +
-            "g.location.latitude) " +
+    @Query("SELECT DISTINCT g " +
             "FROM Booth g JOIN g.menus m " +
             "WHERE g.category IN :includeCategories  " +
             "AND " +
             "( g.name LIKE :keyword OR m.name LIKE :keyword) ")
-    List<MapSearchDto>  findAllByNameContainingAndMenusContainingAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
+    List<Booth> findAllByNameLikeOrMenusNameLikeAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
 
     /* 이벤트맵 카테고리 필터 : 공통 위치 1개 반환 */
     @Query("SELECT p.location" +

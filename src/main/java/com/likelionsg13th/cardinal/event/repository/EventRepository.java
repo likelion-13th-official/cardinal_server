@@ -14,15 +14,7 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
-            "'EVENT',"+
-            "g.name," +
-            "g.id," +
-            "g.location.position," +
-            "g.location.longitude," +
-            "g.location.latitude) " +
-            "FROM Event g WHERE g.name LIKE :keyword")
-    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+    List<Event> findAllByNameLike(@Param("keyword") String keyword);
 
 
 }
