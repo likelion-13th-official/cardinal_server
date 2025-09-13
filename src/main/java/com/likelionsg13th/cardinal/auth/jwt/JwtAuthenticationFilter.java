@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.auth.jwt;
 
+import com.likelionsg13th.cardinal.security.CustomAuthenticationEntryPoint;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -7,7 +8,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwt;
+    private final CustomAuthenticationEntryPoint entryPoint;
 
 /*    @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -134,13 +138,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-
-
             chain.doFilter(req, res);
 
-
-
         } catch (ExpiredJwtException e) {
+            // 만료
+            handleAuthError(req, res, new JwtAuthException(JwtAuthException.Reason.EXPIRED, "JWT_EXPIRED", e));
+
+        } catch (JwtException | IllegalArgumentException e) {
+            // 서명/형식 오류
+            handleAuthError(req, res, new JwtAuthException(JwtAuthException.Reason.INVALID, "JWT_INVALID", e));
+
+        } catch (AuthenticationException e) {
+            handleAuthError(req, res, e);
+
+        } catch (Exception e) {
+            handleAuthError(req, res, new BadCredentialsException("JWT_ERROR", e));
+        }
+
+
+/*        } catch (ExpiredJwtException e) {
             // 만료 토큰: 여기서 바로 401로 끝내려면 'return' 필수
            writeUnauthorized(res, "TOKEN_EXPIRED",  "Access token has expired");
             return; // ✅ 중요: 체인 중단
@@ -150,7 +166,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             writeUnauthorized(res, "INVALID_TOKEN", "Invalid or malformed token");
             return; // ✅ 중요: 체인 중단
             //throw new org.springframework.security.authentication.BadCredentialsException("invalid", e);
-        }
+        }*/
     }
     private void writeUnauthorized(HttpServletResponse res, String code, String message) throws IOException {
         res.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -161,6 +177,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         {"success":false,"code":"%s","message":"%s"}
         """.formatted(code, message));
 
+    }
+
+    private void handleAuthError(HttpServletRequest req, HttpServletResponse res, AuthenticationException ex)
+            throws IOException, ServletException {
+        // ★ 여기서 EntryPoint(단일 작성자)에게 위임 → JSON 작성
+        if (!res.isCommitted()) {
+            entryPoint.commence(req, res, ex);
+        }
+        // 체인을 더 진행하면 안 됨
+    }
+
+    // 만료/오류 사유 전달용 (EntryPoint에서 메시지 분기)
+    public static class JwtAuthException extends org.springframework.security.core.AuthenticationException {
+        public enum Reason { EXPIRED, INVALID, OTHER }
+        private final Reason reason;
+
+        public JwtAuthException(Reason reason, String msg, Throwable cause) {
+            super(msg, cause);
+            this.reason = reason;
+        }
+        public Reason getReason() { return reason; }
     }
 
 }
