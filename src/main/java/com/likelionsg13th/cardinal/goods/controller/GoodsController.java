@@ -39,7 +39,7 @@ public class GoodsController {
     /*전체 조회*/
     @GetMapping
     public ResponseEntity<ApiResponse> getGoodsList(
-            @RequestParam("page") Integer page,
+            @RequestParam(value="page", required=false) Integer page,
             @AuthenticationPrincipal UserDetails user
     ){
         Long userId= userService.resolveUserIdOrNull(user);
