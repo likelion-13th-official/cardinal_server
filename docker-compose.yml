@@ -23,23 +23,4 @@ services:
       ELASTIC_SEARCH_PASSWORD: ${ELASTIC_SEARCH_PASSWORD}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-    depends_on:
-      redis:
-        condition: service_healthy
 
-  redis:
-    image: redis:alpine
-    container_name: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  redis-data:
