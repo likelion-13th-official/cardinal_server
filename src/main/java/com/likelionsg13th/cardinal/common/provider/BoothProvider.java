@@ -6,7 +6,6 @@ import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.common.service.UpdateIsOperating;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
@@ -56,11 +55,6 @@ public class BoothProvider implements CategoryProvider,Scrappable{
                 isFilteredByIsOperating(isOperating,currentIsOperating)
                ? Optional.of(ScrapCommonDto.of(booth, ScrapTimeDetailDto.from(booth),scrapId))
                : Optional.empty();
-    }
-
-    @Override
-    public void deleteScrapyByContentId(Long contentId, UserDto userDto) {
-        scrapRepository.deleteByUser_IdAndContentIdAndContentType(userDto.getId(),contentId,BOOTH);
     }
 
     public  Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){

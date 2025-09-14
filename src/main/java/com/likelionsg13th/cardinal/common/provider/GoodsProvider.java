@@ -7,7 +7,6 @@ import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
-import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapGoodsDetailDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.GOODS;
 
 /*
@@ -62,10 +60,6 @@ public class GoodsProvider implements CategoryProvider,Scrappable {
     }
 
 
-    @Override
-    public void deleteScrapyByContentId(Long contentId, UserDto userDto) {
-        scrapRepository.deleteByUser_IdAndContentIdAndContentType(userDto.getId(),contentId,GOODS);
-    }
 
     public Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
         return Scrappable.super.getScrappedContentIds(contentIds,userId,GOODS,scrapRepository);

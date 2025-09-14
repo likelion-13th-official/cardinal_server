@@ -48,8 +48,7 @@ public interface Scrappable  {
          return filterIsOperating == null || isOperating == filterIsOperating;
     }
 
-    /*delete scrap */
-    void deleteScrapyByContentId(Long contentId,UserDto userDto);
+
 
 
     /*
