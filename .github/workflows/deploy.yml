@@ -3,18 +3,13 @@ name: Deploy v2
 on:
   push:
     branches:
-      - deploy
-  pull_request:
-    branches:
-      - deploy
-    types:
-      - closed
+      - develop
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # PR 머지된 경우에만
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+#    # PR 머지된 경우에만
+#    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
 
     steps:
       - name: Checkout Repository

@@ -35,5 +35,16 @@ public class PageDto<T> {
                 .build();
     }
 
+    // goods 에서 page값이 없는 경우 반환
+    public static <T> PageDto<T> of(List<T> list) {
+        return PageDto.<T>builder()
+                .pageNumber(1) // 전체 반환이므로 페이지 번호는 1로 고정
+                .pageSize(list.size()) // 전체 사이즈
+                .totalPages(1) // 전체 페이지는 1
+                .totalElements(list.size()) // 전체 건수
+                .contents(list)
+                .build();
+    }
+
 
 }

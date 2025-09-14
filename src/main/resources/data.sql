@@ -260,15 +260,15 @@ DROP CONSTRAINT IF EXISTS event_location_id_key;
  -- 6. Events (10 records)
 -- 'start_time'과 'end_time'이 'HH:MM:SS' 형식으로 변경
 
-INSERT INTO event (name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-VALUES ('DJ 파티', 6, '코딩보다 신나는 DJ 파티!', 'https://example.com/event3.jpg', 6000, '20:00:00', '00:00:00', TRUE),
-       ('보물찾기 이벤트', 2, '축제 곳곳에 숨겨진 보물을 찾아라!', 'https://example.com/event4.jpg', 7000, '10:00:00', '18:00:00', TRUE),
-       ('코스프레 대회', 6, '최고의 개발자 코스프레는 누구?', 'https://example.com/event5.jpg', 5500, '14:00:00', '16:00:00', TRUE),
-       ('네트워킹 파티', 1, '다양한 개발자들과 교류할 수 있는 기회', 'https://example.com/event6.jpg', 6500, '18:00:00', '20:00:00', TRUE),
-       ('경품 추첨', 2, '축제의 마지막을 장식할 경품 추첨', 'https://example.com/event7.jpg', 8000, '16:00:00', '17:00:00', TRUE),
-       ('폐막식', 6, '아쉬운 축제의 마무리', 'https://example.com/event8.jpg', 4000, '18:00:00', '20:00:00', TRUE),
-       ('인디밴드 공연', 3, '감성적인 인디밴드의 라이브 공연', 'https://example.com/event9.jpg', 3000, '17:00:00', '19:00:00', TRUE),
-       ('마술쇼', 5, '코딩처럼 신기한 마술의 세계', 'https://example.com/event10.jpg', 3500, '13:00:00', '14:00:00', TRUE);
+INSERT INTO event (name, location_id, description, thumbnail_url, view_count, start_time, end_time, application_form_url, is_operating)
+VALUES ('DJ 파티', 6, '코딩보다 신나는 DJ 파티!', 'https://example.com/event3.jpg', 6000, '20:00:00', '00:00:00', 'https://example.com/event3',TRUE),
+       ('보물찾기 이벤트', 2, '축제 곳곳에 숨겨진 보물을 찾아라!', 'https://example.com/event4.jpg', 7000, '10:00:00', '18:00:00', 'https://example.com/event3.jpg',TRUE),
+       ('코스프레 대회', 6, '최고의 개발자 코스프레는 누구?', 'https://example.com/event5.jpg', 5500, '14:00:00', '16:00:00','https://example.com/event3.jpg', TRUE),
+       ('네트워킹 파티', 1, '다양한 개발자들과 교류할 수 있는 기회', 'https://example.com/event6.jpg', 6500, '18:00:00', '20:00:00', 'https://example.com/event3.jpg',TRUE),
+       ('경품 추첨', 2, '축제의 마지막을 장식할 경품 추첨', 'https://example.com/event7.jpg', 8000, '16:00:00', '17:00:00', 'https://example.com/event3.jpg',TRUE),
+       ('폐막식', 6, '아쉬운 축제의 마무리', 'https://example.com/event8.jpg', 4000, '18:00:00', '20:00:00','https://example.com/event3.jpg', TRUE),
+       ('인디밴드 공연', 3, '감성적인 인디밴드의 라이브 공연', 'https://example.com/event9.jpg', 3000, '17:00:00', '19:00:00', 'https://example.com/event3.jpg',TRUE),
+       ('마술쇼', 5, '코딩처럼 신기한 마술의 세계', 'https://example.com/event10.jpg', 3500, '13:00:00', '14:00:00', 'https://example.com/event3.jpg',TRUE);
 
 -- 6-1. Events 운영 요일 데이터 삽입
 -- (이벤트 ID는 1부터 8까지 순서대로 할당된다고 가정)

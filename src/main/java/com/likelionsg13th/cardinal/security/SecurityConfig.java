@@ -6,6 +6,7 @@ import com.likelionsg13th.cardinal.auth.jwt.JwtTokenProvider;
 import com.likelionsg13th.cardinal.auth.oauth2.GoogleOidcUserService;
 import com.likelionsg13th.cardinal.auth.oauth2.OAuth2SuccessHandler;
 import com.likelionsg13th.cardinal.auth.service.SocialOAuth2UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -24,7 +29,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -45,7 +52,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider);
+        return new JwtAuthenticationFilter(jwtTokenProvider, customAuthenticationEntryPoint);
     }
 
 
@@ -65,7 +72,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         //허용 주소,메서드,헤더
-        config.setAllowedOrigins(List.of("http://localhost:5173"/*, "https://your-frontend.com" */));
+        config.setAllowedOrigins(List.of("http://localhost:5173", "https://sogang-cardinal.vercel.app" ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
@@ -170,10 +177,11 @@ public class SecurityConfig {
         return http.build();
     }*/
 
+
     @Bean @Order(1)
     SecurityFilterChain oauth2Chain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/oauth2/**", "/login/**")
+                .securityMatcher("/oauth2/**", "/login/**", "/error")
                 .csrf(csrf -> csrf.disable())
                 .requestCache(rc -> rc.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))

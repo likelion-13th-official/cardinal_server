@@ -67,23 +67,43 @@ public class GoodsService {
     }
 
     /* GET /goods */
-    public PageDto<GoodsResponse> getGoodsList(int page, Long userId) {
-        Pageable pageable=PageRequest.of(page-1,GOODS_PAGE_SIZE);
+    public PageDto<GoodsResponse> getGoodsList(Integer page, Long userId) {
+        if (page == null || page <= 0) {
+            // 전체 조회 (페이징 없이)
+            List<Goods> goodsList = goodsRepository.findAll();
+
+            Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(
+                    goodsList.stream().map(Goods::getId).toList(),
+                    userId
+            );
+
+            List<GoodsResponse> goodsResponses = goodsList.stream()
+                    .map(goods -> {
+                        boolean isScrapped = scrappedGoodsIds.contains(goods.getId());
+                        return GoodsResponse.from(goods, isScrapped);
+                    })
+                    .toList();
+
+            return PageDto.of(goodsResponses);
+        }
+
+        // 페이지 조회
+        Pageable pageable = PageRequest.of(page - 1, GOODS_PAGE_SIZE);
         Page<Goods> goodsPage = goodsRepository.findAll(pageable);
 
+        Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(
+                goodsPage.stream().map(Goods::getId).toList(),
+                userId
+        );
 
-        Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(goodsPage.stream().map(Goods::getId).toList()
-                , userId);
+        Page<GoodsResponse> goodsResponsePage = goodsPage.map(goods -> {
+            boolean isScrapped = scrappedGoodsIds.contains(goods.getId());
+            return GoodsResponse.from(goods, isScrapped);
+        });
 
-        Page<GoodsResponse> goodsResponsePage = goodsPage.map(
-                goods -> {
-                    boolean isScrapped = scrappedGoodsIds.contains(goods.getId());
-                    return GoodsResponse.from(goods, isScrapped);
-                });
-
-        //pageDTO에 담기
         return PageDto.from(goodsResponsePage);
     }
+
 
     /* GET /goods/{id} */
     public GoodsDetailResponse getGoods(Long id, Long userId) {
