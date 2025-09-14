@@ -48,6 +48,9 @@ public interface Scrappable  {
          return filterIsOperating == null || isOperating == filterIsOperating;
     }
 
+    /*delete scrap */
+    void deleteScrapyByContentId(Long contentId,UserDto userDto);
+
 
     /*
      * 유저와 부스 리스트를 비교하여 스크랩 한 부스를 찾습니다.

@@ -19,7 +19,9 @@ import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import com.likelionsg13th.cardinal.map.exception.LocationNotProvidedForFoodTruck;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
+import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
+
 import com.likelionsg13th.cardinal.users.service.ScrapService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +37,7 @@ import java.util.stream.Stream;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.FOOD_TRUCK;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.PUB;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
+import static com.likelionsg13th.cardinal.common.enums.PerformanceCategory.FILM;
 import static com.likelionsg13th.cardinal.common.utils.EnumUtil.boothCategoryValueOfIgnoreCase;
 
 @Service
@@ -49,6 +52,7 @@ public class MapService {
     private final PerformanceRepository performanceRepository;
     private final BoothRepository boothRepository;
     private final EventRepository eventRepository;
+    
 
     @Getter
     @AllArgsConstructor
@@ -62,50 +66,53 @@ public class MapService {
         return categoryProvider.getMapMarkersByCategory();
     }
 
-    public List<MapSearchResponseDto> getSearchResult(String keyword) {
+    public List<MapSearchResponseDto> getSearchResult(String keyword, UserDto user) {
         String searchKeyword = "%" + keyword + "%";
-        System.out.println(searchKeyword+"!!!!!!!!!!!!!!!!!");
 
+        // 1. 검색
         List<Goods> goods = goodsRepository.findAllByNameLike(searchKeyword);
         List<Event> events = eventRepository.findAllByNameLike(searchKeyword);
         List<Performance> performances = performanceRepository.findAllByNameLike(searchKeyword);
         List<Booth> pubAndFoodTrucks = boothRepository.findAllByNameLikeOrMenusNameLikeAndCategoryIn(searchKeyword, List.of(PUB, FOOD_TRUCK));
         List<Booth> otherBooths = boothRepository.findAllByNameLikeAndCategoryNotIn(searchKeyword, List.of(PUB, FOOD_TRUCK));
-
-        System.out.println(pubAndFoodTrucks.size() + "==============" + otherBooths.size() );
+        List<Amenity> amenities = amenityRepository.findAllByNameLike(searchKeyword);
 
         List<Booth> allBooths = Stream.concat(pubAndFoodTrucks.stream(), otherBooths.stream()).distinct().toList();
 
-        System.out.println(allBooths.size()+"===================");
-        List<LocationItemHolder> allItems = new ArrayList<>();
+        // 2. 스크랩 여부.
+        Set<Long> goodsScraps = scrapService.getScrappedContentIds(goods.stream().map(Goods::getId).toList(), GOODS, user);
+        Set<Long> eventScraps = scrapService.getScrappedContentIds(events.stream().map(Event::getId).toList(), EVENT, user);
+        Set<Long> performanceScraps = scrapService.getScrappedContentIds(performances.stream().map(Performance::getId).toList(), PERFORMANCE, user);
+        Set<Long> boothScraps = scrapService.getScrappedContentIds(allBooths.stream().map(Booth::getId).toList(), BOOTH, user);
 
-        goods.forEach(g -> {
-            MapSearchDetail detail = MapSearchPriceDetailDto.from(g);
-            MapSearchItemDto item = MapSearchItemDto.of(g, detail);
-            allItems.add(new LocationItemHolder(g.getLocation(), item));
-        });
+        // 3. Create streams of LocationItemHolder and concatenate them
+        Stream<LocationItemHolder> allItemsStream = Stream.of(
+                goods.stream().map(g -> {
+                    MapSearchItemDto item = MapSearchItemDto.of(g, MapSearchPriceDetailDto.from(g), goodsScraps.contains(g.getId()));
+                    return new LocationItemHolder(g.getLocation(), item);
+                }),
+                events.stream().map(e -> {
+                    MapSearchItemDto item = MapSearchItemDto.of(e, MapSearchTimeDetailDto.from(e), eventScraps.contains(e.getId()));
+                    return new LocationItemHolder(e.getLocation(), item);
+                }),
+                performances.stream().map(p -> {
+                    MapSearchDetail detail = (p.getCategory() == PerformanceCategory.FILM) ? MapSearchTimeDetailDto.from(p) : null;
+                    MapSearchItemDto item = MapSearchItemDto.of(p, detail, performanceScraps.contains(p.getId()));
+                    return new LocationItemHolder(p.getLocation(), item);
+                }),
+                allBooths.stream().map(b -> {
+                    MapSearchItemDto item = MapSearchItemDto.of(b, MapSearchTimeDetailDto.from(b), boothScraps.contains(b.getId()));
+                    return new LocationItemHolder(b.getLocation(), item);
+                }),
+                amenities.stream().map(a -> {
+                    MapSearchItemDto item = MapSearchItemDto.of(a);
+                    return new LocationItemHolder(a.getLocation(), item);
+                })
+        ).flatMap(s -> s);
 
-        events.forEach(e -> {
-            MapSearchDetail detail = MapSearchTimeDetailDto.from(e);
-            MapSearchItemDto item = MapSearchItemDto.of(e, detail);
-            allItems.add(new LocationItemHolder(e.getLocation(), item));
-        });
+        List<LocationItemHolder> allItems = allItemsStream.toList();
 
-        performances.forEach(p -> {
-            MapSearchDetail detail = null;
-            if (p.getCategory() == PerformanceCategory.FILM) {
-                detail = MapSearchTimeDetailDto.from(p);
-            }
-            MapSearchItemDto item = MapSearchItemDto.of(p, detail);
-            allItems.add(new LocationItemHolder(p.getLocation(), item));
-        });
-
-        allBooths.forEach(b -> {
-            MapSearchDetail detail = MapSearchTimeDetailDto.from(b);
-            MapSearchItemDto item = MapSearchItemDto.of(b, detail);
-            allItems.add(new LocationItemHolder(b.getLocation(), item));
-        });
-
+        // 4. 장소 기준으로 그룹핑.
         java.util.Map<Map, List<LocationItemHolder>> groupedByLocation = allItems.stream()
                 .collect(Collectors.groupingBy(LocationItemHolder::getLocation));
 

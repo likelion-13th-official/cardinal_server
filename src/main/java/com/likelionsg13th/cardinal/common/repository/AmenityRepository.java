@@ -21,4 +21,6 @@ public interface AmenityRepository extends JpaRepository<Amenity,Long> {
             "g.location.latitude) " +
             "FROM Amenity g WHERE g.name LIKE :keyword")
     List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
+
+    List<Amenity> findAllByNameLike(String keyword);
 }

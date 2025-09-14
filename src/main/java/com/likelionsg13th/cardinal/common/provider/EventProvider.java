@@ -9,6 +9,7 @@ import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
@@ -72,6 +73,11 @@ public class EventProvider implements CategoryProvider,Scrappable{
         if(!eventRepository.existsById(categoryId))
             throw new EventNotFound(ErrorCode.EVENT_NOT_FOUND);
         return EVENT;
+    }
+
+    @Override
+    public void deleteScrapyByContentId(Long contentId, UserDto userDto) {
+        scrapRepository.deleteByUser_IdAndContentIdAndContentType(userDto.getId(),contentId,EVENT);
     }
 
 

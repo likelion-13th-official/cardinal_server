@@ -9,6 +9,7 @@ import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.exception.PerformanceNotFound;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
+import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapCommonDto;
 import com.likelionsg13th.cardinal.users.dto.response.ScrapTimeDetailDto;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
@@ -81,6 +82,10 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
         if(!performanceRepository.existsById(categoryId))
             throw new PerformanceNotFound(ErrorCode.PERFORMANCE_NOT_FOUND);
         return PERFORMANCE;
+    }
+    @Override
+    public void deleteScrapyByContentId(Long contentId, UserDto userDto) {
+        scrapRepository.deleteByUser_IdAndContentIdAndContentType(userDto.getId(),contentId,PERFORMANCE);
     }
 
 
