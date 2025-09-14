@@ -2,10 +2,12 @@ package com.likelionsg13th.cardinal.users.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.common.dto.resonseDto.ListResponseDto;
+import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 
 import com.likelionsg13th.cardinal.common.provider.ProviderFactory;
+import com.likelionsg13th.cardinal.common.utils.EnumUtil;
 import com.likelionsg13th.cardinal.users.domain.Scrap;
 import com.likelionsg13th.cardinal.users.domain.Users;
 import com.likelionsg13th.cardinal.users.dto.UserDto;
@@ -20,10 +22,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
@@ -94,6 +93,18 @@ public class ScrapService {
                 .collect(Collectors.toSet());
     }
 
+    public Set<Long> getScrappedContentIds(List<Long> contentIds, ContentType contentType, UserDto user) {
+        if (user == null || contentIds.isEmpty()) {
+            return Collections.emptySet();
+        }
+        return scrapRepository.findAllByUser_IdAndContentIdInAndContentType(user.getId(), contentIds, contentType)
+                .stream()
+                .map(Scrap::getContentId)
+                .collect(Collectors.toSet());
+    }
+
+
+
 
     /*스크랩 : 굿즈 , 이벤트 , 부스 , 공연, */
     @Transactional
@@ -116,7 +127,21 @@ public class ScrapService {
         scrapRepository.save(scrap);
     }
 
+
+    /* BOOTH,EVENT,GOODS,PERFORMANCE*/
+    @Transactional
+    public void deleteScrapyByContentId(Long categoryId, String category, UserDto userDto) {
+        ContentType contentType = ContentType.valueOf(category.toUpperCase());
+
+        boolean exists = scrapRepository.existsByUserIdAndContentIdAndContentType(userDto.getId(), categoryId, contentType);
+        if (!exists) throw new ScrapNotFoundException(ErrorCode.SCRAP_NOT_FOUND);
+
+        scrapRepository.deleteByUser_IdAndContentIdAndContentType(userDto.getId(), categoryId, contentType);
+
+    }
+    /* BOOTH,EVENT,GOODS,PERFORMANCE*/
     /*scrapId로 스크랩 해제 */
+    @Transactional
     public void deleteScrapByScrapId(UserDto userDto,Long scrapId) {
         Users user = checkUser(userDto);
         /*존재하지 않는 스크랩일 시 에러 반환*/

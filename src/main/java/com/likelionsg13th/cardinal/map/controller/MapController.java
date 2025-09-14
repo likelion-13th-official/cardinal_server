@@ -51,7 +51,7 @@ public class MapController {
                                                @RequestParam(required = false) Long locationId,
                                                @AuthenticationPrincipal UserDetails user ){
 
-        UserDto userDto = null;
+        UserDto userDto = null; //
         if (user != null) {
             userDto = userService.getMeBySubject(user.getUsername());
         }
@@ -61,9 +61,13 @@ public class MapController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse> getSearch(@RequestParam @NotBlank @Size(min = 2,message = "검색어는 최소 2글자 이상") String keyword){
-
-        List<MapSearchResponseDto> resopnse =  mapService.getSearchResult(keyword);
+    public ResponseEntity<ApiResponse> getSearch(@RequestParam @NotBlank @Size(min = 2,message = "검색어는 최소 2글자 이상") String keyword,
+                                                 @AuthenticationPrincipal UserDetails user){
+        UserDto userDto = null; //
+        if (user != null) {
+            userDto = userService.getMeBySubject(user.getUsername());
+        }
+        List<MapSearchResponseDto> resopnse =  mapService.getSearchResult(keyword,userDto);
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 검색 결과 페이지 조회 성공",resopnse));
     }
 

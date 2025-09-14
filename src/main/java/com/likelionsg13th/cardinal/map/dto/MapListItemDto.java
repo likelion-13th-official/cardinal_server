@@ -1,5 +1,6 @@
 package com.likelionsg13th.cardinal.map.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 
 import com.likelionsg13th.cardinal.booth.domain.Menu;
@@ -16,7 +17,8 @@ import java.util.stream.Collectors;
 public class MapListItemDto {
 
      Long id;
-     boolean bookMarked;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
      List<String> operatingDays;
      LocalTime startTime;
      LocalTime endTime;
