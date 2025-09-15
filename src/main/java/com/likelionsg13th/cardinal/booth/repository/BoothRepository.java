@@ -22,7 +22,7 @@ import java.util.Optional;
 public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecificationExecutor<Booth> {
 
 
-    List<Booth> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
+    Optional<List<Booth>> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
 
     @Query("SELECT p FROM PubBooth p WHERE p.id = :id")
