@@ -189,7 +189,7 @@ public class MapService {
                 if (locationId == null) {
                     throw new LocationNotProvidedForFoodTruck(ErrorCode.LOCATION_NOT_PROVIDED_FOR_FOOD_TRUCK);
                 }
-                // Optional.filter를 사용하여 리스트가 비어있지 않은지 확인하고, 그렇지 않으면 예외를 던집니다.
+                // Optional.filter를 사용하여 리스트가 비어있지 않은지 확인 -> 예외
                 yield boothRepository.findAllByCategoryAndLocationId(boothCategory, locationId)
                     .filter(list -> !list.isEmpty())
                     .orElseThrow(() -> new com.likelionsg13th.cardinal.booth.exception.BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
