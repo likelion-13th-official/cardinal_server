@@ -72,6 +72,8 @@ public class MapSearchItemDto {
     }
 
     public static MapSearchItemDto of(Performance performance, MapSearchDetail detail,boolean isScrapped) {
+        System.out.println("days performance debugging ");
+        System.out.println(performance.getOperatingDays().stream().map(DayOfWeek::toKorean).toList());
         return MapSearchItemDto.builder()
                 .id(performance.getId())
                 .category(PERFORMANCE.toKorean())

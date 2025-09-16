@@ -18,7 +18,7 @@ import java.util.Optional;
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Optional<Goods> findFirstByOrderByIdAsc();
 
-    List<Goods> findAllByNameLike(@Param("keyword") String keyword);
+    List<Goods> findAllByNameLikeIgnoreCase(@Param("keyword") String keyword);
 
 
     @Query("SELECT p.location" +

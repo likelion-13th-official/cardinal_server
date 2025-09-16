@@ -70,12 +70,12 @@ public class MapService {
         String searchKeyword = "%" + keyword + "%";
 
         // 1. 검색
-        List<Goods> goods = goodsRepository.findAllByNameLike(searchKeyword);
-        List<Event> events = eventRepository.findAllByNameLike(searchKeyword);
-        List<Performance> performances = performanceRepository.findAllByNameLike(searchKeyword);
-        List<Booth> pubAndFoodTrucks = boothRepository.findAllByNameLikeOrMenusNameLikeAndCategoryIn(searchKeyword, List.of(PUB, FOOD_TRUCK));
-        List<Booth> otherBooths = boothRepository.findAllByNameLikeAndCategoryNotIn(searchKeyword, List.of(PUB, FOOD_TRUCK));
-        List<Amenity> amenities = amenityRepository.findAllByNameLike(searchKeyword);
+        List<Goods> goods = goodsRepository.findAllByNameLikeIgnoreCase(searchKeyword);
+        List<Event> events = eventRepository.findAllByNameLikeIgnoreCase(searchKeyword);
+        List<Performance> performances = performanceRepository.findAllByNameLikeIgnoreCase(searchKeyword);
+        List<Booth> pubAndFoodTrucks = boothRepository.findAllByNameLikeIgnoreCaseOrMenusNameLikeIgnoreCaseAndCategoryIn(searchKeyword, List.of(PUB, FOOD_TRUCK));
+        List<Booth> otherBooths = boothRepository.findAllByNameLikeIgnoreCaseAndCategoryNotIn(searchKeyword, List.of(PUB, FOOD_TRUCK));
+        List<Amenity> amenities = amenityRepository.findAllByNameLikeIgnoreCase(searchKeyword);
 
         List<Booth> allBooths = Stream.concat(pubAndFoodTrucks.stream(), otherBooths.stream()).distinct().toList();
 
