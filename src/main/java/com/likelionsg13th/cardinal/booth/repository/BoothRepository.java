@@ -33,7 +33,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
     @Query("SELECT g FROM Booth g WHERE g.name LIKE :keyword " +
             "AND " +
             "g.category NOT IN :excludeCategories")
-    List<Booth> findAllByNameLikeAndCategoryNotIn(
+    List<Booth>     findAllByNameLikeIgnoreCaseAndCategoryNotIn(
             @Param("keyword") String keyword,
             @Param("excludeCategories") List<BoothCategory> excludeCategories);
 
@@ -43,8 +43,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
             "WHERE g.category IN :includeCategories  " +
             "AND " +
             "( g.name LIKE :keyword OR m.name LIKE :keyword) ")
-    List<Booth> findAllByNameLikeOrMenusNameLikeAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
-
+    List<Booth> findAllByNameLikeIgnoreCaseOrMenusNameLikeIgnoreCaseAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
     /* 이벤트맵 카테고리 필터 : 공통 위치 1개 반환 */
     @Query("SELECT p.location" +
             " FROM Booth p " +

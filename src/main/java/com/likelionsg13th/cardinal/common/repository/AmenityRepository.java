@@ -12,15 +12,5 @@ import java.util.List;
 @Repository
 public interface AmenityRepository extends JpaRepository<Amenity,Long> {
 
-    @Query("SELECT new com.likelionsg13th.cardinal.map.dto.MapSearchDto(" +
-            "'AMENITY',"+
-            "g.name," +
-            "g.id," +
-            "g.location.position," +
-            "g.location.longitude," +
-            "g.location.latitude) " +
-            "FROM Amenity g WHERE g.name LIKE :keyword")
-    List<MapSearchDto> findAllByNameContaining(@Param("keyword") String keyword);
-
-    List<Amenity> findAllByNameLike(String keyword);
+    List<Amenity> findAllByNameLikeIgnoreCase(String keyword);
 }
