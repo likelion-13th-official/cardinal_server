@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Getter @SuperBuilder
 public class FoodTruckBoothResponse extends BoothDetailResponse {
+    private List<Menu> menus;
 
     public static FoodTruckBoothResponse of(Booth booth,boolean isScrapped){
         FoodTruckBooth b=(FoodTruckBooth) booth;
@@ -27,6 +28,7 @@ public class FoodTruckBoothResponse extends BoothDetailResponse {
                 .description(b.getDescription())
                 .operatingInfo(b.getOperatingInfo())
                 .thumbnailUrl(b.getThumbnailUrl())
+                .menus(b.getMenus())
                 .operatingDays(
 
                         b.getOperatingDays().stream()

@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.List;
 @SuperBuilder @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PubBooth extends Booth {
 
+    @Column(nullable = true)
     private String notice; //공지사항
 
     private String instagramUrl;
