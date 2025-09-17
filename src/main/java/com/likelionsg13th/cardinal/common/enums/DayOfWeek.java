@@ -23,9 +23,16 @@ public enum DayOfWeek {
         return koreanName;
     }
 
-    public static DayOfWeek getDayOfWeek(String day) {
-       return  Arrays.stream(DayOfWeek.values())
-               .filter(dayOfWeek -> day.contains(dayOfWeek.name()))
-               .findFirst().orElse(null);
+    public static DayOfWeek from(java.time.DayOfWeek javaDay) {
+        return switch (javaDay) {
+            case MONDAY -> MON;
+            case TUESDAY -> TUE;
+            case WEDNESDAY -> WED;
+            case THURSDAY -> THU;
+            case FRIDAY -> FRI;
+            case SATURDAY -> SAT;
+            case SUNDAY -> SUN;
+        };
     }
+
 }

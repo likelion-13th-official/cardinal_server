@@ -14,13 +14,22 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Repository
 public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecificationExecutor<Booth> {
 
+    //운영을 시작해야할 부스
+    List<Booth> findByOperatingInfo_IsOperatingFalseAndOperatingDaysContainingAndOperatingInfo_StartTimeLessThanEqualAndOperatingInfo_EndTimeAfter(
+            DayOfWeek dayOfWeek, LocalTime currentTimeForStart, LocalTime currentTimeForEnd);
+
+    // 2. 운영을 종료해야 할 부스
+    List<Booth> findByOperatingInfo_IsOperatingTrueAndOperatingDaysNotContainingOrOperatingInfo_IsOperatingTrueAndOperatingInfo_EndTimeLessThanEqual(
+            DayOfWeek dayOfWeek, LocalTime currentTime);
 
     Optional<List<Booth>> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);

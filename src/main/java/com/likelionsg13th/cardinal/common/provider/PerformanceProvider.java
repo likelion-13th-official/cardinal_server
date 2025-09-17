@@ -48,7 +48,7 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
         Performance performance = performanceOptional.get();
 
         //실시간 운영여부 계산
-        boolean currentIsOperating = updateIsOperating.updateOperatingStatus(performance.getOperatingInfo(),performance.getOperatingDays());
+        boolean currentIsOperating = performance.getOperatingInfo().isOperating();
 
         boolean isFiltered = isFilteredByDay(day, performance.getOperatingDays())
                 && isFilteredByIsOperating(isOperating, currentIsOperating);
