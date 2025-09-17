@@ -29,7 +29,7 @@ public class EventDetailResponse {
     @JsonProperty("isScrapped")
     private boolean scrapped;
 
-    public static EventDetailResponse from(Event event, boolean scrapped, OperatingInfo operatingInfoForView){
+    public static EventDetailResponse from(Event event, boolean scrapped){
         List<String> imageList = Optional.ofNullable(event.getDetailImageList())
                 .orElseGet(Collections::emptyList)
                 .stream()
@@ -47,7 +47,7 @@ public class EventDetailResponse {
                 .detailImageList(imageList)
                 .applicationFormUrl(event.getApplicationFormUrl())
                 .location(event.getLocation().getPosition())
-                .operatingInfo(operatingInfoForView)
+                .operatingInfo(event.getOperatingInfo())
                 //.operatingInfo(event.getOperatingInfo())
                 .operatingDays(
                         event.getOperatingDays().stream()

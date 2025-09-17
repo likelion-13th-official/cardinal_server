@@ -2,7 +2,10 @@ package com.likelionsg13th.cardinal.common.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
+import com.likelionsg13th.cardinal.booth.domain.subtype.FoodTruckBooth;
+import com.likelionsg13th.cardinal.booth.domain.subtype.PubBooth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.common.enums.BoothCategory;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.domain.EventDocument;
@@ -16,6 +19,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,9 +84,10 @@ public class IndexingService {
         doc.setThumbnailUrl(booth.getThumbnailUrl());
 
         // 메뉴 이름만 추출하여 List<String>으로 변환
-        List<String> menuNames = booth.getMenus().stream()
-                .map(menuEntity -> menuEntity.getName())
-                .collect(Collectors.toList());
+        List<String>  menuNames = booth.getMenus().stream()
+                    .map(menuEntity -> menuEntity.getName())
+                    .collect(Collectors.toList());
+
 
         doc.setMenu(menuNames);
 

@@ -49,7 +49,7 @@ public class BoothProvider implements CategoryProvider,Scrappable{
        Booth booth  = boothOptional.get();
 
        //실시간 운영여부 계산
-       boolean currentIsOperating = updateIsOperating.updateOperatingStatus(booth.getOperatingInfo(),booth.getOperatingDays());
+       boolean currentIsOperating = booth.getOperatingInfo().isOperating();
 
        return isFilteredByDay(day,booth.getOperatingDays()) &&
                 isFilteredByIsOperating(isOperating,currentIsOperating)
