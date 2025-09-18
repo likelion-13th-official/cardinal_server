@@ -72,7 +72,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         //허용 주소,메서드,헤더
-        config.setAllowedOrigins(List.of("http://localhost:5173", "https://sogang-cardinal.vercel.app" ));
+        config.setAllowedOrigins(List.of("http://localhost:5173", "https://sogang-cardinal.vercel.app", "https://www.2025cardinal.site/" ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
