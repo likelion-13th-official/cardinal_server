@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class JwtTokenProvider {
@@ -46,6 +47,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(subject)                     // "kakao:{id}"
                 .addClaims(claims)
+                .setId(UUID.randomUUID().toString()) // <-- jti 추가
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + validityMs))
                 .signWith(key, SignatureAlgorithm.HS256)
