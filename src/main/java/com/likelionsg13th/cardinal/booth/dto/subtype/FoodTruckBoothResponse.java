@@ -16,9 +16,7 @@ import java.util.stream.Collectors;
 
 @Getter @SuperBuilder
 public class FoodTruckBoothResponse extends BoothDetailResponse {
-
     private List<Menu> menus;
-    private List<String> menuImageUrls;
 
     public static FoodTruckBoothResponse of(Booth booth,boolean isScrapped){
         FoodTruckBooth b=(FoodTruckBooth) booth;
@@ -30,27 +28,13 @@ public class FoodTruckBoothResponse extends BoothDetailResponse {
                 .description(b.getDescription())
                 .operatingInfo(b.getOperatingInfo())
                 .thumbnailUrl(b.getThumbnailUrl())
+                .menus(b.getMenus())
                 .operatingDays(
 
                         b.getOperatingDays().stream()
                                 .map(day -> day.toKorean())
                                 .collect(Collectors.toList())
                 )
-                .menus(b.getMenus())
-                .menuImageUrls(
-                        b.getDetailImageList().stream()
-                                .filter(Objects::nonNull) // null인 요소 제거
-                                .map(DetailImage::getImageUrl)
-                                .collect(Collectors.toList())
-                )
-//                .menuImageUrls(
-//                        Optional.ofNullable(b.getDetailImageList())  // 리스트 자체가 null일 경우
-//                                .orElse(Collections.emptyList())
-//                                .stream()
-//                                .filter(Objects::nonNull)
-//                                .map(DetailImage::getImageUrl)
-//                                .collect(Collectors.toList())
-//                )
                 .scrapped(isScrapped)
                 .build();
 

@@ -49,6 +49,8 @@ public interface Scrappable  {
     }
 
 
+
+
     /*
      * 유저와 부스 리스트를 비교하여 스크랩 한 부스를 찾습니다.
      * @param boothList 스크랩 여부 확인할 부스 리스트

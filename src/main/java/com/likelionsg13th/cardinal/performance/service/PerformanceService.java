@@ -58,22 +58,9 @@ public class PerformanceService {
 
         List<PerformanceResponse> performanceResponseList = performanceList.stream()
                 .map(p -> {
-                    OperatingInfo src = p.getOperatingInfo(); // 엔티티의 OI (절대 변경 X)
-                    OperatingInfo viewOi = null;
-
-                    if (src != null) {
-                        boolean currentIsOperating =
-                                updateIsOperating.updateOperatingStatus(src, p.getOperatingDays());
-
-                        // ★ 복제본 생성 (도메인 수정/엔티티 변경 없음)
-                        viewOi = new OperatingInfo();
-                        viewOi.setStartTime(src.getStartTime());
-                        viewOi.setEndTime(src.getEndTime());
-                        viewOi.setOperating(currentIsOperating); // 계산값만 세팅
-                    }
 
                     boolean scrapped = scrappedIds.contains(p.getId());
-                    return PerformanceResponse.from(p, scrapped, viewOi);
+                    return PerformanceResponse.from(p, scrapped);
                 })
                 .toList();
 

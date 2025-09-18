@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    List<Event> findAllByNameLike(@Param("keyword") String keyword);
+    List<Event> findAllByNameLikeIgnoreCase(@Param("keyword") String keyword);
 
 
 }

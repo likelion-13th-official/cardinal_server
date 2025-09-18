@@ -1,8 +1,6 @@
 package com.likelionsg13th.cardinal.common.provider;
 
-import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.common.enums.ContentType;
-import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.ErrorCode;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.exception.EventNotFound;
@@ -19,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.likelionsg13th.cardinal.common.enums.ContentType.BOOTH;
 import static com.likelionsg13th.cardinal.common.enums.ContentType.EVENT;
 
 
@@ -73,8 +70,6 @@ public class EventProvider implements CategoryProvider,Scrappable{
             throw new EventNotFound(ErrorCode.EVENT_NOT_FOUND);
         return EVENT;
     }
-
-
 
     public Set<Long> getScrappedContentIds(List<Long> contentIds , Long userId){
         return Scrappable.super.getScrappedContentIds(contentIds,userId,EVENT,scrapRepository);

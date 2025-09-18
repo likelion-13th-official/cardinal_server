@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
     Optional<Performance> findFirstByOrderByIdAsc();
 
-    List<Performance> findAllByNameLike(@Param("keyword") String keyword);
+    List<Performance> findAllByNameLikeIgnoreCase(@Param("keyword") String keyword);
 
     @Query("SELECT p.location" +
             " FROM Performance p " +

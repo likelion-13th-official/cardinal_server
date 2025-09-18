@@ -44,9 +44,17 @@ public class ScrapController {
 
     @DeleteMapping("/{scrapId}")
     public ResponseEntity<ApiResponse> DeleteScrapsById(@AuthenticationPrincipal @Valid UserDetails principal
-                                                        ,@PathVariable @Valid @NotBlank Long scrapId) {
+                                                        ,@PathVariable  Long scrapId) {
         UserDto user = userService.getMeBySubject(principal.getUsername());
         scrapService.deleteScrapByScrapId(user, scrapId);
+        return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 삭제 성공",null));
+    }
+
+    @DeleteMapping("/{content}/{contentId}")
+    public ResponseEntity<ApiResponse> DeleteScrapsByCategoryId(@AuthenticationPrincipal @Valid UserDetails principal,
+                                                        @PathVariable Long categoryId,@PathVariable  String category) {
+        UserDto user = userService.getMeBySubject(principal.getUsername());
+        scrapService.deleteScrapyByContentId(categoryId,category,user);
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 삭제 성공",null));
     }
 

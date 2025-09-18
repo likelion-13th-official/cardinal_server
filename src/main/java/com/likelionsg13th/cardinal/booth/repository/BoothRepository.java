@@ -14,15 +14,24 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Repository
 public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecificationExecutor<Booth> {
 
+    //운영을 시작해야할 부스
+    List<Booth> findByOperatingInfo_IsOperatingFalseAndOperatingDaysContainingAndOperatingInfo_StartTimeLessThanEqualAndOperatingInfo_EndTimeAfter(
+            DayOfWeek dayOfWeek, LocalTime currentTimeForStart, LocalTime currentTimeForEnd);
 
-    List<Booth> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
+    // 2. 운영을 종료해야 할 부스
+    List<Booth> findByOperatingInfo_IsOperatingTrueAndOperatingDaysNotContainingOrOperatingInfo_IsOperatingTrueAndOperatingInfo_EndTimeLessThanEqual(
+            DayOfWeek dayOfWeek, LocalTime currentTime);
+
+    Optional<List<Booth>> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
 
     @Query("SELECT p FROM PubBooth p WHERE p.id = :id")
@@ -33,7 +42,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
     @Query("SELECT g FROM Booth g WHERE g.name LIKE :keyword " +
             "AND " +
             "g.category NOT IN :excludeCategories")
-    List<Booth> findAllByNameLikeAndCategoryNotIn(
+    List<Booth>     findAllByNameLikeIgnoreCaseAndCategoryNotIn(
             @Param("keyword") String keyword,
             @Param("excludeCategories") List<BoothCategory> excludeCategories);
 
@@ -43,8 +52,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
             "WHERE g.category IN :includeCategories  " +
             "AND " +
             "( g.name LIKE :keyword OR m.name LIKE :keyword) ")
-    List<Booth> findAllByNameLikeOrMenusNameLikeAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
-
+    List<Booth> findAllByNameLikeIgnoreCaseOrMenusNameLikeIgnoreCaseAndCategoryIn(@Param("keyword") String keyword, @Param("includeCategories") List<BoothCategory> includeCategories);
     /* 이벤트맵 카테고리 필터 : 공통 위치 1개 반환 */
     @Query("SELECT p.location" +
             " FROM Booth p " +

@@ -1,7 +1,10 @@
 package com.likelionsg13th.cardinal.map.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.common.domain.Amenity;
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
@@ -13,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.likelionsg13th.cardinal.common.enums.ContentType.*;
+import static com.likelionsg13th.cardinal.common.enums.DayOfWeek.ALWAYS;
 
 @Getter
 @AllArgsConstructor
@@ -24,53 +28,74 @@ public class MapSearchItemDto {
     private String thumbnailUrl;
     private String name;
     private List<String> days;
+    @JsonProperty("isScrapped")
+    private boolean scrapped;
     private MapSearchDetail detail;
 
-    public static MapSearchItemDto of(Booth booth, MapSearchDetail detail) {
+    public static MapSearchItemDto of(Booth booth, MapSearchDetail detail,boolean isScrapped) {
         return MapSearchItemDto.builder()
                 .id(booth.getId())
-                .category(BOOTH.name())
-                .subCategory(booth.getCategory().name())
+                .category(BOOTH.toKorean())
+                .subCategory(booth.getCategory().toKorean())
                 .name(booth.getName())
                 .thumbnailUrl(booth.getThumbnailUrl())
-                .days(booth.getOperatingDays().stream().map(Enum::name).toList())
+                .days(booth.getOperatingDays().stream().map(DayOfWeek::toKorean).toList())
+                .scrapped(isScrapped)
                 .detail(detail)
                 .build();
     }
 
-    public static MapSearchItemDto of(Event event, MapSearchDetail detail) {
+    public static MapSearchItemDto of(Event event, MapSearchDetail detail,boolean isScrapped) {
         return MapSearchItemDto.builder()
                 .id(event.getId())
-                .category(EVENT.name())
+                .category(EVENT.toKorean())
                 .subCategory(null)
                 .name(event.getName())
                 .thumbnailUrl(event.getThumbnailUrl())
-                .days(event.getOperatingDays().stream().map(Enum::name).toList())
+                .days(event.getOperatingDays().stream().map(DayOfWeek::toKorean).toList())
+                .scrapped(isScrapped)
                 .detail(detail)
                 .build();
     }
 
-    public static MapSearchItemDto of(Goods goods, MapSearchDetail detail) {
+    public static MapSearchItemDto of(Goods goods, MapSearchDetail detail,boolean isScrapped) {
         return MapSearchItemDto.builder()
                 .id(goods.getId())
-                .category(GOODS.name())
+                .category(GOODS.toKorean())
                 .subCategory(null)
                 .name(goods.getName())
                 .thumbnailUrl(goods.getThumbnailUrl())
-                .days(Collections.emptyList()) // Goods have no operating days
+                .days(List.of(ALWAYS.toKorean())) // Goods have no operating days
+                .scrapped(isScrapped)
                 .detail(detail)
                 .build();
     }
 
-    public static MapSearchItemDto of(Performance performance, MapSearchDetail detail) {
+    public static MapSearchItemDto of(Performance performance, MapSearchDetail detail,boolean isScrapped) {
+        System.out.println("days performance debugging ");
+        System.out.println(performance.getOperatingDays().stream().map(DayOfWeek::toKorean).toList());
         return MapSearchItemDto.builder()
                 .id(performance.getId())
-                .category(PERFORMANCE.name())
-                .subCategory(performance.getCategory().name())
+                .category(PERFORMANCE.toKorean())
+                .subCategory(performance.getCategory().toKorean())
                 .name(performance.getName())
                 .thumbnailUrl(performance.getThumbnailUrl())
-                .days(performance.getOperatingDays().stream().map(Enum::name).toList())
+                .days(performance.getOperatingDays().stream().map(DayOfWeek::toKorean).toList())
+                .scrapped(isScrapped)
                 .detail(detail)
+                .build();
+    }
+
+    public static MapSearchItemDto of(Amenity amenity) {
+        return MapSearchItemDto.builder()
+                .id(amenity.getId())
+                .category(AMENITY.toKorean())
+                .subCategory(null)
+                .name(amenity.getName())
+                .thumbnailUrl(null)
+                .days(List.of(ALWAYS.toKorean()))
+                .scrapped(false)
+                .detail(null)
                 .build();
     }
 }
