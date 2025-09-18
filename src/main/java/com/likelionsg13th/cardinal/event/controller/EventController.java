@@ -56,9 +56,10 @@ public class EventController {
 
     @GetMapping()
     public ResponseEntity<ApiResponse> getEvents(
-            @RequestParam(value="day", required = false)DayOfWeek day
+            @AuthenticationPrincipal UserDetails principal
     ){
-        List<EventSimpleResponse> response = eventService.getEventCal(day);
+        Long userId = userService.resolveUserIdOrNull(principal);
+        List<EventDetailResponse> response = eventService.getEventList(userId);
         return ResponseEntity.ok(new ApiResponse(true, 200, "이벤트 전체조회 성공", response));
     }
 
