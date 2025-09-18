@@ -46,12 +46,22 @@ public class EventController {
         return ResponseEntity.ok(new ApiResponse(true, 200, "이벤트 개별 조회 성공", response));
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse> getEvents(
+    @GetMapping("/cal")
+    public ResponseEntity<ApiResponse> getEventsCal(
             @RequestParam(value="day", required = false)DayOfWeek day
             ){
-        List<EventSimpleResponse> response = eventService.getEventList(day);
+        List<EventSimpleResponse> response = eventService.getEventCal(day);
         return ResponseEntity.ok(new ApiResponse(true, 200, "이벤트 전체조회 성공", response));
     }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse> getEvents(
+            @RequestParam(value="day", required = false)DayOfWeek day
+    ){
+        List<EventSimpleResponse> response = eventService.getEventCal(day);
+        return ResponseEntity.ok(new ApiResponse(true, 200, "이벤트 전체조회 성공", response));
+    }
+
+
 
 }

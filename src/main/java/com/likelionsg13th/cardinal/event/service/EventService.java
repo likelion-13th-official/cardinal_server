@@ -12,6 +12,8 @@ import com.likelionsg13th.cardinal.event.dto.EventSimpleResponse;
 import com.likelionsg13th.cardinal.event.exception.EventNotFound;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
 
+import com.likelionsg13th.cardinal.performance.domain.Performance;
+import com.likelionsg13th.cardinal.performance.dto.PerformanceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -69,7 +71,7 @@ public class EventService {
 
     }
 
-    public List<EventSimpleResponse> getEventList(DayOfWeek day){
+    public List<EventSimpleResponse> getEventCal(DayOfWeek day){
         List<EventSimpleResponse> eventList= eventRepository.findAll().stream()
                 .filter(e -> day==null ||
                         (e.getOperatingDays() !=null && e.getOperatingDays().contains(day)))
@@ -78,6 +80,30 @@ public class EventService {
 
         return eventList;
     }
+
+    public List<EventDetailResponse> getEventList(Long userId){
+        List<Event> eventList = eventRepository.findAll();
+
+        Set<Long> scrappedIds;
+        if (userId != null && !eventList.isEmpty()) {
+            List<Long> ids = eventList.stream().map(Event::getId).toList();
+            scrappedIds = eventProvider.getScrappedContentIds(ids, userId);
+        } else {
+            scrappedIds = Set.of();
+        }
+
+
+        List<EventDetailResponse> eventDetailResponseList = eventList.stream()
+                .map(e -> {
+
+                    boolean scrapped = scrappedIds.contains(e.getId());
+                    return EventDetailResponse.from(e, scrapped);
+                        })
+                .toList();
+
+        return eventDetailResponseList;
+    }
+
 
     //쿼리수행
     public SearchHits<EventDocument> eventQuery(String query, Pageable pageable){
