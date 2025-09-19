@@ -1,13 +1,17 @@
 package com.likelionsg13th.cardinal.common.provider;
 
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDetailDto;
+import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryDto;
 import com.likelionsg13th.cardinal.map.dto.MapFilteredByCategoryItemDto;
+import com.likelionsg13th.cardinal.map.dto.MapInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.likelionsg13th.cardinal.common.enums.BoothCategory.FOOD_TRUCK;
 import static com.likelionsg13th.cardinal.common.enums.BoothCategory.YARD_PROJECT;
 /*
  * CASE 2
@@ -26,16 +30,13 @@ public class YardProjectProvider implements CategoryProvider{
 
     @Override
     public Object getMapMarkersByCategory() {
+        List<Map> mapList= boothRepository.findLocationAllDistinctByCategory(YARD_PROJECT);
 
-        List<MapFilteredByCategoryItemDto> items = boothRepository.findAllByCategory(YARD_PROJECT).stream().map(
-                Booth ->
-                        MapFilteredByCategoryItemDto.from(
-                                Booth.getName(),
-                                Booth.getId(),
-                                Booth.getLocation())
-        ).toList();
+        List<MapInfoDto> mapInfoDtos =  mapList.stream()
+                .map(MapInfoDto::from)
+                .toList();
 
+        return MapFilteredByCategoryDto.from(mapInfoDtos,YARD_PROJECT.name());
 
-        return MapFilteredByCategoryDetailDto.of(YARD_PROJECT.name(), items);
     }
 }

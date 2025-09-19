@@ -185,7 +185,7 @@ public class MapService {
     private List<Booth> findBoothListFor(BoothCategory boothCategory, Long locationId) {
         return switch (boothCategory) {
             case PUB -> boothRepository.findAllByCategory(boothCategory);
-            case FOOD_TRUCK -> {
+            case FOOD_TRUCK,YARD_PROJECT -> {
                 if (locationId == null) {
                     throw new LocationNotProvidedForFoodTruck(ErrorCode.LOCATION_NOT_PROVIDED_FOR_FOOD_TRUCK);
                 }

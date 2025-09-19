@@ -27,7 +27,7 @@ public class Event extends OperationAwareEntity {
     @JoinColumn(name = "location_id")
     private Map location;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     /*신청 폼 nullable=true로 변경*/
