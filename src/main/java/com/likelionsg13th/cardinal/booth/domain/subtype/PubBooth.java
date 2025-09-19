@@ -26,6 +26,7 @@ public class PubBooth extends Booth {
 
     private String instagramUrl;
 
+    @Column(columnDefinition = "TEXT")
     private String tableLayoutUrl; //주점 별 자리 배치도 그림
 
     private LocalDateTime noticeUpdatedAt; //공지사항 업데이트

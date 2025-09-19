@@ -46,7 +46,7 @@ public class MapController {
         return ResponseEntity.ok(new ApiResponse(true,200,"지도 상세 페이지 조회 성공",response));
     }
 
-    /*pub,foodtruck 전용 api */
+    /*pub,foodtruck,yard_project 전용 api */
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> getList(@RequestParam @NotBlank String category,
                                                @RequestParam(required = false) Long locationId,

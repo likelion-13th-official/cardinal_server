@@ -34,7 +34,7 @@ public abstract class Booth extends OperationAwareEntity {
     private Map location;
 
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false, columnDefinition = "TEXT")
