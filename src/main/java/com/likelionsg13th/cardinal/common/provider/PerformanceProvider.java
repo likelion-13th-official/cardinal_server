@@ -68,9 +68,10 @@ public class PerformanceProvider implements CategoryProvider,Scrappable {
      */
     @Override
     public Object getMapMarkersByCategory() {
-        MapInfoDto mapInfo = MapInfoDto.from(performanceRepository.findLocationFirstById());
+        List<MapInfoDto>  mapInfo =
+                performanceRepository.findLocationAll().stream().map(MapInfoDto::from).toList();
 
-        return MapFilteredByCategoryDto.from(List.of(mapInfo),PERFORMANCE.name());
+        return MapFilteredByCategoryDto.from(mapInfo,PERFORMANCE.name());
     }
 
     @Override

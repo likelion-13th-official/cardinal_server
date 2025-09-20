@@ -19,10 +19,9 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
 
     List<Performance> findAllByNameLikeIgnoreCase(@Param("keyword") String keyword);
 
-    @Query("SELECT p.location" +
-            " FROM Performance p " +
-            " WHERE p.id = 1")
-    Map findLocationFirstById();
+    @Query("SELECT distinct p.location distinct" +
+            " FROM Performance p where p.category='CLUB' or p.category='ARTIST' ")
+    List<Map> findLocationAll();
 
     List<Performance> findByCategory(PerformanceCategory category);
 
