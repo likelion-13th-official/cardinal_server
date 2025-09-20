@@ -44,7 +44,8 @@ public class PerformanceService {
                 .filter(p -> day == null ||
                         (p.getOperatingDays() != null && p.getOperatingDays().contains(day)))
                 .toList();
-
+        
+        // 4) 스크랩 여부 
         Set<Long> scrappedIds;
         if (userId != null && !performanceList.isEmpty()) {
             List<Long> ids = performanceList.stream().map(Performance::getId).toList();
@@ -55,14 +56,15 @@ public class PerformanceService {
 
 
 
-
+        // 5) ResponseDTO List로 변환
         List<PerformanceResponse> performanceResponseList = performanceList.stream()
                 .map(p -> {
-
                     boolean scrapped = scrappedIds.contains(p.getId());
                     return PerformanceResponse.from(p, scrapped);
                 })
                 .toList();
+
+        //System.out.println(performanceResponseList);
 
         return performanceResponseList;
     }

@@ -1,5 +1,7 @@
 package com.likelionsg13th.cardinal.event.repository;
 
+import com.likelionsg13th.cardinal.booth.domain.Booth;
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.event.dto.EventResponse;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.event.domain.Event;
@@ -16,5 +18,6 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByNameLikeIgnoreCase(@Param("keyword") String keyword);
 
+    List<Event> findAllByOperatingDaysContaining(DayOfWeek dayOfWeek);
 
 }

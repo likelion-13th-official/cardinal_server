@@ -1,7 +1,9 @@
 package com.likelionsg13th.cardinal.performance.repository;
 
 
+import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.common.enums.PerformanceCategory;
+import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.map.domain.Map;
 import com.likelionsg13th.cardinal.map.dto.MapSearchDto;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
@@ -25,5 +27,7 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
     Map findLocationFirstById();
 
     List<Performance> findByCategory(PerformanceCategory category);
+
+    List<Performance> findAllByOperatingDaysContaining(DayOfWeek dayOfWeek);
 
 }

@@ -68,15 +68,17 @@ public class GoodsService {
 
     /* GET /goods */
     public PageDto<GoodsResponse> getGoodsList(Integer page, Long userId) {
+        // 전체 조회 (페이징 없이-프론트 요청사항)
         if (page == null || page <= 0) {
-            // 전체 조회 (페이징 없이)
             List<Goods> goodsList = goodsRepository.findAll();
-
+            
+            //스크랩 여부 
             Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(
                     goodsList.stream().map(Goods::getId).toList(),
                     userId
             );
-
+            
+            //ResponseDTO변환
             List<GoodsResponse> goodsResponses = goodsList.stream()
                     .map(goods -> {
                         boolean isScrapped = scrappedGoodsIds.contains(goods.getId());
@@ -90,12 +92,12 @@ public class GoodsService {
         // 페이지 조회
         Pageable pageable = PageRequest.of(page - 1, GOODS_PAGE_SIZE);
         Page<Goods> goodsPage = goodsRepository.findAll(pageable);
-
+        //스크랩여부
         Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(
                 goodsPage.stream().map(Goods::getId).toList(),
                 userId
         );
-
+        //DTO변환
         Page<GoodsResponse> goodsResponsePage = goodsPage.map(goods -> {
             boolean isScrapped = scrappedGoodsIds.contains(goods.getId());
             return GoodsResponse.from(goods, isScrapped);
@@ -110,6 +112,7 @@ public class GoodsService {
         Goods goods = goodsRepository.findById(id)
                 .orElseThrow(()-> new GoodsNotFound(ErrorCode.GOODS_NOT_FOUND));
 
+        //스크랩여부 
         boolean isScrapped = false;
         if (userId != null) {
             var scrapped = goodsProvider.getScrappedContentIds(List.of(id), userId);
