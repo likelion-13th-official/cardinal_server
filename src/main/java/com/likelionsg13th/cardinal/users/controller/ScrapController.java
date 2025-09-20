@@ -50,7 +50,7 @@ public class ScrapController {
         return ResponseEntity.ok(new ApiResponse(true, 200, "스크랩 삭제 성공",null));
     }
 
-    @DeleteMapping("/{content}/{contentId}")
+    @DeleteMapping("/{category}/{categoryId}")
     public ResponseEntity<ApiResponse> DeleteScrapsByCategoryId(@AuthenticationPrincipal @Valid UserDetails principal,
                                                         @PathVariable Long categoryId,@PathVariable  String category) {
         UserDto user = userService.getMeBySubject(principal.getUsername());
