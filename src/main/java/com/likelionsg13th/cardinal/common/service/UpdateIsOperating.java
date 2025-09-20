@@ -27,7 +27,7 @@ public class UpdateIsOperating {
     private final EventRepository eventRepository;
     private final PerformanceRepository performanceRepository;
 
-    @Scheduled(cron = "0 */10 * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 */30 * * * *", zone = "Asia/Seoul")
     @Transactional
     public void updateOperatingStatus() {
         LocalDate today = LocalDate.now();
@@ -52,6 +52,8 @@ public class UpdateIsOperating {
             }
         }
 
+        System.out.println("Booth 스케쥴링 완료");
+
 
         // event
         List<Event> Ecandidates = Stream.concat(
@@ -69,6 +71,8 @@ public class UpdateIsOperating {
             }
         }
 
+        System.out.println("Event 스케쥴링 완료");
+
         // performance
 
         List<Performance> Pcandidates = Stream.concat(
@@ -85,6 +89,8 @@ public class UpdateIsOperating {
                 perform.getOperatingInfo().setOperating(shouldBeOperating);
             }
         }
+
+        System.out.println("Performance 스케쥴링 완료");
 
     }
 
