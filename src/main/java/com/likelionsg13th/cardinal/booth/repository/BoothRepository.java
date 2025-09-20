@@ -30,6 +30,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long>, JpaSpecifica
     // 2. 운영을 종료해야 할 부스
     List<Booth> findByOperatingInfo_IsOperatingTrueAndOperatingDaysNotContainingOrOperatingInfo_IsOperatingTrueAndOperatingInfo_EndTimeLessThanEqual(
             DayOfWeek dayOfWeek, LocalTime currentTime);
+    List<Booth> findAllByOperatingDaysContaining(DayOfWeek dayOfWeek);
 
     Optional<List<Booth>> findAllByCategoryAndLocationId(BoothCategory category, Long locationId);
     List<Booth> findAllByCategory(BoothCategory category);
