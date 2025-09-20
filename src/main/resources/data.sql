@@ -13,10 +13,8 @@ TRUNCATE TABLE amenity RESTART IDENTITY CASCADE;
 TRUNCATE TABLE booth_operating_days RESTART IDENTITY CASCADE;
 TRUNCATE TABLE event_operating_days RESTART IDENTITY CASCADE;
 ALTER TABLE performance ALTER COLUMN thumbnail_url TYPE TEXT;
-ALTER TABLE booth
-    DROP CONSTRAINT IF EXISTS booth_day_of_week_check;
-ALTER TABLE event
-    DROP CONSTRAINT IF EXISTS event_day_of_week_check;
+ALTER TABLE booth DROP CONSTRAINT IF EXISTS booth_day_of_week_check;
+ALTER TABLE event DROP CONSTRAINT IF EXISTS event_day_of_week_check;
 ALTER TABLE event ALTER COLUMN application_form_url DROP NOT NULL;
 -- 이미지 필드 타입 TEXT
 ALTER TABLE booth ALTER COLUMN thumbnail_url TYPE TEXT;
@@ -69,183 +67,35 @@ WITH
 -- 1) 부스별 본문(description)만 따로 정의
 descriptions (name, description) AS (
     VALUES
-        ('[총학생회] 나루, 배', $$🧭2025 CARDINAL 총학생회 주점: 대항해시대🧭
-🗺️
-때는 2025년, 숨겨진 보물을 찾기 위해 나루호(號)에 모여든 선원들
-배 위에서 놀고 먹으며 보물을 찾으러 가자!
-▪️매장 이용 선원분들께는 마법의 소라고동(기본안주)과 웰컴드링크가 제공됩니다!
-🌊EVENT
-▪️나는 어떤 유형의 선장일까? 선장 유형 테스트(매장 이용 선원 only)
-▪️바다가 우리를 부르고 있네. 선원 능력 고사(매장 이용 선원 only)
-▪️이 남자를 본 적이 있나요? 현상금 사냥 미니게임 3종$$),
-        ('[자과대] 자대 산악회', $$안녕하세요! 서강대학교 자연과학대학 제22대 학생회 [에코 Echo] 입니다.
-자연과학대학 주점 ‘자대 산악회’를 소개합니다! 🏔️
-
-🍽️ 식량창고 🍽️
-해물 짬뽕 수제비, 우삼겹 짬뽕 수제비, 콘마요 불닭볶음면, 우삼겹 숙주볶음, 달콤 토마토, 얼음컵
-
-‼️ 산행 전 안내말씀 ‼️
-1️⃣ 인스타 스토리 이벤트
-📸 자대 주점 사진 + @sogang_ns 태그 후 업로드 시
-→ 숙취해소제 무료 증정 (선착순 30명 한정)
-2️⃣ 단대비 납부자 혜택
-✔️ 달콤 토마토 1개 무료 제공 (테이블당 1회)
-✔️ 소주, 맥주, 막걸리 500원 할인 (테이블당 주류 1병)
-
-‼️ 단대비 납부 확인은 ‘서강대학교 자연과학대학 학생회’ 카카오톡 채널 추가 후, 이름과 학번을 보내주시면 확인 가능합니다!$$),
-        ('[경영대] 9축 밤주점', $$⚾️서강이들을 위한 야구 컨셉 주점⚾️
-야구에 진심인 경영이들이 모여 만든 9축 밤주점!
-야구장에서 볼 법한 직관 메뉴들과 함께 응원 열기를 느껴보세요!
-
-- 큐브 스테이크
-- 순살치킨
-- 떡볶이
-- 김치전
-- 나초
-- 파인애플
-- 황도
-- 아이스크림
-
-생맥주와 함께 즐길 수 있는 다양한 안주가 준비되어 있습니다!
-🔥9축 밤주점에서 야구와 함께하는 뜨거운 밤을 보내세요!🔥$$),
-        ('[편입학생회] 고기에서 만나', $$안녕하세요, 편입생 주점 <고기에서 만나> 입니다! 🍖
-고깃집 컨셉으로 꾸며진 저희 주점은 편입생들이 직접 구워주는 고기와 함께, 다양한 안주와 술을 즐길 수 있는 공간입니다.
-
-✔️ 국내산 통삼겹살
-✔️ 수제 김치전
-✔️ 투움바 파스타
-✔️ 오뎅탕
-✔️ 파인애플 샤베트
-✔️ 제로 아이스티
-
-고기 한 점에 술 한 잔, 잊을 수 없는 추억을 만들어보세요!$$),
-        ('[사과대] 사과씨네: SGV', $$🍎사과씨네: SGV🍎
-안녕하세요, 사회과학대학 학생회입니다!
-SGV에서 영화같은 하루를 보내세요!
-
-- 투움바 파스타
-- 닭강정
-- 김치전
-- 오다리 튀김
-- 콘치즈
-- 팥빙수
-- 파인애플
-
-다양한 메뉴와 함께 즐거운 시간을 보내실 수 있도록 준비했습니다!
-🎬여러분의 많은 관심과 방문 부탁드립니다!🎬$$),
-        ('[지융미] 맛사이드 아웃', $$안녕하세요! 커뮤니케이션학부 학생회입니다.
-맛사이드 아웃 주점에 오신 것을 환영합니다!
-
-- 닭꼬치
-- 김치전
-- 어묵탕
-- 감자튀김
-- 쫄깃 버블 아이스크림
-
-다양한 감정의 맛을 표현한 안주들과 함께 즐거운 시간을 보내세요!
-✨여러분을 기다리고 있겠습니다!✨$$),
-        ('[인공지능] 바 에이아이', $$안녕하세요, 서강대학교 학우 여러분! 가을 축제 CARDINAL에서 인공 X AI 자전이 야심 차게 주점을 운영합니다. 맛과 분위기, 모두 잡은 저희 부스 '프롬프트 한 잔'이 여러분을 기다리고 있습니다!
-🍸 논알콜 칵테일
-	블루 밀키스
-	깔루아 밀크
-	모히또
-술을 마시지 않아도 축제 분위기를 마음껏 즐길 수 있어요!
-🎁 이벤트
-	안주 두 개 이상 주문 시, 테이블당 칵테일 한 잔을 무료로 드립니다!
-	전날과 당일에 진행하는 부스에서 칵테일 무료 쿠폰을 받아가세요!
-여러분의 많은 방문 부탁드립니다! 인공 X AI 자전이 준비한 특별한 주점에서 축제의 밤을 함께 즐겨요!$$),
-        ('[컴공] MVP 푸드코트', $$골든 골 스낵 파크에서 땀 흘린 당신, 진정한 스포츠 MVP입니다!
-경기의 승리를 기념하며, MVP만을 위한 특별한 야식 부스로 초대합니다~
-	💪 근수저들을 위한 든든한 고기 세트부터
-	🔥 매콤하고 시원한 안주
-	✨ 달콤한 디저트까지!
-오늘의 MVP, 당신을 위한 특식을 마음껏 즐겨보세요!$$),
-        ('[경제대] 쇼미더''주량''', $$주(酒)의 랩 배틀이 시작된다!
-안주도 FLEX, 술도 FLEX, 분위기도 FLEX.
-많은 관심과 방문 부탁드립니다$$),
-        ('[인문대] 술로지옥', $$🔥🏝 술로지옥 🏝🔥
-
-안녕하세요 서강대학교 학우 여러분!
-올해 CARDINAL 축제에서 인문대학이 준비한 주점은,
-낯선 만남, 새로운 인연, 그리고 짜릿한 설렘이 가득한,
-🔥🏝<술로지옥>🏝🔥 입니다!
-
-💚메뉴💚
-✔️천국도😇 특화 메뉴
-- 두부김치
-- 파인애플샤베트
-- 황도
-✔️지옥도👿 특화 메뉴
-- 불닭까르보나라
-- 매콤닭꼬치
-- 매콤오뎅나베
-✔️공통 메뉴
-- 콘치즈
-- 츄러스
-- 얼음컵
-- 공기밥
-
-💚이벤트💚
-✔️테이블 매칭
-- 솔로 탈출 기원..🥹 테이블 매칭으로 새로운 인연을 만나보세요!
-✔️인스타그램 이벤트
-- 인문대 주점 방문 인증샷을 인스타그램에 올려주시면, 추첨을 통해 다양한 상품을 드립니다!
-✔️게임 이벤트
-- 다양한 게임을 통해 술자리 분위기를 한층 더 뜨겁게!
-
-이번 축제, <술로지옥>에서 잊지 못할 추억을 만들어보세요!
-여러분의 많은 관심과 방문 부탁드립니다!$$),
-        ('[공과대] 너로 정했다! 가랏, 공돌이!', $$⚡️너로 정했다! 가랏, 공돌이!⚡️
-안녕하세요, 공학부 학생회입니다.
-공학부 주점에 오신 것을 환영합니다!
-
-- 닭강정
-- 김치전
-- 오뎅탕
-- 감자튀김
-- 팥빙수
-
-다양한 메뉴와 함께 즐거운 시간을 보내세요!
-🔥여러분을 기다리고 있겠습니다!🔥$$),
-        ('[H.U.G] H.U.G 주점', $$안녕하세요, 국제인문학부 학생회입니다.
-H.U.G 주점에 오신 것을 환영합니다!
-
-- 닭강정
-- 김치전
-- 오뎅탕
-- 감자튀김
-- 팥빙수
-
-다양한 메뉴와 함께 즐거운 시간을 보내세요!
-🔥여러분을 기다리고 있겠습니다!🔥$$),
-        ('[EXPANDED] La Cantina Expandida', $$안녕하세요, Expandida 주점입니다.
-La Cantina Expandida에 오신 것을 환영합니다!
-
-- 타코
-- 나초
-- 퀘사디아
-- 감자튀김
-- 츄러스
-
-멕시코의 맛과 열정을 느껴보세요!
-🔥여러분을 기다리고 있겠습니다!$$)
-),
+        ('[총학생회] 나루, 배', E'🧭2025 CARDINAL 총학생회 주점: 대항해시대🧭\n🗺️\n때는 2025년, 숨겨진 보물을 찾기 위해 나루호(號)에 모여든 선원들\n배 위에서 놀고 먹으며 보물을 찾으러 가자!\n▪️매장 이용 선원분들께는 마법의 소라고동(기본안주)과 웰컴드링크가 제공됩니다!\n\n🌊EVENT\n▪️나는 어떤 유형의 선장일까? 선장 유형 테스트(매장 이용 선원 only)\n▪️바다가 우리를 부르고 있네. 선원 능력 고사(매장 이용 선원 only)\n▪️이 남자를 본 적이 있나요? 현상금 사냥 미니게임 3종'),
+        ('[자과대] 자대 산악회', E'안녕하세요! 서강대학교 자연과학대학 제22대 학생회 [에코 Echo] 입니다.\n자연과학대학 주점 ‘자대 산악회’를 소개합니다! 🏔️\n\n🍽️ 식량창고 🍽️\n해물 짬뽕 수제비, 우삼겹 짬뽕 수제비, 콘마요 불닭볶음면, 우삼겹 숙주볶음, 달콤 토마토, 얼음컵\n\n‼️ 산행 전 안내말씀 ‼️\n1️⃣ 인스타 스토리 이벤트\n📸 자대 주점 사진 + @sogang_ns 태그 후 업로드 시\n→ 숙취해소제 무료 증정 (선착순 30명 한정)\n2️⃣ 단대비 납부자 혜택\n✔️ 달콤 토마토 1개 무료 제공 (테이블당 1회)\n✔️ 소주, 맥주, 막걸리 500원 할인 (테이블당 주류 1병)\n\n‼️ 단대비 납부 확인은 ‘서강대학교 자연과학대학 학생회’ 카카오톡 채널 추가 후, 이름과 학번을 보내주시면 확인 가능합니다!'),
+        ('[경영대] 9축 밤주점', E'⚾️서강이들을 위한 야구 컨셉 주점⚾️\n야구에 진심인 경영이들이 모여 만든 9축 밤주점!\n야구장에서 볼 법한 직관 메뉴들과 함께 응원 열기를 느껴보세요!\n\n- 큐브 스테이크\n- 순살치킨\n- 떡볶이\n- 김치전\n- 나초\n- 파인애플\n- 황도\n- 아이스크림\n\n생맥주와 함께 즐길 수 있는 다양한 안주가 준비되어 있습니다!\n🔥9축 밤주점에서 야구와 함께하는 뜨거운 밤을 보내세요!🔥'),
+        ('[편입학생회] 고기에서 만나', E'안녕하세요, 편입생 주점 <고기에서 만나> 입니다! 🍖\n고깃집 컨셉으로 꾸며진 저희 주점은 편입생들이 직접 구워주는 고기와 함께, 다양한 안주와 술을 즐길 수 있는 공간입니다.\n\n✔️ 국내산 통삼겹살\n✔️ 수제 김치전\n✔️ 투움바 파스타\n✔️ 오뎅탕\n✔️ 파인애플 샤베트\n✔️ 제로 아이스티\n\n고기 한 점에 술 한 잔, 잊을 수 없는 추억을 만들어보세요!'),
+        ('[사과대] 사과씨네: SGV', E'🍎사과씨네: SGV🍎\n안녕하세요, 사회과학대학 학생회입니다!\nSGV에서 영화같은 하루를 보내세요!\n\n- 투움바 파스타\n- 닭강정\n- 김치전\n- 오다리 튀김\n- 콘치즈\n- 팥빙수\n- 파인애플\n\n다양한 메뉴와 함께 즐거운 시간을 보내실 수 있도록 준비했습니다!\n🎬여러분의 많은 관심과 방문 부탁드립니다!🎬'),
+        ('[지융미] 맛사이드 아웃', E'안녕하세요! 커뮤니케이션학부 학생회입니다.\n맛사이드 아웃 주점에 오신 것을 환영합니다!\n\n- 닭꼬치\n- 김치전\n- 어묵탕\n- 감자튀김\n- 쫄깃 버블 아이스크림\n\n다양한 감정의 맛을 표현한 안주들과 함께 즐거운 시간을 보내세요!\n✨여러분을 기다리고 있겠습니다!✨'),
+        ('[인공지능] 바 에이아이', E'안녕하세요, 서강대학교 학우 여러분! 가을 축제 CARDINAL에서 인공 X AI 자전이 야심 차게 주점을 운영합니다. 맛과 분위기, 모두 잡은 저희 부스 ''프롬프트 한 잔''이 여러분을 기다리고 있습니다!\n\n🍸 논알콜 칵테일\n    블루 밀키스\n    깔루아 밀크\n    모히또\n술을 마시지 않아도 축제 분위기를 마음껏 즐길 수 있어요!\n\n🎁 이벤트\n    안주 두 개 이상 주문 시, 테이블당 칵테일 한 잔을 무료로 드립니다!\n    전날과 당일에 진행하는 부스에서 칵테일 무료 쿠폰을 받아가세요!\n\n여러분의 많은 방문 부탁드립니다! 인공 X AI 자전이 준비한 특별한 주점에서 축제의 밤을 함께 즐겨요!'),
+        ('[컴공] MVP 푸드코트', E'골든 골 스낵 파크에서 땀 흘린 당신, 진정한 스포츠 MVP입니다!\n경기의 승리를 기념하며, MVP만을 위한 특별한 야식 부스로 초대합니다~\n\n    💪 근수저들을 위한 든든한 고기 세트부터\n    🔥 매콤하고 시원한 안주\n    ✨ 달콤한 디저트까지!\n\n오늘의 MVP, 당신을 위한 특식을 마음껏 즐겨보세요!'),
+        ('[경제대] 쇼미더''''주량''''', E'주(酒)의 랩 배틀이 시작된다!\n안주도 FLEX, 술도 FLEX, 분위기도 FLEX.\n많은 관심과 방문 부탁드립니다'),
+        ('[인문대] 술로지옥', E'🔥🏝 술로지옥 🏝🔥\n\n안녕하세요 서강대학교 학우 여러분!\n올해 CARDINAL 축제에서 인문대학이 준비한 주점은,\n낯선 만남, 새로운 인연, 그리고 짜릿한 설렘이 가득한,\n🔥🏝<술로지옥>🏝🔥 입니다!\n\n💚메뉴💚\n✔️천국도😇 특화 메뉴\n- 두부김치\n- 파인애플샤베트\n- 황도\n✔️지옥도👿 특화 메뉴\n- 불닭까르보나라\n- 매콤닭꼬치\n- 매콤오뎅나베\n✔️공통 메뉴\n- 콘치즈\n- 츄러스\n- 얼음컵\n- 공기밥\n\n💚이벤트💚\n✔️테이블 매칭\n- 솔로 탈출 기원..🥹 테이블 매칭으로 새로운 인연을 만나보세요!\n✔️인스타그램 이벤트\n- 인문대 주점 방문 인증샷을 인스타그램에 올려주시면, 추첨을 통해 다양한 상품을 드립니다!\n✔️게임 이벤트\n- 다양한 게임을 통해 술자리 분위기를 한층 더 뜨겁게!\n\n이번 축제, <술로지옥>에서 잊지 못할 추억을 만들어보세요!\n여러분의 많은 관심과 방문 부탁드립니다!'),
+        ('[공과대] 너로 정했다! 가랏, 공돌이!', E'⚡️너로 정했다! 가랏, 공돌이!⚡️\n안녕하세요, 공학부 학생회입니다.\n공학부 주점에 오신 것을 환영합니다!\n\n- 닭강정\n- 김치전\n- 오뎅탕\n- 감자튀김\n- 팥빙수\n\n다양한 메뉴와 함께 즐거운 시간을 보내세요!\n🔥여러분을 기다리고 있겠습니다!🔥'),
+        ('[H.U.G] H.U.G 주점', E'안녕하세요, 국제인문학부 학생회입니다.\nH.U.G 주점에 오신 것을 환영합니다!\n\n- 닭강정\n- 김치전\n- 오뎅탕\n- 감자튀김\n- 팥빙수\n\n다양한 메뉴와 함께 즐거운 시간을 보내세요!\n🔥여러분을 기다리고 있겠습니다!🔥'),
+        ('[EXPANDED] La Cantina Expandida', E'안녕하세요, Expandida 주점입니다.\nLa Cantina Expandida에 오신 것을 환영합니다!\n\n- 타코\n- 나초\n- 퀘사디아\n- 감자튀김\n- 츄러스\n\n멕시코의 맛과 열정을 느껴보세요!\n🔥여러분을 기다리고 있겠습니다!🔥')),
 -- 2) 나머지 필드(썸네일/공지/링크 등)
 base_data (name, thumbnail_url, notice, instagram_url, table_layout_url) AS
     (VALUES
-         ('[총학생회] 나루, 배', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%B4%9D_optimized.jpg', '항해 컨셉으로 나룻배를 형상화한 주점', 'https://www.instagram.com/sogang_naru/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[자과대] 자대 산악회', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%9E%90_optimized.jpg', '산악회 컨셉', 'https://www.instagram.com/sogang_ns/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[경영대] 9축 밤주점', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B2%BD_optimized.jpg', '야구장', 'https://www.instagram.com/sgbusiness_official/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[편입학생회] 고기에서 만나', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%ED%8E%B8_optimized.jpg', '고깃집', 'https://www.instagram.com/sogang_transfer/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[사과대] 사과씨네: SGV', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%82%AC_optimized.jpg', '영화관 CGV', 'https://www.instagram.com/apple_sum/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[지융미] 맛사이드 아웃', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%A7%9B_optimized.jpg', '인사이드 아웃', 'https://www.instagram.com/sogang_cmas/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[인공지능] 바 에이아이', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%8F%98%EC%9D%B8%EA%B3%B5%EC%9E%90%EC%A0%84_optimized.jpg', '서비스형 주점', 'https://www.instagram.com/sgu_ai_official/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[컴공] MVP 푸드코트', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%8F%98%EC%BB%B4_optimized.jpg', '경기 MVP가 먹는 특식', 'https://www.instagram.com/sogang_sgcs_official/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[경제대] 쇼미더''주량''', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%83%81_optimized.jpg', '랩, 머니', 'https://www.instagram.com/sogangecon_dfficial/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[인문대] 술로지옥', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%AC%B8_optimized.jpg', '솔로지옥(천국도 vs 지옥도)', 'https://www.instagram.com/sogang_moon/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[공과대] 너로 정했다! 가랏, 공돌이!', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B3%B5_optimized.jpg', '전화기시에 어울리는 포켓몬 4마리의 대결 구도', 'https://www.instagram.com/sgu_engineering_official/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[H.U.G] H.U.G 주점', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_hug_optimized.jpg', '한식주점', 'https://www.instagram.com/soganghug_official/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png'),
-         ('[EXPANDED] La Cantina Expandida', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_expanded_optimized.jpg', '멕시칸 주점', 'https://www.instagram.com/soganghug_official/expandedkr/', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png')
+         ('[총학생회] 나루, 배', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%B4%9D_optimized.jpg', '항해 컨셉으로 나룻배를 형상화한 주점', 'https://www.instagram.com/sogang_naru/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[자과대] 자대 산악회', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%9E%90_optimized.jpg', '산악회 컨셉', 'https://www.instagram.com/sogang_ns/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[경영대] 9축 밤주점', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B2%BD_optimized.jpg', '야구장', 'https://www.instagram.com/sgbusiness_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[편입학생회] 고기에서 만나', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%ED%8E%B8_optimized.jpg', '고깃집', 'https://www.instagram.com/sogang_transfer/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[사과대] 사과씨네: SGV', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%82%AC_optimized.jpg', '영화관 CGV', 'https://www.instagram.com/apple_sum/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[지융미] 맛사이드 아웃', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%A7%9B_optimized.jpg', '인사이드 아웃', 'https://www.instagram.com/sogang_cmas/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[인공지능] 바 에이아이', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%8F%98%EC%9D%B8%EA%B3%Byming%EC%9E%90%EC%A0%84_optimized.jpg', '서비스형 주점', 'https://www.instagram.com/sgu_ai_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[컴공] MVP 푸드코트', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%8F%98%EC%BB%B4_optimized.jpg', '경기 MVP가 먹는 특식', 'https://www.instagram.com/sogang_sgcs_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[경제대] 쇼미더''주량''', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%83%81_optimized.jpg', '랩, 머니', 'https://www.instagram.com/sogangecon_dfficial/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[인문대] 술로지옥', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%AC%B8_optimized.jpg', '솔로지옥(천국도 vs 지옥도)', 'https://www.instagram.com/sogang_moon/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[공과대] 너로 정했다! 가랏, 공돌이!', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B3%B5_optimized.jpg', '전화기시에 어울리는 포켓몬 4마리의 대결 구도', 'https://www.instagram.com/sgu_engineering_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[H.U.G] H.U.G 주점', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_hug_optimized.jpg', '한식주점', 'https://www.instagram.com/soganghug_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+         ('[EXPANDED] La Cantina Expandida', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_expanded_optimized.jpg', '멕시칸 주점', 'https://www.instagram.com/soganghug_official/expandedkr/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg')
     ),
 -- 3)
 inserted_booths AS (
@@ -387,13 +237,13 @@ WITH
             ROW_NUMBER() OVER (PARTITION BY location_name ORDER BY name) AS rn
         FROM (
                  VALUES
-                     ('타로 카운셀러','체육관','타로 보세요 여러분들','https://.../part_counselor1.png', 'https://.../part_counselor1.png'),
-                     ('틱톡라이브', '청년광장', '2025 글로벌 TikTok LIVE...', 'https://.../part_tiktok.jpg', 'https://.../part_tiktok.jpg'),
-                     ('몬스터에너지', '청년광장', '몬스터에너지 음료를 맛볼 수 있는...', 'https://.../part_monster.png', 'https://.../KakaoTalk_...png'),
-                     ('레드불', '청년광장', '레드불 음료와 함께 날개를!', 'https://.../part_redbull.png', 'https://.../KakaoTalk_...png'),
-                     ('인도푸드', 'K관 옆', '향신료 가득한 인도 음식...', 'https://.../part_indomie.png', 'https://.../KakaoTalk_...png'),
-                     ('쿠팡잇츠', '대운동장', '쿠팡이츠 랜덤 쿠폰 이벤트 ', 'https://.../part_indomie.png', 'https://.../KakaoTalk_...png'),
-                     ('롯데호텔', '대운동장', '2025 CARDINAL with 롯데호텔', 'https://.../part_lotte.png', 'https://.../KakaoTalk_...png')
+                     ('타로 카운셀러','체육관','타로 보세요 여러분들','https://d9are2p0j0wzf.cloudfront.net/제휴/part_counselor1_optimized.jpg', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_counselor2_optimized.jpg'),
+                     ('틱톡라이브', '청년광장', '2025 글로벌 TikTok LIVE...', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_tiktok_optimized.jpg', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_tiktok_optimized.jpg'),
+                     ('몬스터에너지', '청년광장', '몬스터에너지 음료를 맛볼 수 있는...', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_moster2_optimized.jpg', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_monster_optimized.jpg'),
+                     ('레드불', '청년광장', '레드불 음료와 함께 날개를!', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_redbull_optimized.jpg', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_redbull_1_optimized.jpg'),
+                     ('인도푸드', 'K관 옆', '향신료 가득한 인도 음식...', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_indomie2_optimized.jpg', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_indomie_optimized.jpg'),
+                     ('쿠팡잇츠', '대운동장', '쿠팡이츠 랜덤 쿠폰 이벤트 ', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_coupangeats_optimized.jpg', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_coupangeats_optimized.jpg'),
+                     ('롯데호텔', '대운동장', '2025 CARDINAL with 롯데호텔', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_lotte_optimized.jpg', 'https://d9are2p0j0wzf.cloudfront.net/제휴/part_lotte_optimized.jpg')
              ) AS data(name, location_name, description, thumbnail_url, logo_image_url)
     ),
     -- 2. map 테이블의 위치 데이터에도 장소별로 순번(rn)
@@ -463,91 +313,13 @@ WITH
     -- 1. 변수처럼 사용할 description 값들을 ID와 함께 정의합니다.
     descriptions (id, description) AS (
         VALUES
-            (1, E'🎉 서강대학교 응원 TRIPATHY 부스 운영 안내 🎉
-
-            안녕하세요, 서강대학교 학우 여러분!
-            9월 CARDINAL을 맞이하여, 서강대학교 응원단 트라이파시(TRIPATHY)가 부스를 운영합니다✨
-
-            💌 사랑은 타이밍!
-            트라이파시 단독공연 <그대에게10> 공연날인 11월 14일을 스톱워치로 11.14초에 정확히 멈춘 분께 소정의 간식을 드립니다!
-
-            💭 당신에게 사랑이란 무엇인가요?
-            여러분의 마음속 ‘사랑의 정의’를 포스트잇에 담아주세요.
-            짧은 단어 하나라도, 긴 문장이라도 괜찮습니다.
-            여러분이 적어주신 순간들은 모여, 11월 14일 단독공연 <그대에게10>에서 하나의 큰 이야기가 될 예정입니다!
-
-            📣 응원타올 판매
-            트라이파시와 함께 축제를 즐길 수 있는 또 다른 방법!
-            현장판매: 5,000원
-            사전판매: 4,500원
-            부스 운영 시간(12:00~16:30, 혹은 12:00~18:00)에 현장 수령 가능합니다.
-
-            📱 인스타 팔로우 이벤트
-            인스타그램 @tripathy_sogang 팔로우 후, 추첨을 통해 5분께 스타벅스 10,000원 상품권을 드립니다!
-            트라이파시의 새로운 소식을 인스타그램에서 가장 먼저 만나보세요.
-            서강대학교 학우 여러분의 많은 관심과 참여 부탁드립니다! 💖'),
-            (2, E'🔮 21C Hermit 타로 텔링 부스 🔮
-            안녕하세요. 서강대학교 중앙 타로 동아리 21C Hermit입니다!
-            사랑, 진로, 인간관계… 마음속에 담아둔 고민들을 타로 카드로 풀어보세요.
-            당신의 모든 질문을 정성껏 들어드립니다.
-
-            📅 일시
-            9월 22일(월) 12:00-18:00
-            9월 23일(화) 12:00-18:00
-
-            🚩 위치
-            R관 앞
-
-            💸 비용
-            ₩4,000
-
-            🔍 허밋이 더 궁금하다면?
-            https://linktr.ee/21chermit?utm_source=linktree_profile_share&ltsid=a13bd434-d760-49a2-af8e-2b7c13f7b029
-            '),
-            (3, E'✨별반 부스 안내✨
-
-            안녕하세요, 서강대학교 학우 여러분!
-            CARDINAL 축제를 맞이해 💫천문 동아리 별반💫이 ''별반이랑 우주정복'' 부스를 운영합니다!
-            시원한 음료와 재미있는 게임, 그리고 상품 뽑기를 통해 축제를 더욱 다채롭게 즐겨보세요😚
-
-            🪐부스 소개🪐
-            🍹시원한 음료 판매🍹
-            밀키스를 넣어 만든 블루레몬에이드에 우주인 모양 얼음을 퐁당!👽🛸
-            가격: 2500원
-
-            🃏게임 대결🃏
-            우주를 담은 할리갈리 카드로 운영진과 게임 대결을 펼쳐보세요~ 게임에서 이기면 음료 500원 할인 쿠폰을 드린답니다😆
-
-            👾추가이벤트 : 상품 뽑기👾
-            음료도 마시고 상품도 받을 기회!! 음료를 구매하시면 뽑기 참여 기회를 드립니다. 캡슐 뽑기 기계를 통해 상품을 뽑을 수 있으며, 간식류와 외계인 와앙포카 등이 준비되어 있습니다~!
-            '),
-            (4, E'❤️팀제미나이 <Gemini와 함께하는 나만의 캐릭터 만들기> 부스 안내❤️
-
-            안녕하세요. 저희 팀제미나이가 이번에 서강대학교 카디널 축제에서 Google Al Pro for Students의 가입 혜택 및 주요 기능을 홍보하는 부스를 운영하게 되었습니다. 해당 부스에서 Gemini의 가입을 도와드리고 다양한 활용 기능을 재미있게 체험시켜 드릴 예정입니다!
-
-            자세한 내용은 카드 뉴스와 하단 글 참고 바라며 많은 관심 부탁드립니다.
-
-            👩🏻‍💻부스명
-            제미나이(Gemini)와 함께하는 나만의 캐릭터 만들기
-
-            1.Gemini를 활용하여 만든 하나뿐인 자신만의 캐릭터 라벨 증정 🏷️
-            2. Google AI Pro 가입 안내
-
-            Gemini의 Imagen 4 기능을 활용하여 자신만의 캐릭터, 이미지를 제작해 볼 수 있는 체험형 부스입니다. 부스 방문 시 원하는 캐릭터의 이미지 요구사항을 말씀해 주시면, 이를 바탕으로 프롬프트를 작성하여 세상에 하나뿐인 나만의 캐릭터를 만들어 드립니다. 생성된 캐릭터는 라벨로 인화하여 즉시 증정해 드릴 예정입니다.
-
-            캐릭터 제작 가이드라인을 제공하며, 구체적인 프롬프트 작성 팁을 활용해 더욱 높은 퀄리티의 캐릭터를 만나보실 수 있습니다. 또한, 부스 참여 및 가입자를 대상으로 추첨을 통한 특별한 상품 이벤트도 진행될 예정입니다!
-
-            [문의사항]
-            인스타그램 @gemini_syndrome
-
-
-            이상 있을 시 연락 부탁드립니다, 대표 연락처 : 010-8366-0790
-            '),
-            (5, '보건소'),
-            (6, E'목적: 딥페이크·마약류이용 성범죄 예방 캠페인
-                        내용: 마약 간이시약 키트 배부, 간식 제공, 퀴즈 맞추고 상품받기, 피해자 보호지원제도 안내, 전담경찰관과의 소통 등
-                        참여 간식도 있으니 많은 참여 부탁드립니다!'),
-            (7, '2025년 하반기 장애인식개선 캠페인 ')
+            (1, E'🎉 서강대학교 응원 TRIPATHY 부스 운영 안내 🎉\n\n안녕하세요, 서강대학교 학우 여러분!\n9월 CARDINAL을 맞이하여, 서강대학교 응원단 트라이파시(TRIPATHY)가 부스를 운영합니다✨\n\n💌 사랑은 타이밍!\n트라이파시 단독공연 <그대에게10> 공연날인 11월 14일을 스톱워치로 11.14초에 정확히 멈춘 분께 소정의 간식을 드립니다!\n\n💭 당신에게 사랑이란 무엇인가요?\n여러분의 마음속 ‘사랑의 정의’를 포스트잇에 담아주세요.\n짧은 단어 하나라도, 긴 문장이라도 괜찮습니다.\n여러분이 적어주신 순간들은 모여, 11월 14일 단독공연 <그대에게10>에서 하나의 큰 이야기가 될 예정입니다!\n\n📣 응원타올 판매\n트라이파시와 함께 축제를 즐길 수 있는 또 다른 방법!\n현장판매: 5,000원\n사전판매: 4,500원\n부스 운영 시간(12:00~16:30, 혹은 12:00~18:00)에 현장 수령 가능합니다.\n\n📱 인스타 팔로우 이벤트\n인스타그램 @tripathy_sogang 팔로우 후, 추첨을 통해 5분께 스타벅스 10,000원 상품권을 드립니다!\n트라이파시의 새로운 소식을 인스타그램에서 가장 먼저 만나보세요.\n서강대학교 학우 여러분의 많은 관심과 참여 부탁드립니다! 💖'),
+            (2, E'🔮 21C Hermit 타로 텔링 부스 🔮\n안녕하세요. 서강대학교 중앙 타로 동아리 21C Hermit입니다!\n사랑, 진로, 인간관계… 마음속에 담아둔 고민들을 타로 카드로 풀어보세요.\n당신의 모든 질문을 정성껏 들어드립니다.\n\n📅 일시\n9월 22일(월) 12:00-18:00\n9월 23일(화) 12:00-18:00\n\n🚩 위치\nR관 앞\n\n💸 비용\n₩4,000\n\n🔍 허밋이 더 궁금하다면?\nhttps://linktr.ee/21chermit?utm_source=linktree_profile_share&ltsid=a13bd434-d760-49a2-af8e-2b7c13f7b029'),
+            (3, E'✨별반 부스 안내✨\n\n안녕하세요, 서강대학교 학우 여러분!\nCARDINAL 축제를 맞이해 💫천문 동아리 별반💫이 ''별반이랑 우주정복'' 부스를 운영합니다!\n시원한 음료와 재미있는 게임, 그리고 상품 뽑기를 통해 축제를 더욱 다채롭게 즐겨보세요😚\n\n🪐부스 소개🪐\n🍹시원한 음료 판매🍹\n밀키스를 넣어 만든 블루레몬에이드에 우주인 모양 얼음을 퐁당!👽🛸\n가격: 2500원\n\n🃏게임 대결🃏\n우주를 담은 할리갈리 카드로 운영진과 게임 대결을 펼쳐보세요~ 게임에서 이기면 음료 500원 할인 쿠폰을 드린답니다😆\n\n👾추가이벤트 : 상품 뽑기👾\n음료도 마시고 상품도 받을 기회!! 음료를 구매하시면 뽑기 참여 기회를 드립니다. 캡슐 뽑기 기계를 통해 상품을 뽑을 수 있으며, 간식류와 외계인 와앙포카 등이 준비되어 있습니다~!'),
+            (4, E'❤️팀제미나이 <Gemini와 함께하는 나만의 캐릭터 만들기> 부스 안내❤️\n\n안녕하세요. 저희 팀제미나이가 이번에 서강대학교 카디널 축제에서 Google Al Pro for Students의 가입 혜택 및 주요 기능을 홍보하는 부스를 운영하게 되었습니다. 해당 부스에서 Gemini의 가입을 도와드리고 다양한 활용 기능을 재미있게 체험시켜 드릴 예정입니다!\n\n자세한 내용은 카드 뉴스와 하단 글 참고 바라며 많은 관심 부탁드립니다.\n\n👩🏻‍💻부스명\n제미나이(Gemini)와 함께하는 나만의 캐릭터 만들기\n\n1.Gemini를 활용하여 만든 하나뿐인 자신만의 캐릭터 라벨 증정 🏷️\n2. Google AI Pro 가입 안내\n\nGemini의 Imagen 4 기능을 활용하여 자신만의 캐릭터, 이미지를 제작해 볼 수 있는 체험형 부스입니다. 부스 방문 시 원하는 캐릭터의 이미지 요구사항을 말씀해 주시면, 이를 바탕으로 프롬프트를 작성하여 세상에 하나뿐인 나만의 캐릭터를 만들어 드립니다. 생성된 캐릭터는 라벨로 인화하여 즉시 증정해 드릴 예정입니다.\n\n캐릭터 제작 가이드라인을 제공하며, 구체적인 프롬프트 작성 팁을 활용해 더욱 높은 퀄리티의 캐릭터를 만나보실 수 있습니다. 또한, 부스 참여 및 가입자를 대상으로 추첨을 통한 특별한 상품 이벤트도 진행될 예정입니다!\n\n[문의사항]\n인스타그램 @gemini_syndrome\n\n\n이상 있을 시 연락 부탁드립니다, 대표 연락처 : 010-8366-0790'),
+            (5, E'보건소'),
+            (6, E'목적: 딥페이크·마약류이용 성범죄 예방 캠페인\n내용: 마약 간이시약 키트 배부, 간식 제공, 퀴즈 맞추고 상품받기, 피해자 보호지원제도 안내, 전담경찰관과의 소통 등\n참여 간식도 있으니 많은 참여 부탁드립니다!'),
+            (7, E'2025년 하반기 장애인식개선 캠페인')
     ),
     -- 2. 삽입할 데이터  ( description_id 사용)
     temp_data (name, description_id, thumbnail_url, start_time, end_time) AS (
@@ -604,185 +376,13 @@ WITH
     -- 1. description 모음
     descriptions (id, description) AS (
         VALUES
-            (1, E'자연과학대학 부스 ''👻엑, Ooooh!🕸''를 소개합니다!
-
-📆 일시 : 9월 24일(수)-9월 25일(목) 11:30-17:30
-📍 장소 : 대운동장 1번 부스
-🍭간식부스🍭
-  🧋스모어 마시멜로우 초코라떼 - 3500원
-  🍪스모어 마시멜로우 쿠키 - 3000원
-  ☕아이스 아메리카노 - 1500원
-  🧇아이스크림 크로플 - 3500원
-
-🎲게임부스🎲
-  🎃촉감게임
-  🎃젤리 옮기기
-
-❗게임 성공 시, 간식부스에서 500원 할인이 제공됩니다.
-❗️자연과학대학 단대비 납부자에 한하여 스모어 마시멜로우 초코라떼 1잔이 무료 제공됩니다.
-❗️재료 소진 시 조기마감합니다.
-
-문의사항은 서강대학교 자연과학대학 인스타(@sogang_ns) DM으로 연락주시길 바랍니다. 감사합니다. :)
-'),  -- 길면 E''로 줄바꿈 포함
-            (2, E'⚾️ 홈런왕 김경영 ⚾️🏟️
-
-경영대학 학우 여러분, 안녕하세요!
-더욱 즐거운 축제를 위해 경영대에서 오직 여러분들만을 위해 준비한 낮부스를 소개해드립니다 🙌🏻
-
-🏅장소: 대운동장 3번
-
-📋 메뉴 📋
-🍜 김치말이국수
-🍙 참치주먹밥
-🥤 홈런볼 + 논알콜맥주(한정 수량) / 콜라 / 사이다
-
-*김치말이국수, 참치주먹밥 중 택 1*
-
-⛳️ 게임 ⛳️
-미니 야구 게임기
-(2루타 이상 소정의 경품 증정)
->> 경품: 하리보 젤리
-
-🍋‍🟩 대상 🍋‍🟩
-경영 제1전공자 무료 제공
-(학생증 필수 지참, ‼️하루에 인당 2메뉴(메인1+디저트1) 까지 가능‼️)
-
-경영 학우분들의 많은 참여 부탁드립니다 ☺️☺️
-'),
-            (3, E'💡🎞️🎈사과씨네; SGV🎈🎞️💡
-
-안녕하세요 서강대학교 학우 여러분!
-9월 CARDINAL을 맞이하여 사회과학대학 학생회 [숨;SUM]에서 저녁 주점을 운영합니다🤗
-
-가을의 CARDINAL을 맞이하여 축제 분위기가 무르익은 서강대학교 교정, 낭만과 사랑을 챙길 영화관
-🎈사과씨네; SGV🎈가 열립니다!
-
-코미디, 액션, 로맨스, 스릴러-! 다양한 장르가 여러분을 기다립니다.
-
-🎪장소: 대운동장 6번 부스
-🎪일시: 9월 25일 목요일 18시~
-🎪메뉴
-🎬”팡팡 웃음이 터지는 코미디 영화” 팝콘&나쵸
-🎬”순식간에 몰입하는 매운맛 액션 영화” 우삽겹 불닭게티
-🎬”달콤짭짤한 로맨스 영화” 버터구이오징어
-🎬”매콤하게 긴장되는 스릴러 영화” 만두&즉석떡볶이
-🎪이벤트: 나랑 SGV갈래, 아니면 나한테 SGV나 올래.
-🎬영화 명장면을 보고 영화 제목을 맞출 경우, 1,000원 할인쿠폰이 팡팡!!
-
-서강대학교 학우여러분의 많은 관심과 참여 부탁드립니다~!!!
-
-*기타 문의사항은 사회과학대학 오픈채팅(https://open.kakao.com/o/sLbH7Rtf)이나 사과대 인스타그램(@apple__sum_)디엠으로 주시면 해결 도와드리겠습니다.
-'),
-            (4, E'🌈 영화 <인사이드 아웃> 속 감정들이 이제는 부스에서 여러분을 기다립니다!!
-🙋‍♀️🙋‍♂️ 감정에 취하고, 맛에 취하고, 이벤트까지 즐겨봐요!
-
-📍 장소: 대운동장 8번 부스
-🎈 주최: 지식융합미디어대학 제6대 학생회 LinC
-
-✨ 이건 꼭 해야지! 부스 체험 소개 ✨
-1️⃣ 감정 조언 캡슐 뽑기
-오늘 내 기분, 너무 복잡하다고?
-감정 박스에 손을 넣어 당신에게 딱 맞는 조언 캡슐을 뽑아보세요!
-랜덤으로 찾아오는 힐링 한 줄🧠💫
-2️⃣ 영화 속 감정 퀴즈
-그 순간 ‘라일리’는 어떤 감정을 느꼈을까?
-<인사이드 아웃> 속 명장면을 보고 감정을 맞히면 간식 쏜다!
-추리력도, 감정이입력도 모두 발휘될 순간🎬
-
-🥤 감정도 목이 마르다구요~?
-💙 “슬픔이 블루레몬에이드” 무료 증정!
-부스에 오기만 해도, 누구나 한 잔!
-지치고 더운 축제 속 시원함 +1'),
-            (5, '데이터 필요'),
-            (6, E'🍡 골든 골 스낵 파크 🍡
-짜릿한 승리와 맛있는 간식을 동시에!
-
-서강대학교 9월 CARDINAL 축제를 맞아 컴퓨터공학과의 특별한 이벤트.
-스포츠 스타디움 미니게임 & 푸드존이 준비된 “골든 골 스낵 파크”에 여러분을 초대합니다~!
-
-역대급 승리를 향한 짜릿한 미니게임에 도전하고, 승리의 기쁨이 배가 되는 맛있는 간식도 놓치지 마세요.
-각 게임을 완료하고 인증 도장을 하나라도 모으면, 25일 저녁 주점에서 MVP로 선정되어 특별한 혜택을 드립니다!
-장소: 대운동장 9번 부스
-
-🏆 스포츠 미니게임
-오타니 상대로 3K?! - 승리투수가 되어 3개의 삼진을 잡아내세요!
-서강 그랑프리 - 짜릿한 스피드와 컨트롤로 트랙을 정복하세요!
-스포츠 뇌지컬 챌린지! - 스포츠 지식으로 승리하는 퀴즈 한판!
-🍽️ 푸드존
-소떡소떡
-떡볶이
-아이스티
-아이스크림'),
-            (7, E'Show me the money⛓️💰
-
-📆 일시 : 9월 24일(수)-9월 25일(목) 11:30-17:00
-📍 장소 : 대운동장 10번 부스
-
-게임부스 설명🎲🎮
-잰말놀이게임🏃‍♂️: Diction은 생명! 빠른 속도로 발음을 틀리지 않고 읽어라!
-청개구리 절대음감🐸: 기존의 절대음감은 가라! 한 음씩 내리는 절대음감📉
-지폐맞추기💸: 이 지폐는 어느 나라의 지폐일까요?
-가격맞추기💲🤑: 4개의 물건 중 가장 비싼 물건을 찾아라!
-
-게임에 성공하신 학우분들께는 금목걸이🥇...가 아닌 골드바 초콜릿🍫과 주점 상품권을 드립니다!'),
-            (8, E'한순간의 선택이 당신의 운명을 바꿀 🎲♠️문스베이거스♠️🎲가 열립니다!
-
-♟️장소 : 대운동장 11번 부스
-
-♟️간식
-
-카나페 : 3,000원 🥨
-🍫 누텔라 & 바나나 🍌
-🍓딸기잼 & 치즈 🧀
-🧀 치즈 & 참치마요 & 토마토 🍅
-크림 소다 : 2,000원 🍦🥤
-메론 소다 : 2,000원 🍈🥤
-
-
-🎮 게임부스 🎮
-
-🎯문스베이거스 샷 !
-다트를 던져 풍선을 맞히면 점수 획득 ! 최대 100점의 기회를 잡으세요 !
-🎰스핀 오브 문스
-세 장의 카드가 동시에 멈추는 순간, 운명의 조합이 당신을 기다립니다.
-두 장 이상 일치 → 50점 / 세 장 일치 → 100점!
-🎲다이스 룰렛
-홀 or 짝, 단 한 번의 선택. 당신의 운이 어디로 향할까 ? 맞히면 50점 GET !
-🎲히든 다이스
-흔들리는 주사위 소리, 감각만이 당신의 무기 ! 정확히 맞히면 70점!
-
-
-🎉추가 이벤트
-📸 부스 인증샷 업로드 이벤트
-부스에서 사진 찍고 SNS에 인증하면 럭키드로우를 참여하실 수 있는 기회가 주어집니다 !
-🎁 럭키드로우 경품
-1등: 주점 메인메뉴 🍖
-2등: 주점 사이드메뉴 🍗
-3등: 카나페 🧀
-4등: 소다 🥤
-5등: 몬스터 에너지 음료⚡ or 꽝 😅
-
-
-🌙 운명은 언제나 모험하는 자의 편!
-올 가을, 서강대학교 축제의 🎲♠️문스베이거스♠️🎲로 초대합니다.'),
-            (9, E'C&M 칼텍스 (화공·기계공학과 부스)
-📍 위치: 대운동장 출입구 바로 왼편, 12번 부스
-🍴 메뉴: 오레오 쉐이크, 나초 치즈컵'),
-            (10, E'번쩍번쩍 반도체공장 (전자·시스템반도체공학과 부스)
-📍 위치: 대운동장 출입구 바로 왼편, 12번 부스
-🍴 메뉴: 웨이퍼 크로플, 220V 에너지 드링크' ||
-                 E'🛍️ 굿즈: 공대/전자 스티커, 전자/시반 티셔츠
-                 '),
-            (11,E'🍒 하늬모아 🍒
-서강대학교 학생홍보대사 하늬가람이 준비한 특별한 축제 부스!
-하늬가람의 감성을 캔모아 콘셉트로 담아냈습니다 ✨
-[하늬에이드] 🍹
-서쪽의 하늬, 그리고 서강의 상징인 빨간색 체리 에이드
-[가람요거트] 🥛
-강을 뜻하는 가람, 시원한 파란빛 요거트 음료
-그리고 인스타그램 이벤트에 참여하면, 캔모아처럼 달콤한 식빵 + 생크림을 드려요.
-하늬가람과 함께하는 작은 즐거움, [하늬모아]에서 꼭 만나보세요 💖
-')
+            (1, E'🎉 서강대학교 응원 TRIPATHY 부스 운영 안내 🎉\n\n안녕하세요, 서강대학교 학우 여러분!\n9월 CARDINAL을 맞이하여, 서강대학교 응원단 트라이파시(TRIPATHY)가 부스를 운영합니다✨\n\n💌 사랑은 타이밍!\n트라이파시 단독공연 <그대에게10> 공연날인 11월 14일을 스톱워치로 11.14초에 정확히 멈춘 분께 소정의 간식을 드립니다!\n\n💭 당신에게 사랑이란 무엇인가요?\n여러분의 마음속 ‘사랑의 정의’를 포스트잇에 담아주세요.\n짧은 단어 하나라도, 긴 문장이라도 괜찮습니다.\n여러분이 적어주신 순간들은 모여, 11월 14일 단독공연 <그대에게10>에서 하나의 큰 이야기가 될 예정입니다!\n\n📣 응원타올 판매\n트라이파시와 함께 축제를 즐길 수 있는 또 다른 방법!\n현장판매: 5,000원\n사전판매: 4,500원\n부스 운영 시간(12:00~16:30, 혹은 12:00~18:00)에 현장 수령 가능합니다.\n\n📱 인스타 팔로우 이벤트\n인스타그램 @tripathy_sogang 팔로우 후, 추첨을 통해 5분께 스타벅스 10,000원 상품권을 드립니다!\n트라이파시의 새로운 소식을 인스타그램에서 가장 먼저 만나보세요.\n서강대학교 학우 여러분의 많은 관심과 참여 부탁드립니다! 💖'),
+            (2, E'🔮 21C Hermit 타로 텔링 부스 🔮\n안녕하세요. 서강대학교 중앙 타로 동아리 21C Hermit입니다!\n사랑, 진로, 인간관계… 마음속에 담아둔 고민들을 타로 카드로 풀어보세요.\n당신의 모든 질문을 정성껏 들어드립니다.\n\n📅 일시\n9월 22일(월) 12:00-18:00\n9월 23일(화) 12:00-18:00\n\n🚩 위치\nR관 앞\n\n💸 비용\n₩4,000\n\n🔍 허밋이 더 궁금하다면?\nhttps://linktr.ee/21chermit?utm_source=linktree_profile_share&ltsid=a13bd434-d760-49a2-af8e-2b7c13f7b029'),
+            (3, E'✨별반 부스 안내✨\n\n안녕하세요, 서강대학교 학우 여러분!\nCARDINAL 축제를 맞이해 💫천문 동아리 별반💫이 ''별반이랑 우주정복'' 부스를 운영합니다!\n시원한 음료와 재미있는 게임, 그리고 상품 뽑기를 통해 축제를 더욱 다채롭게 즐겨보세요😚\n\n🪐부스 소개🪐\n🍹시원한 음료 판매🍹\n밀키스를 넣어 만든 블루레몬에이드에 우주인 모양 얼음을 퐁당!👽🛸\n가격: 2500원\n\n🃏게임 대결🃏\n우주를 담은 할리갈리 카드로 운영진과 게임 대결을 펼쳐보세요~ 게임에서 이기면 음료 500원 할인 쿠폰을 드린답니다😆\n\n👾추가이벤트 : 상품 뽑기👾\n음료도 마시고 상품도 받을 기회!! 음료를 구매하시면 뽑기 참여 기회를 드립니다. 캡슐 뽑기 기계를 통해 상품을 뽑을 수 있으며, 간식류와 외계인 와앙포카 등이 준비되어 있습니다~!'),
+            (4, E'❤️팀제미나이 <Gemini와 함께하는 나만의 캐릭터 만들기> 부스 안내❤️\n\n안녕하세요. 저희 팀제미나이가 이번에 서강대학교 카디널 축제에서 Google Al Pro for Students의 가입 혜택 및 주요 기능을 홍보하는 부스를 운영하게 되었습니다. 해당 부스에서 Gemini의 가입을 도와드리고 다양한 활용 기능을 재미있게 체험시켜 드릴 예정입니다!\n\n자세한 내용은 카드 뉴스와 하단 글 참고 바라며 많은 관심 부탁드립니다.\n\n👩🏻‍💻부스명\n제미나이(Gemini)와 함께하는 나만의 캐릭터 만들기\n\n1.Gemini를 활용하여 만든 하나뿐인 자신만의 캐릭터 라벨 증정 🏷️\n2. Google AI Pro 가입 안내\n\nGemini의 Imagen 4 기능을 활용하여 자신만의 캐릭터, 이미지를 제작해 볼 수 있는 체험형 부스입니다. 부스 방문 시 원하는 캐릭터의 이미지 요구사항을 말씀해 주시면, 이를 바탕으로 프롬프트를 작성하여 세상에 하나뿐인 나만의 캐릭터를 만들어 드립니다. 생성된 캐릭터는 라벨로 인화하여 즉시 증정해 드릴 예정입니다.\n\n캐릭터 제작 가이드라인을 제공하며, 구체적인 프롬프트 작성 팁을 활용해 더욱 높은 퀄리티의 캐릭터를 만나보실 수 있습니다. 또한, 부스 참여 및 가입자를 대상으로 추첨을 통한 특별한 상품 이벤트도 진행될 예정입니다!\n\n[문의사항]\n인스타그램 @gemini_syndrome\n\n\n이상 있을 시 연락 부탁드립니다, 대표 연락처 : 010-8366-0790'),
+            (5, E'보건소'),
+            (6, E'목적: 딥페이크·마약류이용 성범죄 예방 캠페인\n내용: 마약 간이시약 키트 배부, 간식 제공, 퀴즈 맞추고 상품받기, 피해자 보호지원제도 안내, 전담경찰관과의 소통 등\n참여 간식도 있으니 많은 참여 부탁드립니다!'),
+            (7, E'2025년 하반기 장애인식개선 캠페인')
     ),
     -- 2. booth 삽입용 데이터 (description_id 참조)
     booths_to_insert (name, description_id, thumbnail_url) AS (
@@ -1021,13 +621,13 @@ SELECT
             THEN (SELECT id FROM map WHERE position = '청년광장' limit 1)
         WHEN data.name = 'CONNECT SOGANG : 종이잡지클럽'
             THEN (SELECT id FROM map WHERE position = 'J311')
-        WHEN data.name = '동아리상영회'
+        WHEN data.name = '쉼: 영화상영'
             THEN (SELECT id FROM map WHERE position = '로욜라도서관 이주연 갤러리')
         WHEN data.name = '동아리 야외展'
             THEN (SELECT id FROM map WHERE position = 'J-CY 사잇길')
-        WHEN data.name IN ('야외영화상영', 'SHRINKID')
+        WHEN data.name IN ('MOVIE NIGHT', 'SHRINKID')
             THEN (SELECT id FROM map WHERE position = '대운동장' limit 1)
-        WHEN data.name IN ( '2025 서강대학교 CARDINAL KED 골든벨 with 한국경제신문','clash of knowledge')
+        WHEN data.name IN ( 'clash of knowledge')
             THEN (SELECT id FROM map WHERE position = '체육관')
         END,
     data.description,
@@ -1039,20 +639,18 @@ SELECT
     FALSE -- is_operating 값을 일괄적으로 FALSE로 설정합니다.
 FROM (
          VALUES
-             ('Campus Clash', '누구나 쉽고 간단하게 참여할 수 있는 미니게임 부스', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/event/event_CampusClash.png', TIME '12:00', TIME '18:00',NULL),
-             ('CONNECT SOGANG : 종이잡지클럽', '만남 · 교감 · 성장 — 종이잡지클럽과 함께 담아내는 우리의 이야기', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '19:00', NULL,NULL),
-             ('동아리상영회', '서강만화창작부 작품, 추천 애니메이션 상영 / 서강영화공동체 작품 및 상영', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '10:00', TIME '18:00',NULL),
+             ('Campus Clash', '누구나 쉽고 간단하게 참여할 수 있는 미니게임 부스', 'https://d9are2p0j0wzf.cloudfront.net/event/event_CampusClash_optimized.jpg', TIME '12:00', TIME '18:00',NULL),
+             ('CONNECT SOGANG : 종이잡지클럽', '만남 · 교감 · 성장 — 종이잡지클럽과 함께 담아내는 우리의 이야기', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '19:00', NULL,'https://docs.google.com/forms/d/1b1lu1RQ4Df2Bw8KZhbTvFoi1TYCeXm10tc4k8ZXVil0/edit'),
+             ('쉼: 영화상영', 'CARDINAL의 뜨거운 열기 속 영화와 함꼐하는 작은 쉼터', 'https://d9are2p0j0wzf.cloudfront.net/event/event_쉼;야외상영_optimized.jpg', TIME '10:00', TIME '18:00',NULL),
              ('동아리 야외展', '사진 동아리 서광회, 시각 예술 동아리 EXPANDED 작품 전시', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '12:00', TIME '17:00',NULL),
-             ('야외영화상영', '선선한 가을 바람 맞으며 즐기는 야외 영화 상영', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '19:00', NULL,NULL),
-             ('캠프어스(Camp Us)', '캠퍼스에서 모두 함께 즐기는 우리만의 캠핑', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/event/event_CampUs.jpg', TIME '18:00', TIME '22:00',NULL),
-             ('멍!🐶', '아무 것도 하지 않는 시간의 가치를 경험하는 힐링 프로그램', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/event/event_멍.png', TIME '16:00', TIME '18:00',NULL),
+             ('MOVIE NIGHT', '선선한 가을 바람 맞으며 즐기는 야외 영화 상영', 'https://d9are2p0j0wzf.cloudfront.net/event/event_movie_night_optimized.jpg', TIME '19:00', NULL,NULL),
+             ('캠프어스(Camp Us)', '캠퍼스에서 모두 함께 즐기는 우리만의 캠핑', 'https://d9are2p0j0wzf.cloudfront.net/event/event_CampUs_optimized.jpg', TIME '18:00', TIME '22:00','https://forms.gle/irLvZd36rqL91gnq9'),
+             ('멍!🐶', '아무 것도 하지 않는 시간의 가치를 경험하는 힐링 프로그램', 'https://d9are2p0j0wzf.cloudfront.net/event/event_멍_optimized.jpg', TIME '16:00', TIME '18:00','https://forms.gle/8cD4Lc4S3cCtufou6'),
              ('ID카드 제작', 'College KID로 돌아가기 위한 첫 걸음', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '12:00', TIME '18:00',NULL),
              ('녹기 전에 X 2025 CARDINAL', '서강인을 사로잡은 염리동의 보석 <녹기 전에> 팝업 부스', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '14:00', NULL,NULL),
-             ('SHRINKID', '대운동장에서 열리는 SHRINKID 공연', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/event/event_shrinkid.jpg', TIME '12:00', TIME '18:00',NULL),
-             ('2025 서강대학교 CARDINAL KED 골든벨 with 한국경제신문', '한국경제신문과 함께하는 골든벨 퀴즈 이벤트', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '14:00', TIME '17:00',NULL),
-             ('clash of knowledge', '서강에서 울리는 골든벨, 한국경제신문과 함께합니다!', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '13:00', TIME '17:00',NULL)
+             ('SHRINKID', '대운동장에서 열리는 SHRINKID 공연', 'https://d9are2p0j0wzf.cloudfront.net/event/event_shrinkid_optimized.jpg', TIME '12:00', TIME '18:00',NULL),
+             ('clash of knowledge', '서강에서 울리는 골든벨, 한국경제신문과 함께합니다!', 'https://d9are2p0j0wzf.cloudfront.net/event/event_clashofknowledge_logo_optimized.jpg', TIME '13:00', TIME '17:00',NULL)
      ) AS data(name, description, thumbnail_url, start_time, end_time, application_form_url);
-
 INSERT INTO event_operating_days (event_id, operating_days)
 SELECT
     (SELECT id FROM event WHERE name = data.event_name), -- 이벤트 이름으로 id를 동적으로 조회
@@ -1062,18 +660,18 @@ FROM (
              ('Campus Clash', 'MON'),
              ('Campus Clash', 'TUE'),
              ('CONNECT SOGANG : 종이잡지클럽', 'TUE'),
-             ('동아리상영회', 'THU'),
+             ('쉼: 영화상영', 'THU'),
              ('동아리 야외展', 'MON'),
-             ('야외영화상영', 'WED'),
+             ('MOVIE NIGHT', 'WED'),
              ('캠프어스(Camp Us)', 'TUE'),
              ('멍!🐶', 'MON'),
              ('ID카드 제작', 'MON'),
              ('ID카드 제작', 'TUE'),
              ('ID카드 제작', 'WED'),
              ('녹기 전에 X 2025 CARDINAL', 'WED'),
+             ('SHRINKID', 'TUE'),
              ('SHRINKID', 'WED'),
              ('SHRINKID', 'THU'),
-             ('2025 서강대학교 CARDINAL KED 골든벨 with 한국경제신문', 'WED'),
              ('clash of knowledge', 'WED')
      ) AS data(event_name, operating_day);
 
@@ -1232,6 +830,11 @@ FROM (
 -- : 이미지 추가해야합니다. 금요일만 대운동장으로 변경하기.
 -- 6. 굿즈
 -- : 이미지 추가 및 금요일 판매 장소 변경 적용
+DELETE FROM goods_detail_images;
+DELETE FROM goods;
+
+
+
 INSERT INTO goods (name, price, description, thumbnail_url, view_count, location_id)
 SELECT
     v.name,
@@ -1253,8 +856,9 @@ FROM (VALUES
           ('PIN BUTTON', 3000, E'콜리지 키드의 덕목이 적힌 핀버튼을 찾아 나만의 필수템을 적어보자.\n 특전 증정 이벤트\n\n             - 5만원 이상 구매 시 말랑키링 증정\n\n             - 7만원 이상 구매 시 말랑키링&핀버튼 증정\n', 'https://d9are2p0j0wzf.cloudfront.net/MD/thumb/md_thumb_pinbutton_optimized.jpg')
      ) AS v(name,price,description,thumbnail_url)
          CROSS JOIN map m
-WHERE m.position = '청년광장' limit 1;
-
+WHERE m.id = 1;
+--WHERE m.position = '청년광장' LIMIT 1;
+SELECT * FROM GOODS;
 ---
 
 -- goods_detail_images 테이블에 상세 이미지 추가
