@@ -59,19 +59,18 @@ public class EventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(()-> new EventNotFound(ErrorCode.EVENT_NOT_FOUND));
 
+        // 스크랩 여부 확인
         boolean isScrapped = false;
         if (userId != null) {
             var scrapped = eventProvider.getScrappedContentIds(List.of(id), userId);
             isScrapped = scrapped.contains(id);
         }
 
-
-
         return EventDetailResponse.from(event, isScrapped);
-
     }
 
     public List<EventSimpleResponse> getEventCal(DayOfWeek day){
+        //요일x - 전체 반환, 요일o- 요일별 반환
         List<EventSimpleResponse> eventList= eventRepository.findAll().stream()
                 .filter(e -> day==null ||
                         (e.getOperatingDays() !=null && e.getOperatingDays().contains(day)))
@@ -83,7 +82,8 @@ public class EventService {
 
     public List<EventDetailResponse> getEventList(Long userId){
         List<Event> eventList = eventRepository.findAll();
-
+        
+        // 스크랩 여부 계산
         Set<Long> scrappedIds;
         if (userId != null && !eventList.isEmpty()) {
             List<Long> ids = eventList.stream().map(Event::getId).toList();
@@ -92,7 +92,7 @@ public class EventService {
             scrappedIds = Set.of();
         }
 
-
+        // ResponseDTO List로 변환
         List<EventDetailResponse> eventDetailResponseList = eventList.stream()
                 .map(e -> {
 
