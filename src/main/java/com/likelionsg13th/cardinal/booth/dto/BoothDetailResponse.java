@@ -2,15 +2,22 @@ package com.likelionsg13th.cardinal.booth.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.dto.subtype.*;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter @SuperBuilder
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public class BoothDetailResponse {
 
     private Long id;

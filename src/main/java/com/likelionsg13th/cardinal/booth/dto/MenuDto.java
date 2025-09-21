@@ -1,15 +1,14 @@
-package com.likelionsg13th.cardinal.booth.domain;
+package com.likelionsg13th.cardinal.booth.dto;
 
-import com.likelionsg13th.cardinal.booth.dto.MenuDto;
-import jakarta.persistence.*;
+import com.likelionsg13th.cardinal.booth.domain.Menu;
 import lombok.*;
 
-@Embeddable
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
-public class Menu {
-
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public class MenuDto {
+    private Long id;
     private String name;
     private int price;
 
@@ -17,6 +16,7 @@ public class Menu {
         return MenuDto.builder()
                 .name(menu.getName())
                 .price(menu.getPrice())
+
                 .build();
     }
 }

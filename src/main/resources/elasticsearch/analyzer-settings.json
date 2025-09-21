@@ -11,6 +11,20 @@
           "PARTNERSHIP, 제휴"
         ]
       },
+      "host_synonyms": {
+        "type": "synonym",
+        "synonyms": [
+          "자연과학대, 자과대, 자대",
+          "사과대, 사회과학대",
+          "편입학생회, 편입생",
+          "지융미, 커뮤니케이션 학부, 지식 융합 미디어 대학",
+          "인공지능학과, AI",
+          "컴공, 컴퓨터공학과",
+          "공대, 공과대, 공학부",
+          "국제 인문학부, HUG",
+          "EXPANDED, 익팬, 익스팬디드"
+        ]
+      },
       "type_synonyms": {
         "type": "synonym",
         "synonyms": [
@@ -38,6 +52,15 @@
           "nori_part_of_speech",
           "nori_readingform",
           "type_synonyms",
+          "lowercase"
+        ]
+      },
+      "booth_host_analyzer": {
+        "char_filter": [],
+        "tokenizer": "nori_tokenizer",
+        "filter": [
+          "nori_part_of_speech",
+          "nori_readingform",
           "lowercase"
         ]
       }

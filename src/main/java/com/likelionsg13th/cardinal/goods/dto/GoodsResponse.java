@@ -3,11 +3,10 @@ package com.likelionsg13th.cardinal.goods.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
 import com.likelionsg13th.cardinal.goods.domain.GoodsDocument;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter @Builder @AllArgsConstructor
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class GoodsResponse {
 
     private Long id;

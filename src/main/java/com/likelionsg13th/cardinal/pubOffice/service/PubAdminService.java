@@ -53,10 +53,6 @@ public class PubAdminService {
     }
 
     @Transactional
-    @Caching(evict = {
-            @CacheEvict(value = "boothDetail", key = "#pubId"),
-            @CacheEvict(value = "boothList", allEntries = true)
-    })
     public UpdatePubResponse updateNoticeAndDescription(Long pubId, UpdateNoticeAndDescripDto  updateNoticeAndDescripDto) {
         PubBooth pub = boothRepository.findPubBoothById(pubId).orElseThrow();
         pub.updateNoticeAndDescription(updateNoticeAndDescripDto);

@@ -89,7 +89,9 @@ public class IndexingService {
                     .map(menuEntity -> menuEntity.getName())
                     .collect(Collectors.toList());
 
-
+        if(booth.getCategory().equals(BoothCategory.PUB)){
+            doc.setHost(((PubBooth)booth).getDeptHost());
+        }
         doc.setMenu(menuNames);
 
         doc.setId(String.valueOf(booth.getId()));
