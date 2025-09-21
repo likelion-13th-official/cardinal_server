@@ -111,7 +111,6 @@ public class GoodsService {
 
 
     /* GET /goods/{id} */
-    @Cacheable(value = "goodsDetail", key = "#id + '-' + #userId")
     @Transactional(readOnly = true)
     public GoodsDetailResponse getGoods(Long id, Long userId) {
         Goods goods = goodsRepository.findById(id)
