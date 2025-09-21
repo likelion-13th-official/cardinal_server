@@ -12,6 +12,7 @@ import com.likelionsg13th.cardinal.goods.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -67,6 +68,8 @@ public class GoodsService {
     }
 
     /* GET /goods */
+    @Cacheable(value = "goodsList", key = "'page:' + (#page ?: 'all') + ':userId:' + #userId")
+    @Transactional(readOnly = true)
     public PageDto<GoodsResponse> getGoodsList(Integer page, Long userId) {
         // 전체 조회 (페이징 없이-프론트 요청사항)
         if (page == null || page <= 0) {
@@ -108,6 +111,8 @@ public class GoodsService {
 
 
     /* GET /goods/{id} */
+    @Cacheable(value = "goodsDetail", key = "#id + '-' + #userId")
+    @Transactional(readOnly = true)
     public GoodsDetailResponse getGoods(Long id, Long userId) {
         Goods goods = goodsRepository.findById(id)
                 .orElseThrow(()-> new GoodsNotFound(ErrorCode.GOODS_NOT_FOUND));
@@ -127,7 +132,7 @@ public class GoodsService {
                 .withQuery(q -> q
                         .multiMatch(mm -> mm
                                 .query(query)
-                                .fields("name^3", "description", "type^2")
+                                .fields("name^4", "description^0.5", "type^3")
                                 .fuzziness("AUTO")
                         )
                 )

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/pubOffice")
-public class PubOfficeController {
+public class  PubOfficeController {
 
     private final PubAdminService pubAdminService;
     private final AuthService authService;
