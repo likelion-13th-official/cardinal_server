@@ -15,6 +15,7 @@ import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.dto.PerformanceResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -55,6 +56,7 @@ public class EventService {
 
     }
 
+    @Cacheable(value = "eventDetail", key = "#id + '-' + #userId")
     public EventDetailResponse getEvent(Long id, Long userId ) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(()-> new EventNotFound(ErrorCode.EVENT_NOT_FOUND));
@@ -69,6 +71,7 @@ public class EventService {
         return EventDetailResponse.from(event, isScrapped);
     }
 
+    @Cacheable(value = "eventCal", key = "#day")
     public List<EventSimpleResponse> getEventCal(DayOfWeek day){
         //요일x - 전체 반환, 요일o- 요일별 반환
         List<EventSimpleResponse> eventList= eventRepository.findAll().stream()
@@ -80,6 +83,7 @@ public class EventService {
         return eventList;
     }
 
+    @Cacheable(value = "eventList", key = "#userId")
     public List<EventDetailResponse> getEventList(Long userId){
         List<Event> eventList = eventRepository.findAll();
         
@@ -111,7 +115,7 @@ public class EventService {
                 .withQuery(q -> q
                         .multiMatch(mm -> mm
                                 .query(query)
-                                .fields("name^3", "description^1", "type^2")
+                                .fields("name^4", "description^0.5", "type^3")
                                 .fuzziness("AUTO")
                         )
                 )

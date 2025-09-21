@@ -6,6 +6,7 @@ import com.likelionsg13th.cardinal.map.domain.Map;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.ArrayList;
 import java.util.List;

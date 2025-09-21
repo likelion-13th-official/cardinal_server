@@ -20,6 +20,8 @@ import com.likelionsg13th.cardinal.users.dto.UserDto;
 import com.likelionsg13th.cardinal.users.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -51,6 +53,10 @@ public class PubAdminService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "boothDetail", key = "#pubId"),
+            @CacheEvict(value = "boothList", allEntries = true)
+    })
     public UpdatePubResponse updateNoticeAndDescription(Long pubId, UpdateNoticeAndDescripDto  updateNoticeAndDescripDto) {
         PubBooth pub = boothRepository.findPubBoothById(pubId).orElseThrow();
         pub.updateNoticeAndDescription(updateNoticeAndDescripDto);

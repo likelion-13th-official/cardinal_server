@@ -17,6 +17,7 @@ import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -54,6 +55,7 @@ public class BoothService {
 
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "boothList", key = "#userId + '-' + #categoryStr + '-' + #isOperating + '-' + #dayStr + '-' + #page")
     public PageDto<BoothResponse> getBoothList(Long userId, String categoryStr, Boolean isOperating, String dayStr, int page) {
         Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
 
@@ -105,6 +107,7 @@ public class BoothService {
 
     //개별 상세 조회
     @Transactional(readOnly = true)
+    @Cacheable(value = "boothDetail", key = "#id + '-' + #userId")
     public BoothDetailResponse getBoothDetail(Long userId,long id) {
         Booth booth=boothRepository.findById(id)
                 .orElseThrow(()->new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
@@ -151,7 +154,7 @@ public class BoothService {
                                 .should(s -> s
                                         .multiMatch(mm -> mm
                                                 .query(query)
-                                                .fields("name^3", "description", "category^2", "menu")
+                                                .fields("name^4", "description^0.5", "category^3", "menu")
                                                 .fuzziness("AUTO")
                                         )
                                 )

@@ -10,7 +10,9 @@ import com.likelionsg13th.cardinal.performance.dto.PerformanceResponse;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.sql.Update;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -24,6 +26,8 @@ public class PerformanceService {
     private final UpdateIsOperating updateIsOperating;
 
     //전체 조회
+    @Cacheable(value = "performanceList", key = "#category + '-' + #day + '-' + #userId")
+    @Transactional(readOnly = true)
     public List<PerformanceResponse> getPerfromanceList(String category, DayOfWeek day, Long userId) {
 /*        List<Performance> performanceList =performanceRepository.findByCategory(category)
                 .stream().filter(p -> day==null ||

@@ -48,8 +48,11 @@ dependencies {
     //elasticsearch
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
+    //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    //S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 }
