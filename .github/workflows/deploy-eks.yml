@@ -3,7 +3,7 @@ name: Deploy to EKS v2
 on:
   push:
     branches:
-      - develop
+      - deploy2
 
 env:
   AWS_REGION: ap-northeast-2
