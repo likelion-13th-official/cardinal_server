@@ -97,29 +97,26 @@ public class UpdateIsOperating {
 
     private boolean BoothisOperatingNow(Booth booth, DayOfWeek today, DayOfWeek yesterday, LocalTime now) {
         List<DayOfWeek> operatingDays = booth.getOperatingDays();
-
-        //'ALWAYS' 처리
-        if (operatingDays.contains(ALWAYS)) {
-            // "월-금 08시-23시"
-            boolean isWeekdayForAlways = List.of(MON, TUE, WED, THU, FRI).contains(today);
-            if (!isWeekdayForAlways) {
-                return false; // 주말이면 무조건 운영 종료
-            }
-            LocalTime alwaysStartTime = LocalTime.of(8, 0);
-            LocalTime alwaysEndTime = LocalTime.of(23, 0);
-            return !now.isBefore(alwaysStartTime) && now.isBefore(alwaysEndTime);
-        }
-
-        // 요일이 지정된 일반 부스
         LocalTime startTime = booth.getOperatingInfo().getStartTime();
         LocalTime endTime = booth.getOperatingInfo().getEndTime();
+
+
+        boolean isWeekdayToday = List.of(MON, TUE, WED, THU, FRI).contains(today);
+        // 2. 어제가 평일(월-금)이었는지
+        boolean wasWeekdayYesterday = List.of(MON, TUE, WED, THU, FRI).contains(yesterday);
+
+        // 3. 오늘이 실제 운영일인지
+        boolean operatesToday = (operatingDays.contains(ALWAYS) && isWeekdayToday) || operatingDays.contains(today);
+        // 4. 어제가 실제 운영일이었는지
+        boolean operatesYesterday = (operatingDays.contains(ALWAYS) && wasWeekdayYesterday) || operatingDays.contains(yesterday);
+
         boolean isOvernight = startTime.isAfter(endTime);
 
         if (!isOvernight) { // 당일 운영
-            return operatingDays.contains(today) && !now.isBefore(startTime) && now.isBefore(endTime);
+            return operatesToday && !now.isBefore(startTime) && now.isBefore(endTime);
         } else { // 자정 넘어가는 운영
-            boolean isContinuingFromYesterday = operatingDays.contains(yesterday) && now.isBefore(endTime);
-            boolean isStartingToday = operatingDays.contains(today) && !now.isBefore(startTime);
+            boolean isContinuingFromYesterday = operatesYesterday && now.isBefore(endTime);
+            boolean isStartingToday = operatesToday && !now.isBefore(startTime);
             return isContinuingFromYesterday || isStartingToday;
         }
     }

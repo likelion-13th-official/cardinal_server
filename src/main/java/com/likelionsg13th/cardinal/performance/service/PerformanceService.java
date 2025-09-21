@@ -26,7 +26,7 @@ public class PerformanceService {
     private final UpdateIsOperating updateIsOperating;
 
     //전체 조회
-    @Cacheable(value = "performanceList", key = "#category + '-' + #day + '-' + #userId")
+
     @Transactional(readOnly = true)
     public List<PerformanceResponse> getPerfromanceList(String category, DayOfWeek day, Long userId) {
 /*        List<Performance> performanceList =performanceRepository.findByCategory(category)
