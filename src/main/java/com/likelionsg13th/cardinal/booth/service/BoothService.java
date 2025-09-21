@@ -53,9 +53,8 @@ public class BoothService {
     private static final Logger searchLogger= LoggerFactory.getLogger("cardinal.search");
 
 
-
-    @Transactional(readOnly = true)
     @Cacheable(value = "boothList", key = "#userId + '-' + #categoryStr + '-' + #isOperating + '-' + #dayStr + '-' + #page")
+    @Transactional(readOnly = true)
     public PageDto<BoothResponse> getBoothList(Long userId, String categoryStr, Boolean isOperating, String dayStr, int page) {
         Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
 
@@ -106,8 +105,8 @@ public class BoothService {
 
 
     //개별 상세 조회
-    @Transactional(readOnly = true)
     @Cacheable(value = "boothDetail", key = "#id + '-' + #userId")
+    @Transactional(readOnly = true)
     public BoothDetailResponse getBoothDetail(Long userId,long id) {
         Booth booth=boothRepository.findById(id)
                 .orElseThrow(()->new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
@@ -154,7 +153,7 @@ public class BoothService {
                                 .should(s -> s
                                         .multiMatch(mm -> mm
                                                 .query(query)
-                                                .fields("name^4", "description^0.5", "category^3", "menu")
+                                                .fields("name^4", "description^0.5", "category^3", "menu", "host^3")
                                                 .fuzziness("AUTO")
                                         )
                                 )

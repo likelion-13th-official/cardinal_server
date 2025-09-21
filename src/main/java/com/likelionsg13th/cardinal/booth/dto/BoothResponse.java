@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.domain.BoothDocument;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter @Builder
-public class BoothResponse {
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
+@AllArgsConstructor
+public class BoothResponse implements Serializable {
 
     private Long id;
     private String category;

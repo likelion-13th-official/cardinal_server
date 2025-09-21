@@ -3,8 +3,7 @@ package com.likelionsg13th.cardinal.goods.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.goods.domain.Goods;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +11,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Getter @Builder
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class GoodsDetailResponse {
 
     private Long id;
@@ -22,10 +23,10 @@ public class GoodsDetailResponse {
     private String description;
 
     private List<String> detailImageList;
-    private boolean isScrapped;
+    private boolean scrapped;
 
 
-    public static GoodsDetailResponse from(Goods goods, boolean scrapped) {
+    public static GoodsDetailResponse from(Goods goods, boolean isScrapped) {
         List<String> imageList = Optional.ofNullable(goods.getDetailImageList())
                 .orElseGet(Collections::emptyList)
                 .stream()
@@ -41,7 +42,7 @@ public class GoodsDetailResponse {
                 .description(goods.getDescription())
                 .detailImageList(imageList)
                 //TODO: 북마크 확인 로직
-                .isScrapped(scrapped)
+                .scrapped(isScrapped)
                 .build();
     }
 }

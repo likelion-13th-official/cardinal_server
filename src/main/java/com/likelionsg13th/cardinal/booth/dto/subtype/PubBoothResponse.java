@@ -3,9 +3,12 @@ package com.likelionsg13th.cardinal.booth.dto.subtype;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.domain.subtype.PubBooth;
 import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
+import com.likelionsg13th.cardinal.booth.dto.MenuDto;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.booth.domain.Menu;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -16,9 +19,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter @SuperBuilder
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class PubBoothResponse extends BoothDetailResponse {
 
-    private List<Menu> menus;
+    private List<MenuDto> menus;
     private List<String> menuImageUrls;
 
     private String notice;
@@ -44,7 +48,11 @@ public class PubBoothResponse extends BoothDetailResponse {
                                 .collect(Collectors.toList())
                 )
                 .deptHost(b.getDeptHost())
-                .menus(b.getMenus())
+                .menus(
+                        b.getMenus().stream()
+                                .map(MenuDto::from)
+                                .collect(Collectors.toList())
+                )
                 .menuImageUrls(
                         b.getDetailImageList().stream()
                                 .filter(Objects::nonNull)

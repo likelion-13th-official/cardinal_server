@@ -56,7 +56,7 @@ public class EventService {
 
     }
 
-    @Cacheable(value = "eventDetail", key = "#id + '-' + #userId")
+    @Transactional(readOnly = true)
     public EventDetailResponse getEvent(Long id, Long userId ) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(()-> new EventNotFound(ErrorCode.EVENT_NOT_FOUND));
@@ -71,7 +71,7 @@ public class EventService {
         return EventDetailResponse.from(event, isScrapped);
     }
 
-    @Cacheable(value = "eventCal", key = "#day")
+    @Transactional(readOnly = true)
     public List<EventSimpleResponse> getEventCal(DayOfWeek day){
         //요일x - 전체 반환, 요일o- 요일별 반환
         List<EventSimpleResponse> eventList= eventRepository.findAll().stream()
@@ -83,7 +83,7 @@ public class EventService {
         return eventList;
     }
 
-    @Cacheable(value = "eventList", key = "#userId")
+    @Transactional(readOnly = true)
     public List<EventDetailResponse> getEventList(Long userId){
         List<Event> eventList = eventRepository.findAll();
         

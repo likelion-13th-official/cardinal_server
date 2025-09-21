@@ -1,7 +1,9 @@
 package com.likelionsg13th.cardinal.common.dto.resonseDto;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -11,8 +13,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class PageDto<T> {
+@Builder @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
+public class PageDto<T> implements Serializable {
     private int pageNumber;         // 현재 페이지
     private int pageSize;            // 페이지 크기
     private int totalPages;      // 전체 페이지 수

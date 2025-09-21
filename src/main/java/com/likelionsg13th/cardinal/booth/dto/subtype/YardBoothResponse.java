@@ -3,12 +3,15 @@ package com.likelionsg13th.cardinal.booth.dto.subtype;
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.domain.subtype.YardBooth;
 import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.stream.Collectors;
 
 @Getter @SuperBuilder
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class YardBoothResponse extends BoothDetailResponse {
 
     public static YardBoothResponse of(Booth booth,boolean isScrapped){

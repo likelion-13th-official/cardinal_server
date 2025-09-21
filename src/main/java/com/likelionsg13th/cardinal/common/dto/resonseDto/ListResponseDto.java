@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter @AllArgsConstructor @Builder
-public class ListResponseDto<T> {
+public class ListResponseDto<T> implements Serializable {
     int size;
     List<T> result;
 

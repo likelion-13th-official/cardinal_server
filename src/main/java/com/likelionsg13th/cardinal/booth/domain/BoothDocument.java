@@ -45,6 +45,14 @@ public class BoothDocument {
     )
     private String category;
 
+
+    @MultiField(
+            mainField = @Field(type = FieldType.Text,analyzer = "booth_host_analyzer"),
+            otherFields = {
+                    @InnerField(suffix = "keyword", type = FieldType.Keyword)
+            }
+    )
+    private String host;
     //부스
     @Field(type = FieldType.Text, analyzer = "contents_type_analyzer")
     private String type;

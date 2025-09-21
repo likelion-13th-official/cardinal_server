@@ -1,12 +1,13 @@
 package com.likelionsg13th.cardinal.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.event.domain.Event;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class EventDetailResponse {
     private Long id;
     private String name;

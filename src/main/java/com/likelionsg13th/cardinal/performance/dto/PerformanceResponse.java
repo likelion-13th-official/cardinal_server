@@ -3,8 +3,7 @@ package com.likelionsg13th.cardinal.performance.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.likelionsg13th.cardinal.common.domain.OperatingInfo;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -67,8 +67,9 @@ public class GoodsService {
         return PageDto.from(goodsResponsePage);
     }
 
+
     /* GET /goods */
-    @Cacheable(value = "goodsList", key = "'page:' + (#page ?: 'all') + ':userId:' + #userId")
+    @Cacheable(value = "goodsList", key = "'GL:' + (#p1 != null ? #p1 : 'anon') + ':p:' + #p0")
     @Transactional(readOnly = true)
     public PageDto<GoodsResponse> getGoodsList(Integer page, Long userId) {
         // 전체 조회 (페이징 없이-프론트 요청사항)
@@ -112,6 +113,7 @@ public class GoodsService {
 
     /* GET /goods/{id} */
     @Transactional(readOnly = true)
+    @Cacheable(value = "goodsDetail", key = "'GD:' + (#p1 != null ? #p1 : 'anon') + ':g:' + #p0")
     public GoodsDetailResponse getGoods(Long id, Long userId) {
         Goods goods = goodsRepository.findById(id)
                 .orElseThrow(()-> new GoodsNotFound(ErrorCode.GOODS_NOT_FOUND));

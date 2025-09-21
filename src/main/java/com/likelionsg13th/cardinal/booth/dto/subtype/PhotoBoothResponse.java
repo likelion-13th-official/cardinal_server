@@ -5,7 +5,9 @@ import com.likelionsg13th.cardinal.booth.domain.subtype.PhotoBooth;
 
 import com.likelionsg13th.cardinal.booth.dto.BoothDetailResponse;
 import com.likelionsg13th.cardinal.common.domain.DetailImage;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Collections;
@@ -15,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter @SuperBuilder
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class PhotoBoothResponse extends BoothDetailResponse {
 
     private List<String> detailImageUrls;
