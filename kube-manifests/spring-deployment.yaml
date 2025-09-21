@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: spring-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-app
+
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      containers:
+        - name: spring-container
+          image: naaadang/cardinal:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  key: db-url
+                  name: cardinal-secret
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: db-username
+                  name: cardinal-secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: db-password
+                  name: cardinal-secret
+            - name: REST_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: rest-api-key
+                  name: cardinal-secret
+            - name: KAKAO_URI
+              valueFrom:
+                secretKeyRef:
+                  key: kakao-uri
+                  name: cardinal-secret
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: google-client-id
+                  name: cardinal-secret
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: google-client-secret
+                  name: cardinal-secret
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: jwt-secret
+                  name: cardinal-secret
+            - name: ACCESS_SEC
+              valueFrom:
+                secretKeyRef:
+                  key: access-sec
+                  name: cardinal-secret
+            - name: REFRESH_SEC
+              valueFrom:
+                secretKeyRef:
+                  key: refresh-sec
+                  name: cardinal-secret
+            - name: ONE_TIME_CODE
+              valueFrom:
+                secretKeyRef:
+                  key: one-time-code
+                  name: cardinal-secret
+            - name: ELASTIC_SEARCH_URI
+              valueFrom:
+                secretKeyRef:
+                  key: elastic-search-uri
+                  name: cardinal-secret
+            - name: ELASTIC_SEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: elastic-search-password
+                  name: cardinal-secret
+            - name: REDIS_HOST
+              value: redis-service
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: redis-password
+                  name: cardinal-secret
