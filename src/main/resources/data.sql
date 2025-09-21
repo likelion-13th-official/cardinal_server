@@ -23,11 +23,15 @@ ALTER TABLE booth ALTER COLUMN table_layout_url TYPE TEXT;
 ALTER TABLE goods ALTER COLUMN description TYPE TEXT;
 ALTER TABLE booth ALTER COLUMN description TYPE TEXT;
 
+
+
 -- 1. 위치정보 MAP
 INSERT INTO map (POSITION, latitude, longitude)
-VALUES ('청년광장',37.5514,126.9393), --레드불 , DEFAULT
-       ('청년광장',	37.5513,	126.9391), --몬스터에너지
-       ('청년광장',37.5516,126.9391),
+VALUES ('청년광장',	37.5516,126.9391), --레드불 , DEFAULT
+       ('청년광장',	37.5514,	126.9396), --몬스터에너지
+       ('청년광장',37.5514,126.9393),
+       ('청년광장',37.5513,126.9391),
+       ('청년광장',37.5512,126.9395),
        ('J311',37.5503,126.9430), --종이잡지클럽
        ('로욜라도서관 이주연 갤러리',37.5516,126.9417),
        ('J-CY 사잇길',37.5510,126.9428),
@@ -49,7 +53,6 @@ VALUES ('청년광장',37.5514,126.9393), --레드불 , DEFAULT
        ('의료 본부 전용 위치',37.5504,126.9415);
 
 
-
 -- 2. 부스
 ---- 2-1. 주점
 -- CTE에서 반환된 데이터를 사용하여 'booth_detail_images'에 메뉴 이미지 정보를 삽입합니다.
@@ -64,66 +67,64 @@ WHERE
     category= 'PUB';
 -- CTE를 사용하여 'booth' 테이블에 데이터를 삽입하고 생성된 ID와 이름을 반환받습니다.
 WITH
--- 1) 부스별 본문(description)만 따로 정의
-descriptions (name, description) AS (
-    VALUES
-        ('[총학생회] 나루, 배', E'🧭2025 CARDINAL 총학생회 주점: 대항해시대🧭\n🗺️\n때는 2025년, 숨겨진 보물을 찾기 위해 나루호(號)에 모여든 선원들\n배 위에서 놀고 먹으며 보물을 찾으러 가자!\n▪️매장 이용 선원분들께는 마법의 소라고동(기본안주)과 웰컴드링크가 제공됩니다!\n\n🌊EVENT\n▪️나는 어떤 유형의 선장일까? 선장 유형 테스트(매장 이용 선원 only)\n▪️바다가 우리를 부르고 있네. 선원 능력 고사(매장 이용 선원 only)\n▪️이 남자를 본 적이 있나요? 현상금 사냥 미니게임 3종'),
-        ('[자과대] 자대 산악회', E'안녕하세요! 서강대학교 자연과학대학 제22대 학생회 [에코 Echo] 입니다.\n자연과학대학 주점 ‘자대 산악회’를 소개합니다! 🏔️\n\n🍽️ 식량창고 🍽️\n해물 짬뽕 수제비, 우삼겹 짬뽕 수제비, 콘마요 불닭볶음면, 우삼겹 숙주볶음, 달콤 토마토, 얼음컵\n\n‼️ 산행 전 안내말씀 ‼️\n1️⃣ 인스타 스토리 이벤트\n📸 자대 주점 사진 + @sogang_ns 태그 후 업로드 시\n→ 숙취해소제 무료 증정 (선착순 30명 한정)\n2️⃣ 단대비 납부자 혜택\n✔️ 달콤 토마토 1개 무료 제공 (테이블당 1회)\n✔️ 소주, 맥주, 막걸리 500원 할인 (테이블당 주류 1병)\n\n‼️ 단대비 납부 확인은 ‘서강대학교 자연과학대학 학생회’ 카카오톡 채널 추가 후, 이름과 학번을 보내주시면 확인 가능합니다!'),
-        ('[경영대] 9축 밤주점', E'⚾️서강이들을 위한 야구 컨셉 주점⚾️\n야구에 진심인 경영이들이 모여 만든 9축 밤주점!\n야구장에서 볼 법한 직관 메뉴들과 함께 응원 열기를 느껴보세요!\n\n- 큐브 스테이크\n- 순살치킨\n- 떡볶이\n- 김치전\n- 나초\n- 파인애플\n- 황도\n- 아이스크림\n\n생맥주와 함께 즐길 수 있는 다양한 안주가 준비되어 있습니다!\n🔥9축 밤주점에서 야구와 함께하는 뜨거운 밤을 보내세요!🔥'),
-        ('[편입학생회] 고기에서 만나', E'안녕하세요, 편입생 주점 <고기에서 만나> 입니다! 🍖\n고깃집 컨셉으로 꾸며진 저희 주점은 편입생들이 직접 구워주는 고기와 함께, 다양한 안주와 술을 즐길 수 있는 공간입니다.\n\n✔️ 국내산 통삼겹살\n✔️ 수제 김치전\n✔️ 투움바 파스타\n✔️ 오뎅탕\n✔️ 파인애플 샤베트\n✔️ 제로 아이스티\n\n고기 한 점에 술 한 잔, 잊을 수 없는 추억을 만들어보세요!'),
-        ('[사과대] 사과씨네: SGV', E'🍎사과씨네: SGV🍎\n안녕하세요, 사회과학대학 학생회입니다!\nSGV에서 영화같은 하루를 보내세요!\n\n- 투움바 파스타\n- 닭강정\n- 김치전\n- 오다리 튀김\n- 콘치즈\n- 팥빙수\n- 파인애플\n\n다양한 메뉴와 함께 즐거운 시간을 보내실 수 있도록 준비했습니다!\n🎬여러분의 많은 관심과 방문 부탁드립니다!🎬'),
-        ('[지융미] 맛사이드 아웃', E'안녕하세요! 커뮤니케이션학부 학생회입니다.\n맛사이드 아웃 주점에 오신 것을 환영합니다!\n\n- 닭꼬치\n- 김치전\n- 어묵탕\n- 감자튀김\n- 쫄깃 버블 아이스크림\n\n다양한 감정의 맛을 표현한 안주들과 함께 즐거운 시간을 보내세요!\n✨여러분을 기다리고 있겠습니다!✨'),
-        ('[인공지능] 바 에이아이', E'안녕하세요, 서강대학교 학우 여러분! 가을 축제 CARDINAL에서 인공 X AI 자전이 야심 차게 주점을 운영합니다. 맛과 분위기, 모두 잡은 저희 부스 ''프롬프트 한 잔''이 여러분을 기다리고 있습니다!\n\n🍸 논알콜 칵테일\n    블루 밀키스\n    깔루아 밀크\n    모히또\n술을 마시지 않아도 축제 분위기를 마음껏 즐길 수 있어요!\n\n🎁 이벤트\n    안주 두 개 이상 주문 시, 테이블당 칵테일 한 잔을 무료로 드립니다!\n    전날과 당일에 진행하는 부스에서 칵테일 무료 쿠폰을 받아가세요!\n\n여러분의 많은 방문 부탁드립니다! 인공 X AI 자전이 준비한 특별한 주점에서 축제의 밤을 함께 즐겨요!'),
-        ('[컴공] MVP 푸드코트', E'골든 골 스낵 파크에서 땀 흘린 당신, 진정한 스포츠 MVP입니다!\n경기의 승리를 기념하며, MVP만을 위한 특별한 야식 부스로 초대합니다~\n\n    💪 근수저들을 위한 든든한 고기 세트부터\n    🔥 매콤하고 시원한 안주\n    ✨ 달콤한 디저트까지!\n\n오늘의 MVP, 당신을 위한 특식을 마음껏 즐겨보세요!'),
-        ('[경제대] 쇼미더''주량''',E'주(酒)의 랩 배틀이 시작된다!\n안주도 FLEX, 술도 FLEX, 분위기도 FLEX.\n많은 관심과 방문 부탁드립니다'),
-        ('[인문대] 술로지옥', E'🔥🏝 술로지옥 🏝🔥\n\n안녕하세요 서강대학교 학우 여러분!\n올해 CARDINAL 축제에서 인문대학이 준비한 주점은,\n낯선 만남, 새로운 인연, 그리고 짜릿한 설렘이 가득한,\n🔥🏝<술로지옥>🏝🔥 입니다!\n\n💚메뉴💚\n✔️천국도😇 특화 메뉴\n- 두부김치\n- 파인애플샤베트\n- 황도\n✔️지옥도👿 특화 메뉴\n- 불닭까르보나라\n- 매콤닭꼬치\n- 매콤오뎅나베\n✔️공통 메뉴\n- 콘치즈\n- 츄러스\n- 얼음컵\n- 공기밥\n\n💚이벤트💚\n✔️테이블 매칭\n- 솔로 탈출 기원..🥹 테이블 매칭으로 새로운 인연을 만나보세요!\n✔️인스타그램 이벤트\n- 인문대 주점 방문 인증샷을 인스타그램에 올려주시면, 추첨을 통해 다양한 상품을 드립니다!\n✔️게임 이벤트\n- 다양한 게임을 통해 술자리 분위기를 한층 더 뜨겁게!\n\n이번 축제, <술로지옥>에서 잊지 못할 추억을 만들어보세요!\n여러분의 많은 관심과 방문 부탁드립니다!'),
-        ('[공과대] 너로 정했다! 가랏, 공돌이!', E'⚡️너로 정했다! 가랏, 공돌이!⚡️\n안녕하세요, 공학부 학생회입니다.\n공학부 주점에 오신 것을 환영합니다!\n\n- 닭강정\n- 김치전\n- 오뎅탕\n- 감자튀김\n- 팥빙수\n\n다양한 메뉴와 함께 즐거운 시간을 보내세요!\n🔥여러분을 기다리고 있겠습니다!🔥'),
-        ('[H.U.G] H.U.G 주점', E'안녕하세요, 국제인문학부 학생회입니다.\nH.U.G 주점에 오신 것을 환영합니다!\n\n- 닭강정\n- 김치전\n- 오뎅탕\n- 감자튀김\n- 팥빙수\n\n다양한 메뉴와 함께 즐거운 시간을 보내세요!\n🔥여러분을 기다리고 있겠습니다!🔥'),
-        ('[EXPANDED] La Cantina Expandida', E'안녕하세요, Expandida 주점입니다.\nLa Cantina Expandida에 오신 것을 환영합니다!\n\n- 타코\n- 나초\n- 퀘사디아\n- 감자튀김\n- 츄러스\n\n멕시코의 맛과 열정을 느껴보세요!\n🔥여러분을 기다리고 있겠습니다!🔥')),
--- 2) 나머지 필드(썸네일/공지/링크 등)
-base_data (name,start_time,end_time, thumbnail_url, notice, instagram_url, table_layout_url) AS
-    (VALUES
-         ('[총학생회] 나루, 배',TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%B4%9D_optimized.jpg', '항해 컨셉으로 나룻배를 형상화한 주점', 'https://www.instagram.com/sogang_naru/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[자과대] 자대 산악회',TIME '18:00', TIME '22:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%9E%90_optimized.jpg', '산악회 컨셉', 'https://www.instagram.com/sogang_ns/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[경영대] 9축 밤주점',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B2%BD_optimized.jpg', '야구장', 'https://www.instagram.com/sgbusiness_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[편입학생회] 고기에서 만나', TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%ED%8E%B8_optimized.jpg', '고깃집', 'https://www.instagram.com/sogang_transfer/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[사과대] 사과씨네: SGV', TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%82%AC_optimized.jpg', '영화관 CGV', 'https://www.instagram.com/apple_sum/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[지융미] 맛사이드 아웃', TIME '18:00', TIME '22:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%A7%9B_optimized.jpg', '인사이드 아웃', 'https://www.instagram.com/sogang_cmas/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[인공지능] 바 에이아이',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%8F%98%EC%9D%B8%EA%B3%Byming%EC%9E%90%EC%A0%84_optimized.jpg', '서비스형 주점', 'https://www.instagram.com/sgu_ai_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[컴공] MVP 푸드코트', TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%8F%98%EC%BB%B4_optimized.jpg', '경기 MVP가 먹는 특식', 'https://www.instagram.com/sogang_sgcs_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[경제대] 쇼미더''주량''', TIME '18:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%83%81_optimized.jpg', '랩, 머니', 'https://www.instagram.com/sogangecon_dfficial/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[인문대] 술로지옥',TIME '18:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%AC%B8_optimized.jpg', '솔로지옥(천국도 vs 지옥도)', 'https://www.instagram.com/sogang_moon/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[공과대] 너로 정했다! 가랏, 공돌이!', TIME '18:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B3%B5_optimized.jpg', '전화기시에 어울리는 포켓몬 4마리의 대결 구도', 'https://www.instagram.com/sgu_engineering_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[H.U.G] H.U.G 주점',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_hug_optimized.jpg', '한식주점', 'https://www.instagram.com/soganghug_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
-         ('[EXPANDED] La Cantina Expandida',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_expanded_optimized.jpg', '멕시칸 주점', 'https://www.instagram.com/soganghug_official/expandedkr/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg')
+    descriptions (name, dept_host,description) AS (
+        VALUES
+            ('나루, 배', '총 학생회',E'🧭2025 CARDINAL 총학생회 주점: 대항해시대🧭\n🗺️\n때는 2025년, 숨겨진 보물을 찾기 위해 나루호(號)에 모여든 선원들\n배 위에서 놀고 먹으며 보물을 찾으러 가자!\n▪️매장 이용 선원분들께는 마법의 소라고동(기본안주)과 웰컴드링크가 제공됩니다!\n\n🌊EVENT\n▪️나는 어떤 유형의 선장일까? 선장 유형 테스트(매장 이용 선원 only)\n▪️바다가 우리를 부르고 있네. 선원 능력 고사(매장 이용 선원 only)\n▪️이 남자를 본 적이 있나요? 현상금 사냥 미니게임 3종'),
+            ('자대 산악회', '자과대',E'안녕하세요! 서강대학교 자연과학대학 제22대 학생회 [에코 Echo] 입니다.\n자연과학대학 주점 ‘자대 산악회’를 소개합니다! 🏔️\n\n🍽️ 식량창고 🍽️\n해물 짬뽕 수제비, 우삼겹 짬뽕 수제비, 콘마요 불닭볶음면, 우삼겹 숙주볶음, 달콤 토마토, 얼음컵\n\n‼️ 산행 전 안내말씀 ‼️\n1️⃣ 인스타 스토리 이벤트\n📸 자대 주점 사진 + @sogang_ns 태그 후 업로드 시\n→ 숙취해소제 무료 증정 (선착순 30명 한정)\n2️⃣ 단대비 납부자 혜택\n✔️ 달콤 토마토 1개 무료 제공 (테이블당 1회)\n✔️ 소주, 맥주, 막걸리 500원 할인 (테이블당 주류 1병)\n\n‼️ 단대비 납부 확인은 ‘서강대학교 자연과학대학 학생회’ 카카오톡 채널 추가 후, 이름과 학번을 보내주시면 확인 가능합니다!'),
+            ('KBO 주점','경영대', E'⚾️서강이들을 위한 야구 컨셉 주점⚾️\n야구에 진심인 경영이들이 모여 만든 KBO 주점!\n야구장에서 볼 법한 직관 메뉴들과 함께 응원 열기를 느껴보세요!\n\n- 큐브 스테이크\n- 순살치킨\n- 떡볶이\n- 김치전\n- 나초\n- 파인애플\n- 황도\n- 아이스크림\n\n생맥주와 함께 즐길 수 있는 다양한 안주가 준비되어 있습니다!\n🔥KBO 주점에서 야구와 함께하는 뜨거운 밤을 보내세요!🔥'),
+            ('고기에서 만나', '편입학생회', E'안녕하세요, 편입생 주점 <고기에서 만나> 입니다! 🍖\n고깃집 컨셉으로 꾸며진 저희 주점은 편입생들이 직접 구워주는 고기와 함께, 다양한 안주와 술을 즐길 수 있는 공간입니다.\n\n✔️ 국내산 통삼겹살\n✔️ 수제 김치전\n✔️ 투움바 파스타\n✔️ 오뎅탕\n✔️ 파인애플 샤베트\n✔️ 제로 아이스티\n\n고기 한 점에 술 한 잔, 잊을 수 없는 추억을 만들어보세요!'),
+            ('사과씨네: SGV', '사과대', E'🍎사과씨네: SGV🍎\n안녕하세요, 사회과학대학 학생회입니다!\nSGV에서 영화같은 하루를 보내세요!\n\n- 투움바 파스타\n- 닭강정\n- 김치전\n- 오다리 튀김\n- 콘치즈\n- 팥빙수\n- 파인애플\n\n다양한 메뉴와 함께 즐거운 시간을 보내실 수 있도록 준비했습니다!\n🎬여러분의 많은 관심과 방문 부탁드립니다!🎬'),
+            ('맛사이드 아웃', '지융미', E'안녕하세요! 커뮤니케이션학부 학생회입니다.\n맛사이드 아웃 주점에 오신 것을 환영합니다!\n\n- 닭꼬치\n- 김치전\n- 어묵탕\n- 감자튀김\n- 쫄깃 버블 아이스크림\n\n다양한 감정의 맛을 표현한 안주들과 함께 즐거운 시간을 보내세요!\n✨여러분을 기다리고 있겠습니다!✨'),
+            ('프롬프트 한잔', '인공지능', E'안녕하세요, 서강대학교 학우 여러분! 가을 축제 CARDINAL에서 인공 X AI 자전이 야심 차게 주점을 운영합니다. 맛과 분위기, 모두 잡은 저희 부스 ''프롬프트 한 잔''이 여러분을 기다리고 있습니다!\n\n🍸 논알콜 칵테일\n    블루 밀키스\n    깔루아 밀크\n    모히또\n술을 마시지 않아도 축제 분위기를 마음껏 즐길 수 있어요!\n\n🎁 이벤트\n    안주 두 개 이상 주문 시, 테이블당 칵테일 한 잔을 무료로 드립니다!\n    전날과 당일에 진행하는 부스에서 칵테일 무료 쿠폰을 받아가세요!\n\n여러분의 많은 방문 부탁드립니다! 인공 X AI 자전이 준비한 특별한 주점에서 축제의 밤을 함께 즐겨요!'),
+            ('MVP 푸드코트', '컴공', E'골든 골 스낵 파크에서 땀 흘린 당신, 진정한 스포츠 MVP입니다!\n경기의 승리를 기념하며, MVP만을 위한 특별한 야식 부스로 초대합니다~\n\n    💪 근수저들을 위한 든든한 고기 세트부터\n    🔥 매콤하고 시원한 안주\n    ✨ 달콤한 디저트까지!\n\n오늘의 MVP, 당신을 위한 특식을 마음껏 즐겨보세요!'),
+            ('쇼미더''주량''', '경제대',E'주(酒)의 랩 배틀이 시작된다!\n안주도 FLEX, 술도 FLEX, 분위기도 FLEX.\n많은 관심과 방문 부탁드립니다'),
+            ('술로지옥', '인문대', E'🔥🏝 술로지옥 🏝🔥\n\n안녕하세요 서강대학교 학우 여러분!\n올해 CARDINAL 축제에서 인문대학이 준비한 주점은,\n낯선 만남, 새로운 인연, 그리고 짜릿한 설렘이 가득한,\n🔥🏝<술로지옥>🏝🔥 입니다!\n\n💚메뉴💚\n✔️천국도😇 특화 메뉴\n- 두부김치\n- 파인애플샤베트\n- 황도\n✔️지옥도👿 특화 메뉴\n- 불닭까르보나라\n- 매콤닭꼬치\n- 매콤오뎅나베\n✔️공통 메뉴\n- 콘치즈\n- 츄러스\n- 얼음컵\n- 공기밥\n\n💚이벤트💚\n✔️테이블 매칭\n- 솔로 탈출 기원..🥹 테이블 매칭으로 새로운 인연을 만나보세요!\n✔️인스타그램 이벤트\n- 인문대 주점 방문 인증샷을 인스타그램에 올려주시면, 추첨을 통해 다양한 상품을 드립니다!\n✔️게임 이벤트\n- 다양한 게임을 통해 술자리 분위기를 한층 더 뜨겁게!\n\n이번 축제, <술로지옥>에서 잊지 못할 추억을 만들어보세요!\n여러분의 많은 관심과 방문 부탁드립니다!'),
+            ('너로 정했다! 가랏, 공돌이!', '공과대', E'⚡️너로 정했다! 가랏, 공돌이!⚡️\n안녕하세요, 공학부 학생회입니다.\n공학부 주점에 오신 것을 환영합니다!\n\n- 닭강정\n- 김치전\n- 오뎅탕\n- 감자튀김\n- 팥빙수\n\n다양한 메뉴와 함께 즐거운 시간을 보내세요!\n🔥여러분을 기다리고 있겠습니다!🔥'),
+            ('H.U.G 주점', 'H.U.G', E'안녕하세요, 국제인문학부 학생회입니다.\nH.U.G 주점에 오신 것을 환영합니다!\n\n- 닭강정\n- 김치전\n- 오뎅탕\n- 감자튀김\n- 팥빙수\n\n다양한 메뉴와 함께 즐거운 시간을 보내세요!\n🔥여러분을 기다리고 있겠습니다!🔥'),
+            ('La Cantina Expandida', 'EXPANDED', E'안녕하세요, Expandida 주점입니다.\nLa Cantina Expandida에 오신 것을 환영합니다!\n\n- 타코\n- 나초\n- 퀘사디아\n- 감자튀김\n- 츄러스\n\n멕시코의 맛과 열정을 느껴보세요!\n🔥여러분을 기다리고 있겠습니다!🔥')),
+    base_data (name,dept_host,start_time,end_time, thumbnail_url, notice, instagram_url, table_layout_url) AS(
+        VALUES
+            ('나루, 배','총학생회',TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%B4%9D_optimized.jpg', '총학생회 주점', 'https://www.instagram.com/sogang_naru/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('자대 산악회','자과대',TIME '18:00', TIME '22:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%9E%90_optimized.jpg', '자연과학대학 주점', 'https://www.instagram.com/sogang_ns/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('KBO 주점','경영대',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B2%BD_optimized.jpg', '경영대학 주점', 'https://www.instagram.com/sgbusiness_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('고기에서 만나','편입학생회', TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%ED%8E%B8_optimized.jpg', '편입학생회 주점', 'https://www.instagram.com/sogang_transfer/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('사과씨네: SGV','사과대', TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%82%AC_optimized.jpg',  '사회과학대학 주점', 'https://www.instagram.com/apple_sum/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('맛사이드 아웃','지융미', TIME '18:00', TIME '22:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%A7%9B_optimized.jpg', '지식융합미디어대학 주점', 'https://www.instagram.com/sogang_cmas/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('프롬프트 한잔','인공지능',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_쏘인공자전_optimized.jpg', '인공지능학과 주점', 'https://www.instagram.com/sgu_ai_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('MVP 푸드코트','컴공', TIME '19:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%8F%98%EC%BB%B4_optimized.jpg', '컴퓨터공학과 주점', 'https://www.instagram.com/sogang_sgcs_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('쇼미더''주량''','경제대', TIME '18:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EC%83%81_optimized.jpg', '경제대학 주점', 'https://www.instagram.com/sogangecon_dfficial/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('술로지옥','인문대',TIME '18:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EB%AC%B8_optimized.jpg', '인문대학 주점', 'https://www.instagram.com/sogang_moon/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('너로 정했다! 가랏, 공돌이!', '공과대',TIME '18:00', TIME '23:00', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_%EA%B3%B5_optimized.jpg', '공과대학 주점', 'https://www.instagram.com/sgu_engineering_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('H.U.G 주점','H.U.G',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_hug_optimized.jpg', 'H.U.H 주점', 'https://www.instagram.com/soganghug_official/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg'),
+            ('La Cantina Expandida','EXPANDED',TIME '19:00', TIME '23:00',  'https://d9are2p0j0wzf.cloudfront.net/pub/pub_expanded_optimized.jpg', 'EXPANDED 주점', 'https://www.instagram.com/expandedkr/', 'https://d9are2p0j0wzf.cloudfront.net/pub/pub_layoutUrl_optimized.jpg')
     ),
--- 3)
-inserted_booths AS (
-    INSERT INTO booth (
-                       category, booth_type, name, location_id, description,
-                       thumbnail_url, view_count, start_time, end_time,
-                       is_operating, notice, instagram_url, table_layout_url, notice_updated_at
-        )
-        SELECT
-            'PUB',
-            '주점',
-            p.name,
-            (SELECT id FROM map WHERE position = '대운동장' limit 1),
-            d.description,        -- ← description + 공통 문구(원하면 제거)
-            p.thumbnail_url,
-            1,
-            p.start_time,
-            p.end_time,
-            false,
-            p.notice,
-            p.instagram_url,
-            p.table_layout_url,
-            NOW()
-        FROM base_data p
-                 JOIN descriptions d USING (name)
-        RETURNING id, name
-)
--- 주점 이미지들
+    inserted_booths AS (
+        INSERT INTO booth (
+                           category, booth_type, name, location_id, description,
+                           thumbnail_url, view_count, start_time, end_time,
+                           is_operating, notice, instagram_url, table_layout_url, notice_updated_at,dept_host
+            )
+            SELECT
+                'PUB',
+                '주점',
+                p.name,
+                (SELECT id FROM map WHERE position = '대운동장' limit 1),
+                d.description,
+                p.thumbnail_url,
+                1,
+                p.start_time,
+                p.end_time,
+                false,
+                p.notice,
+                p.instagram_url,
+                p.table_layout_url,
+                NOW(),
+                p.dept_host
+
+            FROM base_data p
+                     JOIN descriptions d USING (name)
+            RETURNING id, name
+    )
 INSERT INTO booth_detail_images (booth_id, image_order, image_url)
 SELECT
     ib.id,
@@ -132,38 +133,37 @@ SELECT
 FROM
     inserted_booths ib
         JOIN (
-
         VALUES
-            ('[총학생회] 나루, 배', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EB%A9%94%EB%89%B4%ED%8C%90_optimized.jpg'),
-            ('[총학생회] 나루, 배', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EB%A9%94%EB%89%B4%ED%8C%902_optimized.jpg'),
-            ('[총학생회] 나루, 배', 3, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
-            ('[총학생회] 나루, 배', 4, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EC%9D%B4%EB%B2%A4%ED%8A%B82_optimized.jpg'),
-            ('[총학생회] 나루, 배', 5, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EC%9D%B4%EB%B2%A4%ED%8A%B83_optimized.jpg'),
-            ('[자과대] 자대 산악회', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9E%90_optimized.jpg'),
-            ('[경영대] 9축 밤주점', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B2%BD%EC%98%811_optimized.jpg'),
-            ('[경영대] 9축 밤주점', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B2%BD%EC%98%812_optimized.jpg'),
-            ('[편입학생회] 고기에서 만나', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%ED%8E%B8_optimized.jpg'),
-            ('[사과대] 사과씨네: SGV', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%82%AC_optimized.jpg'),
-            ('[사과대] 사과씨네: SGV',2,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%82%AC%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
-            ('[지융미] 맛사이드 아웃', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EB%A7%9B1_optimized.jpg'),
-            ('[지융미] 맛사이드 아웃', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EB%A7%9B2_optimized.jpg'),
-            ('[컴공] MVP 푸드코트', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%8F%98%EC%BB%B4_optimized.jpg'),
-            ('[컴공] MVP 푸드코트',2,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%8F%98%EC%BB%B4%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
-            ('[경제대] 쇼미더''주량''', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B2%BD%EC%A0%9C_optimized.jpg'),
-            ('[인문대] 술로지옥', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EB%AC%B8_optimized.jpg'),
-            ('[인문대] 술로지옥', 2, 'https://d9are2p0j0wzf.cloudfront.net/pub_menu/문_주류_optimized.jpg'),
-            ('[인공지능] 바 에이아이',1,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9D%B8%EA%B3%B5%EC%9E%90%EC%A0%84_optimized.jpg'),
-            ('[인공지능] 바 에이아이',2,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9D%B8%EA%B3%B5%EC%9E%90%EC%A0%84%EC%9D%8C%EB%A3%8C_optimized.jpg'),
-            ('[인공지능] 바 에이아이',3,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9D%B8%EA%B3%B5%EC%9E%90%EC%A0%84%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
-            ('[공과대] 너로 정했다! 가랏, 공돌이!', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5_optimized.jpg'),
-            ('[공과대] 너로 정했다! 가랏, 공돌이!', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
-            ('[공과대] 너로 정했다! 가랏, 공돌이!', 3, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5%EC%9D%B4%EB%B2%A4%ED%8A%B82_optimized.jpg'),
-            ('[공과대] 너로 정했다! 가랏, 공돌이!', 4, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5%EC%9D%B4%EB%B2%A4%ED%8A%B83_optimized.jpg'),
-            ('[H.U.G] H.U.G 주점', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_hug_optimized.jpg'),
-            ('[EXPANDED] La Cantina Expandida', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_expanded1_optimized.jpg'),
-            ('[EXPANDED] La Cantina Expandida', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_expanded2_optimized.jpg')
+            ('나루, 배', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EB%A9%94%EB%89%B4%ED%8C%90_optimized.jpg'),
+            ('나루, 배', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EB%A9%94%EB%89%B4%ED%8C%902_optimized.jpg'),
+            ('나루, 배', 3, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
+            ('나루, 배', 4, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EC%9D%B4%EB%B2%A4%ED%8A%B82_optimized.jpg'),
+            ('나루, 배', 5, 'https://d9are2p0j0wzf.cloudfront.net/menu/%EC%B4%9D_%EC%9D%B4%EB%B2%A4%ED%8A%B83_optimized.jpg'),
+            ('자대 산악회', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9E%90_optimized.jpg'),
+            ('KBO 주점', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B2%BD%EC%98%811_optimized.jpg'),
+            ('KBO 주점', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B2%BD%EC%98%812_optimized.jpg'),
+            ('고기에서 만나', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%ED%8E%B8_optimized.jpg'),
+            ('사과씨네: SGV', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%82%AC_optimized.jpg'),
+            ('사과씨네: SGV',2,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%82%AC%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
+            ('맛사이드 아웃', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EB%A7%9B1_optimized.jpg'),
+            ('맛사이드 아웃', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EB%A7%9B2_optimized.jpg'),
+            ('MVP 푸드코트', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_쏘컴_이벤트_optimized.jpg'),
+            ('MVP 푸드코트',2,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_쏘컴_이벤트_optimized.jpg'),
+            ('쇼미더''주량''', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B2%BD%EC%A0%9C_optimized.jpg'),
+            ('술로지옥', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EB%AC%B8_optimized.jpg'),
+            ('술로지옥', 2, 'https://d9are2p0j0wzf.cloudfront.net/pub_menu/문_주류_optimized.jpg'),
+            ('프롬프트 한잔',1,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9D%B8%EA%B3%B5%EC%9E%90%EC%A0%84_optimized.jpg'),
+            ('프롬프트 한잔',2,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9D%B8%EA%B3%B5%EC%9E%90%EC%A0%84%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
+            ('프롬프트 한잔',3,'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EC%9D%B8%EA%B3%B5%EC%9E%90%EC%A0%84%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
+            ('너로 정했다! 가랏, 공돌이!', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5_optimized.jpg'),
+            ('너로 정했다! 가랏, 공돌이!', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5%EC%9D%B4%EB%B2%A4%ED%8A%B8_optimized.jpg'),
+            ('너로 정했다! 가랏, 공돌이!', 3, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5%EC%9D%B4%EB%B2%A4%ED%8A%B82_optimized.jpg'),
+            ('너로 정했다! 가랏, 공돌이!', 4, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_%EA%B3%B5%EC%9D%B4%EB%B2%A4%ED%8A%B83_optimized.jpg'),
+            ('H.U.G 주점', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_hug_optimized.jpg'),
+            ('La Cantina Expandida', 1, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_expanded1_optimized.jpg'),
+            ('La Cantina Expandida', 2, 'https://d9are2p0j0wzf.cloudfront.net/menu/menu_expanded2_optimized.jpg')
     ) AS menu_data(booth_name, image_order, image_url) ON ib.name = menu_data.booth_name;
---주점 운영 여부
+
 INSERT INTO booth_operating_days (booth_id, operating_days)
 SELECT
     id,
@@ -172,57 +172,55 @@ FROM
     booth
 WHERE
     category= 'PUB';
---주점 대표 메뉴 삽입
-select * from booth where name='[경제대] 쇼미더''주량''';
-insert  into menus (booth_id,name,price)
-select
+
+INSERT INTO menus (booth_id,name,price)
+SELECT
     (SELECT id FROM booth WHERE booth.name = data.pubName),
     data.menuName,
     data.price
-from (
-         values
-             ('[경영대] 9축 밤주점','홈런볼 아이스크림',6000),
-             ('[경영대] 9축 밤주점','크림새우',12500),
-             ('[경영대] 9축 밤주점','닭강정',12000),
-             ('[경제대] 쇼미더''주량''','수육 (1-2인)',12900), /*(3-4인) 22,900원*/
-             ('[경제대] 쇼미더''주량''','수육 (3-4인)',22900), /*(3-4인) 22,900원*/
-             ('[경제대] 쇼미더''주량''','어묵탕 ',9900),
-             ('[경제대] 쇼미더''주량''','두부김치 ',11900),
-             ('[공과대] 너로 정했다! 가랏, 공돌이!','피카츄 돈가스(1마리)',3800), /* 2마리 6000원 */
-             ('[공과대] 너로 정했다! 가랏, 공돌이!','피카츄 돈가스(2마리)',6000), /* 2마리 6000원 */
-             ('[공과대] 너로 정했다! 가랏, 공돌이!','불닭 덮밥',10000),
-             ('[공과대] 너로 정했다! 가랏, 공돌이!','모둠 시즈닝 감자튀김',8000),
-             ('[사과대] 사과씨네: SGV','버터구이 오징어',10000),
-             ('[사과대] 사과씨네: SGV','우삼겹 불닭게티',11000),
-             ('[사과대] 사과씨네: SGV','만두 & 즉석떡볶이',13000),
-             ('[컴공] MVP 푸드코트','삼겹살 & 목살',10000),
-             ('[컴공] MVP 푸드코트','골벵이 소면',8000),
-             ('[컴공] MVP 푸드코트','샤베트',4000),
-             ('[인공지능] 바 에이아이','감자전',11000),
-             ('[인공지능] 바 에이아이','치즈팽이버섯전',12000),
-             ('[인공지능] 바 에이아이','돼지김치구이',17000),
-             ('[인문대] 술로지옥','우삼겹 숙주볶음',13900),
-             ('[인문대] 술로지옥','콘치즈 불닭볶음면',10900),
-             ('[인문대] 술로지옥','소고기 마라탕',14900),
-             ('[자과대] 자대 산악회','해물 짬뽕 수제비',13900),
-             ('[자과대] 자대 산악회','콘마요 불닭볶음면',7900),
-             ('[자과대] 자대 산악회','우삼겹 숙주볶음',12900),
-             ('[지융미] 맛사이드 아웃','삼겹두부김치',18000),
-             ('[지융미] 맛사이드 아웃','감자찌글이 + 주먹밥',20000),
-             ('[지융미] 맛사이드 아웃','소세지 야채볶음',11000),
-             ('[총학생회] 나루, 배','해물파전',14000),
-             ('[총학생회] 나루, 배','해물칼국수',10000),
-             ('[총학생회] 나루, 배','스낵 플래터',5000),
-             ('[편입학생회] 고기에서 만나','삼겹살',13900),
-             ('[편입학생회] 고기에서 만나','참치주먹밥',4900),
-             ('[편입학생회] 고기에서 만나','파인샤베트',6900),
-             ('[EXPANDED] La Cantina Expandida','나쵸플레이트',12000),
-             ('[EXPANDED] La Cantina Expandida','콘옥수수 튀김',8000),
-             ('[EXPANDED] La Cantina Expandida','아이스크림&츄러스',7000),
-             ('[H.U.G] H.U.G 주점','K-BBQ set(삼겹살 한상차림)',10000),
-             ('[H.U.G] H.U.G 주점','Bibim-myeon(비빔면)',4000),
-             ('[H.U.G] H.U.G 주점','Dried pollack(먹태)',8000)
-
+FROM (
+         VALUES
+             ('KBO 주점','홈런볼 아이스크림',6000),
+             ('KBO 주점','크림새우',12500),
+             ('KBO 주점','닭강정',12000),
+             ('쇼미더''주량''','수육 (1-2인)',12900),
+             ('쇼미더''주량''','수육 (3-4인)',22900),
+             ('쇼미더''주량''','어묵탕 ',9900),
+             ('쇼미더''주량''','두부김치 ',11900),
+             ('너로 정했다! 가랏, 공돌이!','피카츄 돈가스(1마리)',3800),
+             ('너로 정했다! 가랏, 공돌이!','피카츄 돈가스(2마리)',6000),
+             ('너로 정했다! 가랏, 공돌이!','불닭 덮밥',10000),
+             ('너로 정했다! 가랏, 공돌이!','모둠 시즈닝 감자튀김',8000),
+             ('사과씨네: SGV','버터구이 오징어',10000),
+             ('사과씨네: SGV','우삼겹 불닭게티',11000),
+             ('사과씨네: SGV','만두 & 즉석떡볶이',13000),
+             ('MVP 푸드코트','삼겹살 & 목살',10000),
+             ('MVP 푸드코트','골벵이 소면',8000),
+             ('MVP 푸드코트','샤베트',4000),
+             ('프롬프트 한잔','감자전',11000),
+             ('프롬프트 한잔','치즈팽이버섯전',12000),
+             ('프롬프트 한잔','돼지김치구이',17000),
+             ('술로지옥','우삼겹 숙주볶음',13900),
+             ('술로지옥','콘치즈 불닭볶음면',10900),
+             ('술로지옥','소고기 마라탕',14900),
+             ('자대 산악회','해물 짬뽕 수제비',13900),
+             ('자대 산악회','콘마요 불닭볶음면',7900),
+             ('자대 산악회','우삼겹 숙주볶음',12900),
+             ('맛사이드 아웃','삼겹두부김치',18000),
+             ('맛사이드 아웃','감자찌글이 + 주먹밥',20000),
+             ('맛사이드 아웃','소세지 야채볶음',11000),
+             ('나루, 배','해물파전',14000),
+             ('나루, 배','해물칼국수',10000),
+             ('나루, 배','스낵 플래터',5000),
+             ('고기에서 만나','삼겹살',13900),
+             ('고기에서 만나','참치주먹밥',4900),
+             ('고기에서 만나','파인샤베트',6900),
+             ('La Cantina Expandida','나쵸플레이트',12000),
+             ('La Cantina Expandida','콘옥수수 튀김',8000),
+             ('La Cantina Expandida','아이스크림&츄러스',7000),
+             ('H.U.G 주점','K-BBQ set(삼겹살 한상차림)',10000),
+             ('H.U.G 주점','Bibim-myeon(비빔면)',4000),
+             ('H.U.G 주점','Dried pollack(먹태)',8000)
      ) as data(pubName,menuName,price);
 
 ---- 2-2. 제휴
@@ -301,11 +299,12 @@ FROM (
              ('인도푸드', 'TUE'),
              ('인도푸드', 'WED'),
              ('인도푸드', 'THU'),
-             ('인도푸드', 'THU'),
              -- 쿠팡잇츠 (금) , 롯데호텔 (수)
              ('쿠팡잇츠', 'FRI'),
              ('롯데호텔', 'WED')
      ) AS data(booth_name, operating_day);
+-- delete from booth_operating_days where booth_id in (select id from booth where booth_type='마당사업');
+-- DELETE FROM BOOTH WHERE booth_type='마당사업';
 
 ---- 2-3. 마당사업
 WITH
@@ -318,18 +317,42 @@ WITH
             (4, E'❤️팀제미나이 <Gemini와 함께하는 나만의 캐릭터 만들기> 부스 안내❤️\n\n안녕하세요. 저희 팀제미나이가 이번에 서강대학교 카디널 축제에서 Google Al Pro for Students의 가입 혜택 및 주요 기능을 홍보하는 부스를 운영하게 되었습니다. 해당 부스에서 Gemini의 가입을 도와드리고 다양한 활용 기능을 재미있게 체험시켜 드릴 예정입니다!\n\n자세한 내용은 카드 뉴스와 하단 글 참고 바라며 많은 관심 부탁드립니다.\n\n👩🏻‍💻부스명\n제미나이(Gemini)와 함께하는 나만의 캐릭터 만들기\n\n1.Gemini를 활용하여 만든 하나뿐인 자신만의 캐릭터 라벨 증정 🏷️\n2. Google AI Pro 가입 안내\n\nGemini의 Imagen 4 기능을 활용하여 자신만의 캐릭터, 이미지를 제작해 볼 수 있는 체험형 부스입니다. 부스 방문 시 원하는 캐릭터의 이미지 요구사항을 말씀해 주시면, 이를 바탕으로 프롬프트를 작성하여 세상에 하나뿐인 나만의 캐릭터를 만들어 드립니다. 생성된 캐릭터는 라벨로 인화하여 즉시 증정해 드릴 예정입니다.\n\n캐릭터 제작 가이드라인을 제공하며, 구체적인 프롬프트 작성 팁을 활용해 더욱 높은 퀄리티의 캐릭터를 만나보실 수 있습니다. 또한, 부스 참여 및 가입자를 대상으로 추첨을 통한 특별한 상품 이벤트도 진행될 예정입니다!\n\n[문의사항]\n인스타그램 @gemini_syndrome\n\n\n이상 있을 시 연락 부탁드립니다, 대표 연락처 : 010-8366-0790'),
             (5, E'보건소'),
             (6, E'목적: 딥페이크·마약류이용 성범죄 예방 캠페인\n내용: 마약 간이시약 키트 배부, 간식 제공, 퀴즈 맞추고 상품받기, 피해자 보호지원제도 안내, 전담경찰관과의 소통 등\n참여 간식도 있으니 많은 참여 부탁드립니다!'),
-            (7, E'2025년 하반기 장애인식개선 캠페인')
+            (7, E'2025년 하반기 장애인식개선 캠페인'),
+            --단과대
+            (8, E'💙 2025 CARDINAL 자연과학대학 부스 💙\n\n안녕하세요, 서강대학교 자연과학대학 제22대 학생회 [에코 Echo] 입니다. 자연과학대학 부스 ''👻엑, Ooooh!🕸''를 소개합니다!\n\n📆 일시 : 9월 24일(수)-9월 25일(목) 11:30-17:30\n📍 장소 : 대운동장 1번 부스\n\n🍭간식부스🍭\n  🧋스모어 마시멜로우 초코라떼 - 3500원\n  🍪스모어 마시멜로우 쿠키 - 3000원\n  ☕아이스 아메리카노 - 1500원\n  🧇아이스크림 크로플 - 3500원\n\n🎲게임부스🎲\n  🎃촉감게임\n  🎃젤리 옮기기\n\n❗️게임 성공 시, 간식부스에서 500원 할인이 제공됩니다.\n❗️자연과학대학 단대비 납부자에 한하여 스모어 마시멜로우 초코라떼 1잔이 무료 제공됩니다.\n❗️재료 소진 시 조기마감합니다.\n\n문의사항은 서강대학교 자연과학대학 인스타(@sogang_ns) DM으로 연락주시길 바랍니다. 감사합니다. :)'),
+            (9, E'⚾️ 홈런왕 김경영 ⚾️🏟️\n\n경영대학 학우 여러분, 안녕하세요!\n더욱 즐거운 축제를 위해 경영대에서 오직 여러분들만을 위해 준비한 낮부스를 소개해드립니다 🙌🏻\n\n🏅장소: 대운동장 3번\n\n📋 메뉴 📋\n🍜 김치말이국수\n🍙 참치주먹밥\n🥤 홈런볼 + 논알콜맥주(한정 수량) / 콜라 / 사이다\n\n*김치말이국수, 참치주먹밥 중 택 1*\n\n⛳️ 게임 ⛳️\n미니 야구 게임기\n(2루타 이상 소정의 경품 증정)\n>> 경품: 하리보 젤리\n\n🍋‍🟩 대상 🍋‍🟩\n경영 제1전공자 무료 제공\n(학생증 필수 지참, ‼️하루에 인당 2메뉴(메인1+디저트1) 까지 가능‼️)\n\n경영 학우분들의 많은 참여 부탁드립니다 ☺️☺️'),
+            (10,E'사회과학대학 | 아삭톡 마음을전해요!'),
+            (11, E'🌈 영화 <인사이드 아웃> 속 감정들이\n이제는 부스에서 여러분을 기다립니다!!\n🙋‍♀️🙋‍♂️ 감정에 취하고, 맛에 취하고, 이벤트까지 즐겨봐요!\n\n📍 장소: 대운동장 8번 부스\n🎈 주최: 지식융합미디어대학 제6대 학생회 LinC\n\n✨ 이건 꼭 해야지! 부스 체험 소개 ✨\n1️⃣ 감정 조언 캡슐 뽑기\n오늘 내 기분, 너무 복잡하다고?\n감정 박스에 손을 넣어 당신에게 딱 맞는 조언 캡슐을 뽑아보세요!\n랜덤으로 찾아오는 힐링 한 줄🧠💫\n\n2️⃣ 영화 속 감정 퀴즈\n그 순간 ‘라일리’는 어떤 감정을 느꼈을까?\n<인사이드 아웃> 속 명장면을 보고 감정을 맞히면 간식 쏜다!\n추리력도, 감정이입력도 모두 발휘될 순간🎬\n\n🥤 감정도 목이 마르다구요~?\n💙 “슬픔이 블루레몬에이드” 무료 증정!\n부스에 오기만 해도, 누구나 한 잔!\n지치고 더운 축제 속 시원함 +1'),
+            (12, E'인공x자전 | 🤷‍♀️AI 이길 수 있으면 어디 한번 와보셈ㅋ🤷‍♂️'),
+            (13, E'골든 골 스낵 파크 🍡\n짜릿한 승리와 맛있는 간식을 동시에!\n\n서강대학교 9월 CARDINAL 축제를 맞아 컴퓨터공학과의 특별한 이벤트.\n스포츠 스타디움 미니게임 & 푸드존이 준비된 “골든 골 스낵 파크”에 여러분을 초대합니다~!\n\n역대급 승리를 향한 짜릿한 미니게임에 도전하고, 승리의 기쁨이 배가 되는 맛있는 간식도 놓치지 마세요.\n각 게임을 완료하고 인증 도장을 하나라도 모으면, 25일 저녁 주점에서 MVP로 선정되어 특별한 혜택을 드립니다!\n장소: 대운동장 9번 부스\n\n🏆 스포츠 미니게임\n오타니 상대로 3K?! - 승리투수가 되어 3개의 삼진을 잡아내세요!\n서강 그랑프리 - 짜릿한 스피드와 컨트롤로 트랙을 정복하세요!\n스포츠 뇌지컬 챌린지! - 스포츠 지식으로 승리하는 퀴즈 한판!\n\n🍽️ 푸드존\n소떡소떡\n떡볶이\n아이스티\n아이스크림'),
+            (14, E'안녕하세요. 서강대학교 경제대학 학우 여러분!\n경제대학 제35대 학생회 E:motion입니다.\n9월 Cardinal을 맞아 진행하는 경제대학 부스 ''Show me the money⛓️💰'' 를 소개합니다!\n\n📆 일시 : 9월 24일(수)-9월 25일(목) 11:30-17:00\n📍 장소 : 대운동장 10번 부스\n\n게임부스 설명🎲🎮\n잰말놀이게임🏃‍♂️: Diction은 생명! 빠른 속도로 발음을 틀리지 않고 읽어라!\n청개구리 절대음감🐸: 기존의 절대음감은 가라! 한 음씩 내리는 절대음감📉\n지폐맞추기💸: 이 지폐는 어느 나라의 지폐일까요?\n가격맞추기💲🤑: 4개의 물건 중 가장 비싼 물건을 찾아라!\n\n게임에 성공하신 학우분들께는 금목걸이🥇...가 아닌 골드바 초콜릿🍫과 주점 상품권을 드립니다!'),
+            (15, E'🎲♠️ Moon''s Vegas ♠️🎲\n\nCARDINAL을 위해 인문대학이 준비한 가장 짜릿하고 화려한 부스\n한순간의 선택이 당신의 운명을 바꿀 🎲♠️문스베이거스♠️🎲가 열립니다!\n\n♟️장소 : 대운동장 11번 부스\n\n♟️간식\n\n카나페 : 3,000원 🥨\n🍫 누텔라 & 바나나 🍌\n🍓딸기잼 & 치즈 🧀\n🧀 치즈 & 참치마요 & 토마토 🍅\n크림 소다 : 2,000원 🍦🥤\n메론 소다 : 2,000원 🍈🥤\n\n\n🎮 게임부스 🎮\n\n🎯문스베이거스 샷 !\n다트를 던져 풍선을 맞히면 점수 획득 ! 최대 100점의 기회를 잡으세요 !\n🎰스핀 오브 문스\n세 장의 카드가 동시에 멈추는 순간, 운명의 조합이 당신을 기다립니다.\n두 장 이상 일치 → 50점 / 세 장 일치 → 100점!\n🎲다이스 룰렛\n홀 or 짝, 단 한 번의 선택. 당신의 운이 어디로 향할까 ? 맞히면 50점 GET !\n🎲히든 다이스\n흔들리는 주사위 소리, 감각만이 당신의 무기 ! 정확히 맞히면 70점!\n\n\n🎉추가 이벤트🎉\n\n📸 부스 인증샷 업로드 이벤트\n부스에서 사진 찍고 SNS에 인증하면 럭키드로우를 참여하실 수 있는 기회가 주어집니다 !\n🎁 럭키드로우 경품\n1등: 주점 메인메뉴 🍖\n2등: 주점 사이드메뉴 🍗\n3등: 카나페 🧀\n4등: 소다 🥤\n5등: 몬스터 에너지 음료⚡ or 꽝 😅\n\n\n🌙 운명은 언제나 모험하는 자의 편!\n올 가을, 서강대학교 축제의 🎲♠️문스베이거스♠️🎲로 초대합니다.'),
+            (16, E'C&M 칼텍스 (화공·기계공학과 부스)\n📍 위치: 대운동장 출입구 바로 왼편, 12번 부스\n\n🕒 운영 시간:\n\n9/24(수) 10:00 ~ 18:00\n\n9/25(목) 10:00 ~ 16:00\n\n🍴 메뉴: 오레오 쉐이크, 나초 치즈컵 \n 👉 공대생들이 준비한 특별한 간식과 재미있는 컨셉 부스, 놓치지 마세요!'),
+            (17, E'번쩍번쩍 반도체공장 (전자·시스템반도체공학과 부스)\n📍 위치: 대운동장 출입구 바로 왼편, 12번 부스\n\n🕒 운영 시간:\n\n9/24(수) ~ 9/25(목) 11:00 ~ 17:00\n\n🍴 메뉴: 웨이퍼 크로플, 220V 에너지 드링크\n\n🛍️ 굿즈: 공대/전자 스티커, 전자/시반 티셔츠\n\n👉 공대생들이 준비한 특별한 간식과 재미있는 컨셉 부스, 놓치지 마세요!'),
+            (18, E'🍒 하늬모아 🍒\n서강대학교 학생홍보대사 하늬가람이 준비한 특별한 축제 부스!\n하늬가람의 감성을 캔모아 콘셉트로 담아냈습니다 ✨\n\n[하늬에이드] 🍹\n서쪽의 하늬, 그리고 서강의 상징인 빨간색 체리 에이드\n\n[가람요거트] 🥛\n강을 뜻하는 가람, 시원한 파란빛 요거트 음료\n\n그리고 인스타그램 이벤트에 참여하면, 캔모아처럼 달콤한 식빵 + 생크림을 드려요.\n하늬가람과 함께하는 작은 즐거움, [하늬모아]에서 꼭 만나보세요 💖')
     ),
     -- 2. 삽입할 데이터  ( description_id 사용)
-    temp_data (name, description_id, thumbnail_url, start_time, end_time) AS (
+    temp_data (name,position, description_id, thumbnail_url, start_time, end_time) AS (
         VALUES
-            ('트파는 사랑을 싣고', 1, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_트라이파시_optimized.jpg', TIME '12:00', TIME '16:30'),
-            ('21C Hermit 타로 텔링 부스', 2, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_21CHermit_optimized.jpg', TIME '12:00', TIME '18:00'),
-            ('별반이랑 우주정복', 3, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_별반_optimized.jpg', TIME '12:00', TIME '17:00'),
-            ('나만의 캐릭터 만들기', 4, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_제미나이_optimized.jpg', TIME '10:00', TIME '18:00'),
-            ('건강생활실천 캠페인', 5, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_보건소_optimized.jpg', TIME '14:00', TIME '17:00'),
-            ('성폭력·교제폭력·스토킹 ZERO 캠퍼스', 6, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_성평등_optimized.jpg', TIME '14:00', TIME '16:00'),
-            ('장애인식개선 캠페인', 7, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_장애학생지원센터_optimized.jpg', TIME '11:30', TIME '17:30')
+            ('트파는 사랑을 싣고','R관 앞', 1, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_트라이파시_optimized.jpg', TIME '12:00', TIME '16:30'),
+            ('21C Hermit 타로 텔링 부스', 'R관 앞',2, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_21CHermit_optimized.jpg', TIME '12:00', TIME '18:00'),
+            ('별반이랑 우주정복', 'R관 앞',3, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_별반_optimized.jpg', TIME '12:00', TIME '17:00'),
+            ('나만의 캐릭터 만들기', 'R관 앞',4, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_제미나이_optimized.jpg', TIME '10:00', TIME '18:00'),
+            ('건강생활실천 캠페인', 'R관 앞',5, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_보건소_optimized.jpg', TIME '14:00', TIME '17:00'),
+            ('성폭력·교제폭력·스토킹 ZERO 캠퍼스', 'R관 앞',6, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_성평등_optimized.jpg', TIME '14:00', TIME '16:00'),
+            ('장애인식개선 캠페인', 'R관 앞',7, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_장애학생지원센터_optimized.jpg', TIME '11:30', TIME '17:30'),
+            -- 교내
+            ('엑, Ooooh!', '대운동장',8, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_자과대_optimized.jpg',TIME '11:30', TIME '17:30'),
+            ('홈런왕 김경영','대운동장', 9, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_경_optimized.jpg',TIME '12:00', TIME '17:30'),
+            ('아삭토스트', '대운동장',10, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_사과대_optimized.jpg',TIME '12:00', TIME '18:00'),
+            ('맛 사이드 아웃', '대운동장',11, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_맛_optimized.jpg',TIME '12:00', TIME '18:00'),
+            ('인공 x 자전 x 제미나이', '대운동장',12, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_인공자전_optimized.jpg',TIME '12:00', TIME '16:30'),
+            ('골든 골 스낵 파크', '대운동장',13, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_쏘(컴)_optimized.jpg',TIME '12:00', TIME '16:30'),
+            ('쇼미더’머니’', '대운동장',14, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_상_optimized.jpg',TIME '12:00', TIME '16:30'),
+            ('문스베이거스 Moons Vegas', '대운동장',15, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_문_optimized.jpg',TIME '13:15', TIME '17:00'),
+            ('C&M 칼텍스', '대운동장',16, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_화공기계_optimized.jpg',TIME '10:00', TIME '18:00'),
+            ('번쩍번쩍 반도체 공장', '대운동장',17, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_전자시반_optimized.jpg',TIME '11:00', TIME '17:00'),
+            ('하늬모아','청년광장',18,'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_하늬가람_optimized.jpg',TIME '12:00', TIME '18:00')
     )
 -- 3. 위에서 정의한 임시 테이블들을 JOIN하여 최종 INSERT 실행
 INSERT INTO booth (
@@ -340,7 +363,7 @@ SELECT
     '마당사업' AS booth_type,
     'YARD_PROJECT' AS category,
     td.name,
-    (SELECT id FROM map WHERE position = 'R관 앞') AS location_id,
+    (SELECT id FROM map WHERE position = td.position limit 1) AS location_id,
     d.description AS description,
     td.thumbnail_url,
     100 AS view_count,
@@ -365,74 +388,28 @@ FROM (
              ('나만의 캐릭터 만들기', 'MON'),
              ('건강생활실천 캠페인', 'THU'),
              ('성폭력·교제폭력·스토킹 ZERO 캠퍼스', 'TUE'),
-             ('장애인식개선 캠페인', 'THU')
+             ('장애인식개선 캠페인', 'THU'),
+             ('하늬모아','MON'),('하늬모아','TUE'),
+             -- 교내 단과
+             ('엑, Ooooh!', 'WED'),('엑, Ooooh!', 'THU'),
+             ('홈런왕 김경영','WED'), ('홈런왕 김경영','THU'),
+             ('아삭토스트', 'WED'),
+             ('맛 사이드 아웃','WED'), ('맛 사이드 아웃','THU'),
+             ('인공 x 자전 x 제미나이', 'WED'),('인공 x 자전 x 제미나이', 'THU'),
+             ('골든 골 스낵 파크', 'WED'),  ('골든 골 스낵 파크', 'THU'),
+             ('쇼미더’머니’', 'WED'), ('쇼미더’머니’', 'THU'),
+             ('문스베이거스 Moons Vegas', 'WED'),  ('문스베이거스 Moons Vegas', 'THU'),
+             ('C&M 칼텍스', 'WED'),('C&M 칼텍스', 'THU'),
+             ('번쩍번쩍 반도체 공장', 'WED'),('번쩍번쩍 반도체 공장', 'THU')
 
      ) AS data(booth_name, operating_day);
 
--------- 단대 마당사업 : 교내
-WITH
-    -- 1. description 모음
-    descriptions (id, description) AS (
-        VALUES -- 3, 5, 더미임
-               (1, E'💙 2025 CARDINAL 자연과학대학 부스 💙\n\n안녕하세요, 서강대학교 자연과학대학 제22대 학생회 [에코 Echo] 입니다. 자연과학대학 부스 ''👻엑, Ooooh!🕸''를 소개합니다!\n\n📆 일시 : 9월 24일(수)-9월 25일(목) 11:30-17:30\n📍 장소 : 대운동장 1번 부스\n\n🍭간식부스🍭\n  🧋스모어 마시멜로우 초코라떼 - 3500원\n  🍪스모어 마시멜로우 쿠키 - 3000원\n  ☕아이스 아메리카노 - 1500원\n  🧇아이스크림 크로플 - 3500원\n\n🎲게임부스🎲\n  🎃촉감게임\n  🎃젤리 옮기기\n\n❗️게임 성공 시, 간식부스에서 500원 할인이 제공됩니다.\n❗️자연과학대학 단대비 납부자에 한하여 스모어 마시멜로우 초코라떼 1잔이 무료 제공됩니다.\n❗️재료 소진 시 조기마감합니다.\n\n문의사항은 서강대학교 자연과학대학 인스타(@sogang_ns) DM으로 연락주시길 바랍니다. 감사합니다. :)'),
-               (2, E'⚾️ 홈런왕 김경영 ⚾️🏟️\n\n경영대학 학우 여러분, 안녕하세요!\n더욱 즐거운 축제를 위해 경영대에서 오직 여러분들만을 위해 준비한 낮부스를 소개해드립니다 🙌🏻\n\n🏅장소: 대운동장 3번\n\n📋 메뉴 📋\n🍜 김치말이국수\n🍙 참치주먹밥\n🥤 홈런볼 + 논알콜맥주(한정 수량) / 콜라 / 사이다\n\n*김치말이국수, 참치주먹밥 중 택 1*\n\n⛳️ 게임 ⛳️\n미니 야구 게임기\n(2루타 이상 소정의 경품 증정)\n>> 경품: 하리보 젤리\n\n🍋‍🟩 대상 🍋‍🟩\n경영 제1전공자 무료 제공\n(학생증 필수 지참, ‼️하루에 인당 2메뉴(메인1+디저트1) 까지 가능‼️)\n\n경영 학우분들의 많은 참여 부탁드립니다 ☺️☺️'),
-               (3, E'⚾️ 홈런왕 김경영 ⚾️🏟️\n\n경영대학 학우 여러분, 안녕하세요!\n더욱 즐거운 축제를 위해 경영대에서 오직 여러분들만을 위해 준비한 낮부스를 소개해드립니다 🙌🏻\n\n🏅장소: 대운동장 3번\n\n📋 메뉴 📋\n🍜 김치말이국수\n🍙 참치주먹밥\n🥤 홈런볼 + 논알콜맥주(한정 수량) / 콜라 / 사이다\n\n*김치말이국수, 참치주먹밥 중 택 1*\n\n⛳️ 게임 ⛳️\n미니 야구 게임기\n(2루타 이상 소정의 경품 증정)\n>> 경품: 하리보 젤리\n\n🍋‍🟩 대상 🍋‍🟩\n경영 제1전공자 무료 제공\n(학생증 필수 지참, ‼️하루에 인당 2메뉴(메인1+디저트1) 까지 가능‼️)\n\n경영 학우분들의 많은 참여 부탁드립니다 ☺️☺️'),
-               (4, E'🌈 영화 <인사이드 아웃> 속 감정들이\n이제는 부스에서 여러분을 기다립니다!!\n🙋‍♀️🙋‍♂️ 감정에 취하고, 맛에 취하고, 이벤트까지 즐겨봐요!\n\n📍 장소: 대운동장 8번 부스\n🎈 주최: 지식융합미디어대학 제6대 학생회 LinC\n\n✨ 이건 꼭 해야지! 부스 체험 소개 ✨\n1️⃣ 감정 조언 캡슐 뽑기\n오늘 내 기분, 너무 복잡하다고?\n감정 박스에 손을 넣어 당신에게 딱 맞는 조언 캡슐을 뽑아보세요!\n랜덤으로 찾아오는 힐링 한 줄🧠💫\n\n2️⃣ 영화 속 감정 퀴즈\n그 순간 ‘라일리’는 어떤 감정을 느꼈을까?\n<인사이드 아웃> 속 명장면을 보고 감정을 맞히면 간식 쏜다!\n추리력도, 감정이입력도 모두 발휘될 순간🎬\n\n🥤 감정도 목이 마르다구요~?\n💙 “슬픔이 블루레몬에이드” 무료 증정!\n부스에 오기만 해도, 누구나 한 잔!\n지치고 더운 축제 속 시원함 +1'),
-               (5, E'🌈 영화 <인사이드 아웃> 속 감정들이\n이제는 부스에서 여러분을 기다립니다!!\n🙋‍♀️🙋‍♂️ 감정에 취하고, 맛에 취하고, 이벤트까지 즐겨봐요!\n\n📍 장소: 대운동장 8번 부스\n🎈 주최: 지식융합미디어대학 제6대 학생회 LinC\n\n✨ 이건 꼭 해야지! 부스 체험 소개 ✨\n1️⃣ 감정 조언 캡슐 뽑기\n오늘 내 기분, 너무 복잡하다고?\n감정 박스에 손을 넣어 당신에게 딱 맞는 조언 캡슐을 뽑아보세요!\n랜덤으로 찾아오는 힐링 한 줄🧠💫\n\n2️⃣ 영화 속 감정 퀴즈\n그 순간 ‘라일리’는 어떤 감정을 느꼈을까?\n<인사이드 아웃> 속 명장면을 보고 감정을 맞히면 간식 쏜다!\n추리력도, 감정이입력도 모두 발휘될 순간🎬\n\n🥤 감정도 목이 마르다구요~?\n💙 “슬픔이 블루레몬에이드” 무료 증정!\n부스에 오기만 해도, 누구나 한 잔!\n지치고 더운 축제 속 시원함 +1'),
-               (6, E'골든 골 스낵 파크 🍡\n짜릿한 승리와 맛있는 간식을 동시에!\n\n서강대학교 9월 CARDINAL 축제를 맞아 컴퓨터공학과의 특별한 이벤트.\n스포츠 스타디움 미니게임 & 푸드존이 준비된 “골든 골 스낵 파크”에 여러분을 초대합니다~!\n\n역대급 승리를 향한 짜릿한 미니게임에 도전하고, 승리의 기쁨이 배가 되는 맛있는 간식도 놓치지 마세요.\n각 게임을 완료하고 인증 도장을 하나라도 모으면, 25일 저녁 주점에서 MVP로 선정되어 특별한 혜택을 드립니다!\n장소: 대운동장 9번 부스\n\n🏆 스포츠 미니게임\n오타니 상대로 3K?! - 승리투수가 되어 3개의 삼진을 잡아내세요!\n서강 그랑프리 - 짜릿한 스피드와 컨트롤로 트랙을 정복하세요!\n스포츠 뇌지컬 챌린지! - 스포츠 지식으로 승리하는 퀴즈 한판!\n\n🍽️ 푸드존\n소떡소떡\n떡볶이\n아이스티\n아이스크림'),
-               (7, E'안녕하세요. 서강대학교 경제대학 학우 여러분!\n경제대학 제35대 학생회 E:motion입니다.\n9월 Cardinal을 맞아 진행하는 경제대학 부스 ''Show me the money⛓️💰'' 를 소개합니다!\n\n📆 일시 : 9월 24일(수)-9월 25일(목) 11:30-17:00\n📍 장소 : 대운동장 10번 부스\n\n게임부스 설명🎲🎮\n잰말놀이게임🏃‍♂️: Diction은 생명! 빠른 속도로 발음을 틀리지 않고 읽어라!\n청개구리 절대음감🐸: 기존의 절대음감은 가라! 한 음씩 내리는 절대음감📉\n지폐맞추기💸: 이 지폐는 어느 나라의 지폐일까요?\n가격맞추기💲🤑: 4개의 물건 중 가장 비싼 물건을 찾아라!\n\n게임에 성공하신 학우분들께는 금목걸이🥇...가 아닌 골드바 초콜릿🍫과 주점 상품권을 드립니다!'),
-               (8, E'🎲♠️ Moon''s Vegas ♠️🎲\n\nCARDINAL을 위해 인문대학이 준비한 가장 짜릿하고 화려한 부스\n한순간의 선택이 당신의 운명을 바꿀 🎲♠️문스베이거스♠️🎲가 열립니다!\n\n♟️장소 : 대운동장 11번 부스\n\n♟️간식\n\n카나페 : 3,000원 🥨\n🍫 누텔라 & 바나나 🍌\n🍓딸기잼 & 치즈 🧀\n🧀 치즈 & 참치마요 & 토마토 🍅\n크림 소다 : 2,000원 🍦🥤\n메론 소다 : 2,000원 🍈🥤\n\n\n🎮 게임부스 🎮\n\n🎯문스베이거스 샷 !\n다트를 던져 풍선을 맞히면 점수 획득 ! 최대 100점의 기회를 잡으세요 !\n🎰스핀 오브 문스\n세 장의 카드가 동시에 멈추는 순간, 운명의 조합이 당신을 기다립니다.\n두 장 이상 일치 → 50점 / 세 장 일치 → 100점!\n🎲다이스 룰렛\n홀 or 짝, 단 한 번의 선택. 당신의 운이 어디로 향할까 ? 맞히면 50점 GET !\n🎲히든 다이스\n흔들리는 주사위 소리, 감각만이 당신의 무기 ! 정확히 맞히면 70점!\n\n\n🎉추가 이벤트🎉\n\n📸 부스 인증샷 업로드 이벤트\n부스에서 사진 찍고 SNS에 인증하면 럭키드로우를 참여하실 수 있는 기회가 주어집니다 !\n🎁 럭키드로우 경품\n1등: 주점 메인메뉴 🍖\n2등: 주점 사이드메뉴 🍗\n3등: 카나페 🧀\n4등: 소다 🥤\n5등: 몬스터 에너지 음료⚡ or 꽝 😅\n\n\n🌙 운명은 언제나 모험하는 자의 편!\n올 가을, 서강대학교 축제의 🎲♠️문스베이거스♠️🎲로 초대합니다.'),
-               (9, E'C&M 칼텍스 (화공·기계공학과 부스)\n📍 위치: 대운동장 출입구 바로 왼편, 12번 부스\n\n🕒 운영 시간:\n\n9/24(수) 10:00 ~ 18:00\n\n9/25(목) 10:00 ~ 16:00\n\n🍴 메뉴: 오레오 쉐이크, 나초 치즈컵 \n 👉 공대생들이 준비한 특별한 간식과 재미있는 컨셉 부스, 놓치지 마세요!'),
-               (10, E'번쩍번쩍 반도체공장 (전자·시스템반도체공학과 부스)\n📍 위치: 대운동장 출입구 바로 왼편, 12번 부스\n\n🕒 운영 시간:\n\n9/24(수) ~ 9/25(목) 11:00 ~ 17:00\n\n🍴 메뉴: 웨이퍼 크로플, 220V 에너지 드링크\n\n🛍️ 굿즈: 공대/전자 스티커, 전자/시반 티셔츠\n\n👉 공대생들이 준비한 특별한 간식과 재미있는 컨셉 부스, 놓치지 마세요!'),
-               (11, E'🍒 하늬모아 🍒\n서강대학교 학생홍보대사 하늬가람이 준비한 특별한 축제 부스!\n하늬가람의 감성을 캔모아 콘셉트로 담아냈습니다 ✨\n\n[하늬에이드] 🍹\n서쪽의 하늬, 그리고 서강의 상징인 빨간색 체리 에이드\n\n[가람요거트] 🥛\n강을 뜻하는 가람, 시원한 파란빛 요거트 음료\n\n그리고 인스타그램 이벤트에 참여하면, 캔모아처럼 달콤한 식빵 + 생크림을 드려요.\n하늬가람과 함께하는 작은 즐거움, [하늬모아]에서 꼭 만나보세요 💖')
-    ),
-    -- 2. booth 삽입용 데이터 (description_id 참조)
-    booths_to_insert (name, description_id, thumbnail_url) AS (
-        VALUES
-            ('웬즈데이/할로윈', 1, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_자과대_optimized.jpg'),
-            ('홈런왕 김경영', 2, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_경_optimized.jpg'),
-            ('아삭토스트', 3, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_사과대_optimized.jpg'),
-            ('맛사이드 아웃', 4, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_맛_optimized.jpg'),
-            ('cAsIno', 5, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_쏘(컴)_optimized.jpg'),
-            ('골든 골 스낵 파크', 6, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_인공자전_optimized.jpg'),
-            ('쇼미더’머니’', 7, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_상_optimized.jpg'),
-            ('문스베이거스 Moons Vegas', 8, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_문_optimized.jpg'),
-            ('C&M 칼텍스', 9, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_화공기계_optimized.jpg'),
-            ('번쩍번쩍 반도체 공장', 10, 'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_전자시반_optimized.jpg'),
-            ('하늬모아',11,'https://d9are2p0j0wzf.cloudfront.net/마당사업/마당사업_하늬가람_optimized.jpg')
-    ),
-    -- 3. booth 테이블에 insert
-    inserted_booths AS (
-        INSERT INTO booth (
-                           booth_type, category, name, description, thumbnail_url,
-                           view_count, start_time, end_time, is_operating, location_id
-            )
-            SELECT
-                '마당사업' AS booth_type,
-                'YARD_PROJECT' AS category,
-                b.name,
-                d.description,
-                b.thumbnail_url,
-                1,
-                '12:00:00',
-                '18:00:00',
-                false,
-                (SELECT id FROM map WHERE position = '대운동장' LIMIT 1)
-            FROM booths_to_insert b
-                     JOIN descriptions d ON b.description_id = d.id
-            RETURNING id
-    )
--- 4. booth_operating_days 삽입
-INSERT INTO booth_operating_days (booth_id, operating_days)
-SELECT id, day
-FROM inserted_booths, (VALUES ('WED'), ('THU')) AS v(day);
 
-select * from booth where booth_type='마당사업';
 -- 2-4. 푸드트럭
 -- 소빵 : 썸네일 수정 완료 : yeeun
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '소빵', 8, '닭강정', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/%EC%86%8C%EB%B9%B5_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '소빵', (select id from map where position='K-GN사이'), '닭강정', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/%EC%86%8C%EB%B9%B5_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -442,7 +419,7 @@ VALUES
 -- 오늘은
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '오늘은', 8, '타꼬야끼', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_오늘은_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '오늘은',  (select id from map where position='K-GN사이'), '타꼬야끼', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_오늘은_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -453,7 +430,7 @@ VALUES
 -- 스트릿피자
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '스트릿피자', 8, '화덕피자3종', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_스트릿피자_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '스트릿피자',  (select id from map where position='K-GN사이'), '화덕피자3종', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_스트릿피자_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -464,7 +441,7 @@ VALUES
 -- 퍼플베어
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '퍼플베어', 8, '부타동', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_퍼플베어_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '퍼플베어',  (select id from map where position='K-GN사이'), '부타동', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_퍼플베어_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -474,7 +451,7 @@ VALUES
 -- 오야붕
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '오야붕', 8, '야끼소바/오꼬노미야끼', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_오야붕_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '오야붕',  (select id from map where position='K-GN사이'), '야끼소바/오꼬노미야끼', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_오야붕_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -485,7 +462,7 @@ VALUES
 -- 상식스키친
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '상식스키친', 8, '불초밥', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_상식스_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '상식스키친',  (select id from map where position='K-GN사이'), '불초밥', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_상식스_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -494,7 +471,7 @@ VALUES
 -- 명품닭꼬치
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '명품닭꼬치', 8, '닭꼬치', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_닭꼬치_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '명품닭꼬치',  (select id from map where position='K-GN사이'), '닭꼬치', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_닭꼬치_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -503,7 +480,7 @@ VALUES
 -- 흥하리푸드
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '흥하리푸드', 8, '크림/칠리새우', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_흥하리푸드_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '흥하리푸드',  (select id from map where position='K-GN사이'), '크림/칠리새우', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_흥하리푸드_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -514,7 +491,7 @@ VALUES
 -- 탑초이스
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '탑초이스', 8, '스테이크/덮밥', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_팁초이스_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '탑초이스',  (select id from map where position='K-GN사이'), '스테이크/덮밥', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_팁초이스_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -526,7 +503,7 @@ VALUES
 -- 속초시장명물닭강정
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '속초시장명물닭강정', 8, '염통꼬치', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_속초명물닭강정_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '속초시장명물닭강정',  (select id from map where position='K-GN사이'), '염통꼬치', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_속초명물닭강정_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -534,10 +511,10 @@ VALUES
     ((SELECT id FROM new_booth), '염통꼬치 11p', 10000),
     ((SELECT id FROM new_booth), '염통꼬치 23p', 20000),
     ((SELECT id FROM new_booth), '염통꼬치 35p', 30000);
--- 윤쉐프
+-- boot
 WITH new_booth AS (
     INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
-        VALUES ('푸드트럭', 'FOOD_TRUCK', '윤쉐프', 8, '츄러스/아이스크림', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_윤쉐프_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
+        VALUES ('푸드트럭', 'FOOD_TRUCK', '윤쉐프',  (select id from map where position='K-GN사이'), '츄러스/아이스크림', 'https://d9are2p0j0wzf.cloudfront.net/foodtruck/foodtruck_윤쉐프_optimized.jpg', 500, '12:00:00', '22:00:00', TRUE)
         RETURNING id
 )
 INSERT INTO menus (booth_id, name, price)
@@ -546,9 +523,25 @@ VALUES
     ((SELECT id FROM new_booth), '아이스크림 츄러스', 6000),
     ((SELECT id FROM new_booth), '회오리 감자', 5000);
 
-select * from booth where booth_type='포토부스';
+--FOOD TRUCK OPERATING DAYS
+INSERT INTO booth_operating_days (booth_id, operating_days)
+SELECT id, 'MON'
+FROM booth WHERE category= 'FOOD_TRUCK';
+INSERT INTO booth_operating_days (booth_id, operating_days)
+SELECT id, 'TUE'
+FROM booth WHERE category= 'FOOD_TRUCK';
+INSERT INTO booth_operating_days (booth_id, operating_days)
+SELECT id, 'WED'
+FROM booth WHERE category= 'FOOD_TRUCK';
+INSERT INTO booth_operating_days (booth_id, operating_days)
+SELECT id, 'THU'
+FROM booth WHERE category= 'FOOD_TRUCK';
+INSERT INTO booth_operating_days (booth_id, operating_days)
+SELECT id, 'FRI'
+FROM booth WHERE category= 'FOOD_TRUCK';
 
 ---- 2-5. 포토부스 by yeeun /*thumbnail 더미. */
+
 INSERT INTO booth (booth_type, category, name, location_id, description, thumbnail_url, view_count, start_time, end_time, is_operating)
 SELECT
     '포토부스',
@@ -558,7 +551,8 @@ SELECT
     E'프레임 소개\n' ||
     E'1. 동아리사랑해 프레임 : 사랑하는 동아리원들과 자신이 속해있는 동아리 이름을 찾아보자\n' ||
     E'2. 캔젤네컷 프레임 : 키는 너네가 알아서 맞춰라.\n' ||
-    E'3. 2025 CARDINAL 프레임 : 25카디널 기본 프레임. 기본은 필수로 찍어줘야 함이 인지상정.\n',
+    E'3. 2025 CARDINAL 프레임 : 25카디널 기본 프레임. 기본은 필수로 찍어줘야 함이 인지상정.\n' ||
+    E'4. 서강대학교 소주사랑단 프레임 : 얼큰하게 술 냄새나는 사람들이 찍는 프레임',
     data.thumbnail,
     1,
     '00:00:00',
@@ -566,34 +560,48 @@ SELECT
     true
 
 FROM (
-         VALUES /*thumbnail 더미. */
-             ('포토부스 1','https://d9are2p0j0wzf.cloudfront.net/%EA%B0%80%EB%82%98%EB%94%94/KakaoTalk_20250703_164910895.png','청년광장'),
-             ('포토부스 2','https://d9are2p0j0wzf.cloudfront.net/%EA%B0%80%EB%82%98%EB%94%94/KakaoTalk_20250703_164910895.png','체육관'),
-             ('포토부스 3','https://d9are2p0j0wzf.cloudfront.net/%EA%B0%80%EB%82%98%EB%94%94/KakaoTalk_20250703_164910895.png','K-GN사이'),
-             ('포토부스 4','https://d9are2p0j0wzf.cloudfront.net/%EA%B0%80%EB%82%98%EB%94%94/KakaoTalk_20250703_164910895.png','J관')
+         VALUES
+             ('포토부스 1','https://d9are2p0j0wzf.cloudfront.net/포토부스/thumb/photobooth_thumb_4_optimized.webp','청년광장'),
+             ('포토부스 2','https://d9are2p0j0wzf.cloudfront.net/포토부스/thumb/photobooth_thumb_2_optimized.webp','체육관'),
+             ('포토부스 3','https://d9are2p0j0wzf.cloudfront.net/포토부스/thumb/photobooth_thumb_3_optimized.webp','K-GN사이'),
+             ('포토부스 4','https://d9are2p0j0wzf.cloudfront.net/포토부스/thumb/photobooth_thumb_1_optimized.webp','J관')
      ) AS data(name,thumbnail,location_name);
 
 --동아리 사랑해 프레임
 INSERT INTO booth_detail_images (image_order, booth_id, image_url)
-SELECT
-    1, -- 'pub' 타입인 부스의 ID
-    id,
-    'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_동아리사랑해_optimized.jpg
-'
-FROM
-    booth
-WHERE
-    category= 'PHOTO_BOOTH';
+SELECT 1, id,'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_동아리사랑해_optimized.webp'
+FROM booth WHERE category= 'PHOTO_BOOTH';
+
 --캔젤네컷
 INSERT INTO booth_detail_images (image_order, booth_id, image_url)
-SELECT
-    2,
-    id,
-    'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_캔젤네컷_optimized.jpg'
-FROM
-    booth
-WHERE
-    category= 'PHOTO_BOOTH';
+SELECT 2, id,'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_캔젤네컷_optimized.webp'
+FROM booth WHERE category= 'PHOTO_BOOTH';
+
+--collegekid
+INSERT INTO booth_detail_images (image_order, booth_id, image_url)
+SELECT 3, id,'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_collegekid_optimized.webp'
+FROM booth WHERE category= 'PHOTO_BOOTH';
+
+--소주사랑단
+INSERT INTO booth_detail_images (image_order, booth_id, image_url)
+SELECT 4, id,'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_소주사랑단_optimized.webp'
+FROM booth WHERE category= 'PHOTO_BOOTH';
+
+--idcard
+INSERT INTO booth_detail_images (image_order, booth_id, image_url)
+SELECT 6, id,'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_idcard_pink_optimized.webp'
+FROM booth WHERE category= 'PHOTO_BOOTH';
+
+--포스터
+INSERT INTO booth_detail_images (image_order, booth_id, image_url)
+SELECT 7, id,'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_poster_red_optimized.webp'
+FROM booth WHERE category= 'PHOTO_BOOTH';
+
+--카디날 기본
+INSERT INTO booth_detail_images (image_order, booth_id, image_url)
+SELECT 8, id,'https://d9are2p0j0wzf.cloudfront.net/포토부스/photobooth_cardinal_pink_optimized.webp'
+FROM booth WHERE category= 'PHOTO_BOOTH';
+
 
 INSERT INTO booth_operating_days (booth_id, operating_days)
 SELECT
@@ -604,50 +612,57 @@ FROM
 WHERE
     category= 'PHOTO_BOOTH';
 
+
+-- delete from event_operating_days;
+-- delete from event_detail_images;
+-- delete from event;
 -- 3. 이벤트
+with
+    event_data_with_rn AS (
+        select
+            *,
+            row_number() over (partition by location_name order by name ) as rn
+        from (
+                 VALUES
+                     ('Campus Clash','청년광장', '누구나 쉽고 간단하게 참여할 수 있는 미니게임 부스', 'https://d9are2p0j0wzf.cloudfront.net/event/event_CampusClash_optimized.webp', TIME '12:00', TIME '18:00',NULL),
+                     ('CONNECT SOGANG : 종이잡지클럽','J311', '만남 · 교감 · 성장 — 종이잡지클럽과 함께 담아내는 우리의 이야기', 'https://d9are2p0j0wzf.cloudfront.net/event/event_connect_sogang_optimized.webp', TIME '19:00', NULL,'https://docs.google.com/forms/d/1b1lu1RQ4Df2Bw8KZhbTvFoi1TYCeXm10tc4k8ZXVil0/edit'),
+                     ('쉼: 영화상영','로욜라도서관 이주연 갤러리', 'CARDINAL의 뜨거운 열기 속 영화와 함꼐하는 작은 쉼터', 'https://d9are2p0j0wzf.cloudfront.net/event/event_쉼_야외상영_optimized.webp', TIME '10:00', TIME '18:00',NULL),
+                     ('동아리 야외展','J-CY 사잇길', '사진 동아리 서광회, 시각 예술 동아리 EXPANDED 작품 전시', 'https://d9are2p0j0wzf.cloudfront.net/event/event_zun_optimized.webp', TIME '12:00', TIME '17:00',NULL),
+                     ('MOVIE NIGHT','대운동장', '선선한 가을 바람 맞으며 즐기는 야외 영화 상영', 'https://d9are2p0j0wzf.cloudfront.net/event/event_movie_night_optimized.webp', TIME '19:00', NULL,NULL),
+                     ('캠프어스(Camp Us)','청년광장', '캠퍼스에서 모두 함께 즐기는 우리만의 캠핑', 'https://d9are2p0j0wzf.cloudfront.net/event/event_CampUs_optimized.webp', TIME '18:00', TIME '22:00','https://forms.gle/irLvZd36rqL91gnq9'),
+                     ('멍!🐶','청년광장', '아무 것도 하지 않는 시간의 가치를 경험하는 힐링 프로그램', 'https://d9are2p0j0wzf.cloudfront.net/event/event_멍_optimized.webp', TIME '16:00', TIME '18:00','https://forms.gle/8cD4Lc4S3cCtufou6'),
+                     ('ID카드 제작','청년광장', 'College KID로 돌아가기 위한 첫 걸음', 'https://d9are2p0j0wzf.cloudfront.net/event/event_id_card_optimized.webp', TIME '12:00', TIME '18:00',NULL),
+                     ('녹기 전에 X 2025 CARDINAL', '청년광장','서강인을 사로잡은 염리동의 보석 <녹기 전에> 팝업 부스', 'https://d9are2p0j0wzf.cloudfront.net/event/event_before_melt_optimized.webp', TIME '14:00', NULL,NULL),
+                     ('SHRINKID','대운동장', '대운동장에서 열리는 SHRINKID 공연', 'https://d9are2p0j0wzf.cloudfront.net/event/event_shrinkid_optimized.webp', TIME '12:00', TIME '18:00',NULL),
+                     ('clash of knowledge','체육관', '서강에서 울리는 골든벨, 한국경제신문과 함께합니다!', 'https://d9are2p0j0wzf.cloudfront.net/event/event_clashofknowledge_logo_optimized.webp', TIME '13:00', TIME '17:00',NULL)
+             ) AS data(name, location_name,description, thumbnail_url, start_time, end_time, application_form_url)
+    ),
+
+    locations_with_rn AS (
+        select
+            id,position,row_number() over (partition by map.position order by id) as rn
+        from map
+    )
 INSERT INTO event (
     name, location_id, description, thumbnail_url,
     view_count, start_time, end_time, application_form_url,
     is_operating
 )
 SELECT
-    data.name,
-    -- CASE 문을 사용해 이벤트 이름에 따라 map 테이블에서 동적으로 location_id를 조회
-    CASE
-        WHEN data.name IN ('Campus Clash', '캠프어스(Camp Us)', '멍!🐶', 'ID카드 제작', '녹기 전에 X 2025 CARDINAL')
-            THEN (SELECT id FROM map WHERE position = '청년광장' limit 1)
-        WHEN data.name = 'CONNECT SOGANG : 종이잡지클럽'
-            THEN (SELECT id FROM map WHERE position = 'J311')
-        WHEN data.name = '쉼: 영화상영'
-            THEN (SELECT id FROM map WHERE position = '로욜라도서관 이주연 갤러리')
-        WHEN data.name = '동아리 야외展'
-            THEN (SELECT id FROM map WHERE position = 'J-CY 사잇길')
-        WHEN data.name IN ('MOVIE NIGHT', 'SHRINKID')
-            THEN (SELECT id FROM map WHERE position = '대운동장' limit 1)
-        WHEN data.name IN ( 'clash of knowledge')
-            THEN (SELECT id FROM map WHERE position = '체육관')
-        END,
-    data.description,
-    data.thumbnail_url,
+    b.name,
+    l.id,
+    b.description,
+    b.thumbnail_url,
     1, -- view_count 값을 1
-    data.start_time,
-    data.end_time,
-    data.application_form_url,
+    b.start_time,
+    b.end_time,
+    b.application_form_url,
     FALSE -- is_operating 값을 일괄적으로 FALSE로 설정합니다.
-FROM (
-         VALUES
-             ('Campus Clash', '누구나 쉽고 간단하게 참여할 수 있는 미니게임 부스', 'https://d9are2p0j0wzf.cloudfront.net/event/event_CampusClash_optimized.jpg', TIME '12:00', TIME '18:00',NULL),
-             ('CONNECT SOGANG : 종이잡지클럽', '만남 · 교감 · 성장 — 종이잡지클럽과 함께 담아내는 우리의 이야기', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '19:00', NULL,'https://docs.google.com/forms/d/1b1lu1RQ4Df2Bw8KZhbTvFoi1TYCeXm10tc4k8ZXVil0/edit'),
-             ('쉼: 영화상영', 'CARDINAL의 뜨거운 열기 속 영화와 함꼐하는 작은 쉼터', 'https://d9are2p0j0wzf.cloudfront.net/event/event_쉼;야외상영_optimized.jpg', TIME '10:00', TIME '18:00',NULL),
-             ('동아리 야외展', '사진 동아리 서광회, 시각 예술 동아리 EXPANDED 작품 전시', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '12:00', TIME '17:00',NULL),
-             ('MOVIE NIGHT', '선선한 가을 바람 맞으며 즐기는 야외 영화 상영', 'https://d9are2p0j0wzf.cloudfront.net/event/event_movie_night_optimized.jpg', TIME '19:00', NULL,NULL),
-             ('캠프어스(Camp Us)', '캠퍼스에서 모두 함께 즐기는 우리만의 캠핑', 'https://d9are2p0j0wzf.cloudfront.net/event/event_CampUs_optimized.jpg', TIME '18:00', TIME '22:00','https://forms.gle/irLvZd36rqL91gnq9'),
-             ('멍!🐶', '아무 것도 하지 않는 시간의 가치를 경험하는 힐링 프로그램', 'https://d9are2p0j0wzf.cloudfront.net/event/event_멍_optimized.jpg', TIME '16:00', TIME '18:00','https://forms.gle/8cD4Lc4S3cCtufou6'),
-             ('ID카드 제작', 'College KID로 돌아가기 위한 첫 걸음', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '12:00', TIME '18:00',NULL),
-             ('녹기 전에 X 2025 CARDINAL', '서강인을 사로잡은 염리동의 보석 <녹기 전에> 팝업 부스', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', TIME '14:00', NULL,NULL),
-             ('SHRINKID', '대운동장에서 열리는 SHRINKID 공연', 'https://d9are2p0j0wzf.cloudfront.net/event/event_shrinkid_optimized.jpg', TIME '12:00', TIME '18:00',NULL),
-             ('clash of knowledge', '서강에서 울리는 골든벨, 한국경제신문과 함께합니다!', 'https://d9are2p0j0wzf.cloudfront.net/event/event_clashofknowledge_logo_optimized.jpg', TIME '13:00', TIME '17:00',NULL)
-     ) AS data(name, description, thumbnail_url, start_time, end_time, application_form_url);
+FROM
+    event_data_with_rn b join locations_with_rn l on b.location_name=l.position and b.rn=l.rn;
+
+select name from event;
+
 INSERT INTO event_operating_days (event_id, operating_days)
 SELECT
     (SELECT id FROM event WHERE name = data.event_name), -- 이벤트 이름으로 id를 동적으로 조회
@@ -673,6 +688,42 @@ FROM (
      ) AS data(event_name, operating_day);
 
 
+-- event detail
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 1, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_campusclash_optimized.webp'
+FROM event WHERE name = 'Campus Clash';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 2, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_connectsogang_optimized.webp'
+FROM event WHERE name = 'CONNECT SOGANG : 종이잡지클럽';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 3, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_movienight_optimized.webp'
+FROM event WHERE name = 'MOVIE NIGHT';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 4, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_campus_optimized.webp'
+FROM event WHERE name = '캠프어스(Camp Us)';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 5, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_shrinkid_optimized.webp'
+FROM event WHERE name = 'SHRINKID';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 6, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_zun_optimized.webp'
+FROM event WHERE name = '동아리 야외展';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 7, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_멍_optimized.webp'
+FROM event WHERE name = '멍!🐶';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 8, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_멍2_optimized.webp'
+FROM event WHERE name = '멍!🐶';
+
+INSERT INTO event_detail_images (image_order, event_id, image_url)
+SELECT 8, id, 'https://d9are2p0j0wzf.cloudfront.net/event/detail/event_detail_쉼_optimized.webp'
+FROM event WHERE name = '쉼: 영화상영';
 -- 4. 공연
 
 ---- 4-1. 화 버스킹
@@ -790,7 +841,7 @@ FROM (
 ----- 4-4. 영화제
 INSERT INTO performance (category, name, description, thumbnail_url, view_count, location_id, start_time, end_time, is_operating)
 VALUES
-    ('FILM', 'MOVIE NIGHT', '선선한 가을 밤, 감성 충만한 야외 영화관에서 힐링하세요.', 'https://cardinal2025.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250703_164910895.png', 1, (select id from map where position='대운동장' limit 1), '19:00:00', '21:00:00', FALSE);
+    ('FILM', 'MOVIE NIGHT', '선선한 가을 밤, 감성 충만한 야외 영화관에서 힐링하세요.', 'https://d9are2p0j0wzf.cloudfront.net/event/event_movie_night_optimized.webp', 1, (select id from map where position='대운동장' limit 1), '19:00:00', '21:00:00', FALSE);
 
 INSERT INTO performance_operating_days (performance_id, operating_days)
 SELECT
@@ -939,16 +990,15 @@ SELECT id, 1, 'https://d9are2p0j0wzf.cloudfront.net/MD/MD_TATOOSTICKER_optimized
 FROM goods WHERE name = 'TATOO STICKER';
 
 -- Images for i CAP
-INSERT INTO goods_detail_images (goods_id, image_order, image_url)
-SELECT id, 1, 'https://d9are2p0j0wzf.cloudfront.net/MD/MD_ETC_1_optimized.jpg'
-FROM goods WHERE name = 'i CAP';
+-- INSERT INTO goods_detail_images (goods_id, image_order, image_url)
+-- SELECT id, 1, 'https://d9are2p0j0wzf.cloudfront.net/MD/MD_ETC_1_optimized.jpg'
+-- FROM goods WHERE name = 'i CAP';
 
 --pubAdmin 계정 생성
 INSERT INTO pub_admin(admin_id, department, password, booth_id) VALUES
                                                                     ('pubadmin1', '총', '$2a$10$ClTPXu2uIjuK1BKB5J2okOtlN/qlYhf3c/gaaLuHHyCc0KxCPJX3C', 1),
                                                                     ('pubadmin2', '자', '$2a$10$gt3s4ywXHlWF1ZpuSvagO.FCDNyFoCPww4PgFy.i1jcKr45TRk8pq', 2),
-                                                                    ('pubadmin3', '경', '$2a$10$MqLnRYW4KnfgAajcWcRLzOaeKJ7Sb6bdNyNl.ZMRHGe5OQqrF1hty', 3),
-                                                                    ('pubadmin4', '편', '$2a$10$50N7B.etktgFuA5RmDpusOE7C0cfjhLfz7/n955Wu1inCZTTSm1KK', 4),
+                                                                    ('pubadmin3', '경', '$2a$10$MqLnRYW4KnfgAajcWcRLzOaeKJ7Sb6bdNyNl.ZMRHGe5OQqrF1hty', 3),                                                                 ('pubadmin4', '편', '$2a$10$50N7B.etktgFuA5RmDpusOE7C0cfjhLfz7/n955Wu1inCZTTSm1KK', 4),
                                                                     ('pubadmin5', '사', '$2a$10$PzNZ2HAzT0CdsfxrklhFXOfIug2Swybcpp.LKKWuvUefZ9iROliNS', 5),
                                                                     ('pubadmin6', '맛', '$2a$10$K2i.Bamq31qKVzDjVNgTbeYNNAe0I.OHgLkKNz5ltrAnN1Mdrr7fy', 6),
                                                                     ('pubadmin7', '인공자전', '$2a$10$sWiFIgm/Pt2tKfHPNZ9HJ.V9P.UuDxVJ0InmwC8u3qXbnrz6qBGDq', 7),
@@ -958,25 +1008,4 @@ INSERT INTO pub_admin(admin_id, department, password, booth_id) VALUES
                                                                     ('pubadmin11', '공', '$2a$10$5MNVtBA/lUdDpSOyoik8fOn.e/0gDvyhO82Lz4t41N8167YNd2coS', 11),
                                                                     ('pubadmin12', 'H.U.G', '$2a$10$JrchIGnJ7qU0eRGYyuhMAOroc1HqU02ayNn9xYvls.Q8wDcDBwr3C', 12),
                                                                     ('pubadmin13', 'EXPANDED', '$2a$10$TxTUtyAghXzbLBiL0EHxzuMkCDOsQ24WPM2BZ5daqRQKrH3QAVf2i', 13);
-INSERT INTO booth_operating_days (booth_id, operating_days)
-SELECT
-    id, -- 'pub' 타입인 부스의 ID
-    'WED'-- 모든 행에 동일하게 삽입할 값
-FROM
-    booth
-WHERE
-    category= 'FOOD_TRUCK';
-
-
-
-
---event 더미로 우선 채우기
-INSERT INTO event_detail_images (image_order, event_id, image_url)
-select
-    1,
-    id,
-    'https://d9are2p0j0wzf.cloudfront.net/%EA%B0%80%EB%82%98%EB%94%94/KakaoTalk_20250703_164910895.png'
-from event;
-
-
 
