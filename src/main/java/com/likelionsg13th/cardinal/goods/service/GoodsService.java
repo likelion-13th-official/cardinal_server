@@ -68,14 +68,25 @@ public class GoodsService {
     }
 
 
+    @Cacheable(value = "goodsListCache", key = "'all'")
+    @Transactional(readOnly = true)
+    public List<Goods> findAllGoods() {
+        return goodsRepository.findAll();
+    }
+
+    @Cacheable(value = "goodsListCache", key = "#pageable.pageNumber")
+    @Transactional(readOnly = true)
+    public Page<Goods> findGoodsPage(Pageable pageable) {
+        return goodsRepository.findAll(pageable);
+    }
+
     /* GET /goods */
-    @Cacheable(value = "goodsList", key = "'GL:' + (#p1 != null ? #p1 : 'anon') + ':p:' + #p0")
     @Transactional(readOnly = true)
     public PageDto<GoodsResponse> getGoodsList(Integer page, Long userId) {
         // 전체 조회 (페이징 없이-프론트 요청사항)
         if (page == null || page <= 0) {
-            List<Goods> goodsList = goodsRepository.findAll();
-            
+            List<Goods> goodsList = findAllGoods();
+
             //스크랩 여부 
             Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(
                     goodsList.stream().map(Goods::getId).toList(),
@@ -95,7 +106,7 @@ public class GoodsService {
 
         // 페이지 조회
         Pageable pageable = PageRequest.of(page - 1, GOODS_PAGE_SIZE);
-        Page<Goods> goodsPage = goodsRepository.findAll(pageable);
+        Page<Goods> goodsPage = findGoodsPage(pageable);
         //스크랩여부
         Set<Long> scrappedGoodsIds = goodsProvider.getScrappedContentIds(
                 goodsPage.stream().map(Goods::getId).toList(),
@@ -111,12 +122,17 @@ public class GoodsService {
     }
 
 
+    @Cacheable(value = "goodsCache", key = "#id")
+    @Transactional(readOnly = true)
+    public Goods findGoodsById(Long id) {
+        return goodsRepository.findById(id)
+                .orElseThrow(() -> new GoodsNotFound(ErrorCode.GOODS_NOT_FOUND));
+    }
+
     /* GET /goods/{id} */
     @Transactional(readOnly = true)
-    @Cacheable(value = "goodsDetail", key = "'GD:' + (#p1 != null ? #p1 : 'anon') + ':g:' + #p0")
     public GoodsDetailResponse getGoods(Long id, Long userId) {
-        Goods goods = goodsRepository.findById(id)
-                .orElseThrow(()-> new GoodsNotFound(ErrorCode.GOODS_NOT_FOUND));
+        Goods goods = findGoodsById(id);
 
         //스크랩여부 
         boolean isScrapped = false;

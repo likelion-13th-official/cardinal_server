@@ -53,9 +53,38 @@ public class BoothService {
     private static final Logger searchLogger= LoggerFactory.getLogger("cardinal.search");
 
 
-    @Cacheable(value = "boothList", key = "#userId + '-' + #categoryStr + '-' + #isOperating + '-' + #dayStr + '-' + #page")
+    //1-1. 부스 목록 조회
     @Transactional(readOnly = true)
     public PageDto<BoothResponse> getBoothList(Long userId, String categoryStr, Boolean isOperating, String dayStr, int page) {
+
+
+        //필터링+페이지네이션 적용해서 DB 조회
+        Page<Booth> boothsPage = findBooths(categoryStr, isOperating, dayStr, page);
+
+        //스크랩 처리
+        Set<Long> scrappedBoothIds;
+        if (userId != null && boothsPage.hasContent()) {
+            List<Long> boothIds = boothsPage.getContent().stream().map(Booth::getId).toList();
+            scrappedBoothIds = boothProvider.getScrappedContentIds(boothIds, userId);
+        } else {
+            scrappedBoothIds = Collections.emptySet();
+        }
+
+
+        Page<BoothResponse> boothResponsePage=boothsPage.map(
+                booth -> {
+                    boolean isScrapped = scrappedBoothIds.contains(booth.getId());
+                    return BoothResponse.from(booth, isScrapped);
+                }
+        );
+        return PageDto.from(boothResponsePage);
+
+    }
+
+
+    //1-2. 부스 목록 조회 - 캐싱
+    @Cacheable(value = "boothPage", key = "#categoryStr + '-' + #isOperating + '-' + #dayStr + '-' + #page")
+    public Page<Booth> findBooths(String categoryStr, Boolean isOperating, String dayStr, int page) {
         Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
 
         Specification<Booth> spec=null;
@@ -79,37 +108,21 @@ public class BoothService {
             spec = (spec == null) ? daySpec : spec.and(daySpec);
         }
 
-        //필터링+페이지네이션 적용해서 DB 조회
-        Page<Booth> boothsPage=boothRepository.findAll(spec, pageable);
-
-        //스크랩 처리
-        Set<Long> scrappedBoothIds;
-        if (userId != null && boothsPage.hasContent()) {
-            List<Long> boothIds = boothsPage.getContent().stream().map(Booth::getId).toList();
-            scrappedBoothIds = boothProvider.getScrappedContentIds(boothIds, userId);
-        } else {
-            scrappedBoothIds = Collections.emptySet();
-        }
-
-
-        Page<BoothResponse> boothResponsePage=boothsPage.map(
-                booth -> {
-                    boolean isScrapped = scrappedBoothIds.contains(booth.getId());
-                    return BoothResponse.from(booth, isScrapped);
-                }
-        );
-        return PageDto.from(boothResponsePage);
-
+        // 데이터베이스에서 조회 후 반환
+        return boothRepository.findAll(spec, pageable);
     }
 
 
-
-    //개별 상세 조회
-    @Cacheable(value = "boothDetail", key = "#id + '-' + #userId")
+    //2-1. 개별 상세 조회 - 캐싱
+    @Cacheable(value = "booth", key = "#id")
+    public Booth findBoothById(long id) {
+        return boothRepository.findById(id)
+                .orElseThrow(() -> new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
+    }
+    //2-2. 개별 상세 조회
     @Transactional(readOnly = true)
     public BoothDetailResponse getBoothDetail(Long userId,long id) {
-        Booth booth=boothRepository.findById(id)
-                .orElseThrow(()->new BoothNotFoundException(ErrorCode.BOOTH_NOT_FOUND));
+        Booth booth=findBoothById(id);
 
         boolean isScrapped=false;
         if(userId!=null){
@@ -117,6 +130,7 @@ public class BoothService {
         }
         return BoothDetailResponse.of(booth,isScrapped);
     }
+
 
 
 
