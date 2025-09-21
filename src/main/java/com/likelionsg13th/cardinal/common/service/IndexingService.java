@@ -63,6 +63,7 @@ public class IndexingService {
         doc.setCategory(booth.getCategory().toKorean());
         doc.setDescription(booth.getDescription());
 
+
         if (booth.getLocation() != null) {
             doc.setLocation(booth.getLocation().getPosition());
         }
