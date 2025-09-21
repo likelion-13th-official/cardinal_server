@@ -42,7 +42,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -60,47 +62,35 @@ public class SearchService {
     private final EventService eventService;
     private final GoodsService goodsService;
 
-    //search 로거
     private static final Logger searchLogger= LoggerFactory.getLogger("cardinal.search");
     private static final int SEARCH_PAGE_SIZE = 4;
 
-    /* 전체 통합 검색 */
     @Transactional(readOnly = true)
     public List<SearchResultDto> searchAll(String query, Long userId) {
-
         Pageable pageable = PageRequest.of(0, SEARCH_PAGE_SIZE);
 
         SearchHits<BoothDocument> boothResults = boothService.boothQuery(query, pageable);
         SearchHits<EventDocument> eventResults = eventService.eventQuery(query, pageable);
         SearchHits<GoodsDocument> goodsResults = goodsService.goodsQuery(query, pageable);
 
-        //인기검색어 관련
         findTopHit(boothResults, eventResults, goodsResults)
                 .ifPresent(this::logSearch);
 
         List<SearchResultDto> results = new ArrayList<>();
-        // 부스 결과 처리
         List<BoothResponse> boothResponses=boothService.getFinalResponse(boothResults,boothService.getScrapInfo(userId,boothResults));
         results.add(SearchResultDto.from("부스", (int) boothResults.getTotalHits(), boothResponses));
 
-        // 이벤트 결과 처리
         List<EventResponse> eventResponses = eventService.getFinalResponse(eventResults,eventService.getScrapInfo(userId,eventResults));
         results.add(SearchResultDto.from("이벤트", (int) eventResults.getTotalHits(), eventResponses));
 
-        // 굿즈 결과 처리
         List<GoodsResponse> goodsResponses = goodsService.getFinalResponse(goodsResults,goodsService.getScrapInfo(userId,goodsResults));
         results.add(SearchResultDto.from("굿즈", (int) goodsResults.getTotalHits(), goodsResponses));
 
-        // 전체 개수가 많은 순서대로 정렬
         results.sort(Comparator.comparingInt(SearchResultDto::getTotalCount).reversed());
 
         return results;
-
     }
 
-
-
-    /* 자동완성 */
     public List<SimpleSearchDto> getSuggestion(String query) {
         SourceFilter sourceFilter = new FetchSourceFilter(
                 true,
@@ -110,14 +100,12 @@ public class SearchService {
         NativeQuery nativeQuery = NativeQuery.builder()
                 .withQuery(q -> q
                         .bool(b -> b
-                                // 1순위: 카테고리/타입 이름이 정확히 일치
                                 .should(s -> s
                                         .multiMatch(mm -> mm
                                                 .query(query)
                                                 .fields("category.keyword^4", "type^4")
                                         )
                                 )
-                                // 2순위: 이름/메뉴명 접두사 일치
                                 .should(s -> s
                                         .multiMatch(mm -> mm
                                                 .query(query)
@@ -132,7 +120,6 @@ public class SearchService {
                                                 .fields("menu^2")
                                         )
                                 )
-                                // 3순위: 그 외
                                 .should(s -> s
                                         .multiMatch(mm -> mm
                                                 .query(query)
@@ -145,7 +132,6 @@ public class SearchService {
                 .withPageable(PageRequest.of(0, 10))
                 .withSourceFilter(sourceFilter)
                 .build();
-
 
         SearchHits<AutoCompleteSourceDto> searchHits = elasticsearchOperations.search(
                 nativeQuery,
@@ -167,7 +153,6 @@ public class SearchService {
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class AutoCompleteSourceDto {
-
         private Long boothId;
         private Long eventId;
         private Long goodsId;
@@ -181,22 +166,19 @@ public class SearchService {
             return goodsId;
         }
 
-        // contentsType을 결정
         public String getFinalContentsType() {
-            //부스의 경우
             if (category != null && !category.isBlank()) {
                 return category;
             }
-            // 이벤트, 굿즈의 경우
             return type;
         }
     }
 
-//    //로깅
-    private static final String SEARCH_KEY="popular_searches";
+    private static final String SEARCH_KEY_PREFIX = "popular_searches:";
     private final RedisTemplate<String, String> redisTemplate;
     private volatile List<PopularSearchData> popularQueriesCache = Collections.emptyList();
     private volatile LocalDateTime lastCacheUpdateTime;
+
     private Optional<SearchHit<?>> findTopHit(SearchHits<?>... searchHits) {
         List<SearchHit<?>> allHits = new ArrayList<>();
         for (SearchHits<?> hits : searchHits) {
@@ -230,6 +212,20 @@ public class SearchService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private String getCurrentSearchKey() {
+        LocalDateTime now = LocalDateTime.now();
+        int minute = now.getMinute() < 30 ? 0 : 30;
+        LocalDateTime timeWindow = now.withMinute(minute).withSecond(0).withNano(0);
+        return SEARCH_KEY_PREFIX + timeWindow.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+    }
+
+    private String getPreviousSearchKey() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime previousWindow = now.minusMinutes(30);
+        int minute = previousWindow.getMinute() < 30 ? 0 : 30;
+        previousWindow = previousWindow.withMinute(minute).withSecond(0).withNano(0);
+        return SEARCH_KEY_PREFIX + previousWindow.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+    }
 
     @Async
     public void logSearch(SearchHit<?> topHit) {
@@ -252,23 +248,22 @@ public class SearchService {
             data = new PopularSearchData(doc.getGoodsId(), doc.getName(), doc.getType());
         }
 
-        //JSON으로 변환하여 Redis에 저장
         if (data != null) {
             try {
                 String value = objectMapper.writeValueAsString(data);
-                redisTemplate.opsForZSet().incrementScore(SEARCH_KEY, value, 1);
+                String key = getCurrentSearchKey();
+                redisTemplate.opsForZSet().incrementScore(key, value, 1);
+                redisTemplate.expire(key, 1, TimeUnit.HOURS);
             } catch (JsonProcessingException e) {
                 searchLogger.error("Error serializing popular search data to JSON", e);
             }
         }
     }
 
-    //30초마다 (테스트용)
-//    @Scheduled(fixedRate = 30000)
-    //매시 0분,30분(실제)
-    @Scheduled(cron = "0 0,30 * * * *",zone = "Asia/Seoul")
-    public void updatePopularQueries(){
-        Set<String> top5Json = redisTemplate.opsForZSet().reverseRange(SEARCH_KEY, 0, 4);
+    @Scheduled(cron = "0 0,30 * * * *", zone = "Asia/Seoul")
+    public void updatePopularQueries() {
+        String key = getPreviousSearchKey();
+        Set<String> top5Json = redisTemplate.opsForZSet().reverseRange(key, 0, 4);
         if (top5Json != null) {
             List<PopularSearchData> newCache = top5Json.stream()
                     .map(json -> {
@@ -287,20 +282,18 @@ public class SearchService {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         updatePopularQueries();
     }
 
     public SearchTrendDto getPopularQueries() {
-        List<SimpleSearchDto> trending= this.popularQueriesCache.stream()
+        List<SimpleSearchDto> trending = this.popularQueriesCache.stream()
                 .map(data -> new SimpleSearchDto(
                         data.getId(),
                         data.getName(),
                         data.getType()
                 ))
                 .collect(Collectors.toList());
-        return SearchTrendDto.from(lastCacheUpdateTime,trending);
-
+        return SearchTrendDto.from(lastCacheUpdateTime, trending);
     }
-
 }
