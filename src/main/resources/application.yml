@@ -29,7 +29,6 @@ spring:
   sql:
     init:
       mode: never
-
   jpa:
     database: postgresql
     hibernate:

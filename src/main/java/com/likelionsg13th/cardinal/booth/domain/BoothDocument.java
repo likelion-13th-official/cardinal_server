@@ -23,6 +23,7 @@ public class BoothDocument {
     private Long boothId;
 
 
+
     @MultiField(
             mainField = @Field(type = FieldType.Text, analyzer = "nori"),
             otherFields = {

@@ -26,6 +26,7 @@ public class PubBoothResponse extends BoothDetailResponse {
 
     private String instagramUrl;
     private String tableLayoutUrl;
+    private String deptHost;
 
     public static PubBoothResponse of(Booth booth,boolean isScrapped){
         PubBooth b=(PubBooth) booth;
@@ -42,6 +43,7 @@ public class PubBoothResponse extends BoothDetailResponse {
                                 .map(day -> day.toKorean())
                                 .collect(Collectors.toList())
                 )
+                .deptHost(b.getDeptHost())
                 .menus(b.getMenus())
                 .menuImageUrls(
                         b.getDetailImageList().stream()

@@ -31,6 +31,8 @@ public class PubBooth extends Booth {
 
     private LocalDateTime noticeUpdatedAt; //공지사항 업데이트
 
+    private String deptHost;
+
 
 
     @PrePersist
