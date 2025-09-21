@@ -234,6 +234,7 @@ public class SecurityConfig {
                                 "/goods/**","/goods",
                                 "/performances/**","/performances",
                                 "/search/**","/health",
+                                "/error", /*edit */
                                 "/map/**", "/admin/**",
                                 "/css/**","/js/**","/images/**","/webjars/**",
                                 "/favicon.ico","/default-ui.css"
