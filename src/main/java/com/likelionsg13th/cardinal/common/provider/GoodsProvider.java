@@ -49,7 +49,7 @@ public class GoodsProvider implements CategoryProvider,Scrappable {
     public Object getMapMarkersByCategory() {
         MapInfoDto mapInfo = MapInfoDto.from(goodsRepository.findLocationFirstById());
 
-        return MapFilteredByCategoryDto.from(List.of(mapInfo),GOODS.name());
+        return MapFilteredByCategoryDto.from(List.of(mapInfo),"MD");
     }
 
     @Override
