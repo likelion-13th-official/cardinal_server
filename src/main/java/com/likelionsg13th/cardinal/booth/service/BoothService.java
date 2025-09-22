@@ -15,6 +15,7 @@ import com.likelionsg13th.cardinal.common.exception.InvalidCategoryException;
 import com.likelionsg13th.cardinal.common.provider.BoothProvider;
 import com.likelionsg13th.cardinal.users.repository.ScrapRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -201,5 +202,12 @@ public class BoothService {
                 .map(boothDocument -> BoothResponse.from(boothDocument, scrappedBoothIds.contains(boothDocument.getBoothId())))
                 .collect(Collectors.toList());
     }
+
+    //스케줄링 돌아가면 캐시 비우기
+    @CacheEvict(value = {"boothPage", "booth"}, allEntries = true)
+    public void clearAllBoothCaches() {
+        System.out.println("All booth caches (boothPage, booth) cleared.");
+    }
+
 
 }

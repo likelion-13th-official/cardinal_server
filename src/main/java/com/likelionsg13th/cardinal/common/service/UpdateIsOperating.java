@@ -2,6 +2,7 @@ package com.likelionsg13th.cardinal.common.service;
 
 import com.likelionsg13th.cardinal.booth.domain.Booth;
 import com.likelionsg13th.cardinal.booth.repository.BoothRepository;
+import com.likelionsg13th.cardinal.booth.service.BoothService;
 import com.likelionsg13th.cardinal.common.enums.DayOfWeek;
 import com.likelionsg13th.cardinal.event.domain.Event;
 import com.likelionsg13th.cardinal.event.repository.EventRepository;
@@ -26,6 +27,7 @@ public class UpdateIsOperating {
     private final BoothRepository boothRepository;
     private final EventRepository eventRepository;
     private final PerformanceRepository performanceRepository;
+    private final BoothService boothService;
 
     @Scheduled(cron = "0 */30 * * * *", zone = "Asia/Seoul")
     @Transactional
@@ -53,6 +55,7 @@ public class UpdateIsOperating {
         }
 
         System.out.println("Booth 스케쥴링 완료");
+        boothService.clearAllBoothCaches();
 
 
         // event
