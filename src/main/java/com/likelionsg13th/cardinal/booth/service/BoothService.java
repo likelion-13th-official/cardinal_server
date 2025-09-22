@@ -203,11 +203,7 @@ public class BoothService {
                 .collect(Collectors.toList());
     }
 
-    //스케줄링 돌아가면 캐시 비우기
-    @CacheEvict(value = {"boothPage", "booth"}, allEntries = true)
-    public void clearAllBoothCaches() {
-        System.out.println("All booth caches (boothPage, booth) cleared.");
-    }
+
 
 
 }

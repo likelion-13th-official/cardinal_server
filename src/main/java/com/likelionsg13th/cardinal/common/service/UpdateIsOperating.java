@@ -9,6 +9,7 @@ import com.likelionsg13th.cardinal.event.repository.EventRepository;
 import com.likelionsg13th.cardinal.performance.domain.Performance;
 import com.likelionsg13th.cardinal.performance.repository.PerformanceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,13 @@ public class UpdateIsOperating {
     private final BoothRepository boothRepository;
     private final EventRepository eventRepository;
     private final PerformanceRepository performanceRepository;
-    private final BoothService boothService;
+
+
+    //스케줄링 돌아가면 캐시 비우기
+    @CacheEvict(value = {"boothPage", "booth"}, allEntries = true)
+    public void clearAllBoothCaches() {
+        System.out.println("All booth caches (boothPage, booth) cleared.");
+    }
 
     @Scheduled(cron = "0 */30 * * * *", zone = "Asia/Seoul")
     @Transactional
@@ -55,7 +62,7 @@ public class UpdateIsOperating {
         }
 
         System.out.println("Booth 스케쥴링 완료");
-        boothService.clearAllBoothCaches();
+        clearAllBoothCaches();
 
 
         // event
